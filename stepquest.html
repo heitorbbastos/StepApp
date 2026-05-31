@@ -3196,6 +3196,14 @@ function telaTerritorio(){
     </div>
     <div class="lead">${textoContagem(t.id)}</div>
     ${lista}
+    <div class="card" onclick="iniciarProva('${t.id}')" style="cursor:pointer;background:linear-gradient(135deg,#ffffff,#fff1d6)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:30px">🏆</div>
+        <div style="flex:1"><div style="font-weight:800;color:#a06b00">Prova Final de ${t.nome}</div>
+          <div style="font-size:12.5px;color:#7d76a8">${estado.melhores['prova-'+t.id]?'melhor: '+estado.melhores['prova-'+t.id]+' acertos ⭐ — refaça!':'uma questão de cada assunto, narrada pelo professor!'}</div></div>
+        <div style="font-size:20px">→</div>
+      </div>
+    </div>
     <div class="card" onclick="irJogo('${t.id}')" style="cursor:pointer;background:linear-gradient(135deg,#ffffff,#f1ecff)">
       <div style="display:flex;align-items:center;gap:12px">
         <div style="font-size:30px">🎮</div>
@@ -3293,11 +3301,20 @@ function iniciarQuiz(tid,mid){
   ultimoQuizLido=null;
   render();
 }
+function iniciarProva(mat){
+  var ms = missoesDe(mat);
+  var perguntas = ms.map(function(m){ var q=m.quiz[0]; return {p:q.p, op:q.op, correta:q.correta, explica:q.explica, af:q.af, fc:q.fc, vc:m.id+'-0'}; });
+  var ordem = perguntas.map(function(q){ var idx=q.op.map(function(_,k){return k;}); for(var i=idx.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0, tt=idx[i]; idx[i]=idx[j]; idx[j]=tt; } return idx; });
+  quiz = { tid:mat, mid:'prova-'+mat, q:0, ordem:ordem, resp:{}, enviado:false, prova:true, perguntas:perguntas };
+  view = { tela:'quiz', terr:mat, miss:'prova-'+mat };
+  ultimoQuizLido=null; render();
+}
+function qzQs(){ return quiz.prova ? quiz.perguntas : missoesDe(quiz.tid).find(function(x){return x.id===quiz.mid;}).quiz; }
 function telaQuiz(){
   const t = TERRITORIOS.find(x=>x.id===quiz.tid);
-  const m = missoesDe(quiz.tid).find(x=>x.id===quiz.mid);
+  const qs = qzQs();
   const i = quiz.q;
-  const questao = m.quiz[i];
+  const questao = qs[i];
   const ordem = quiz.ordem[i];
   const escolhida = quiz.resp[i];          // índice REAL (na ordem embaralhada)
   const opts = ordem.map((realIdx,pos)=>{
@@ -3315,7 +3332,7 @@ function telaQuiz(){
     const acertou = ordem[escolhida]===questao.correta;
     feed = `<div class="feed ${acertou?'bom':'ruim'}">
       ${acertou?'✅ Isso aí! ':'❌ Quase! '}${questao.explica}</div>`;
-    botoes = i < m.quiz.length-1
+    botoes = i < qs.length-1
       ? `<button class="btn lg" onclick="proxima()">Próxima →</button>`
       : `<button class="btn lg" onclick="finalizarQuiz()">Ver resultado 🏁</button>`;
   } else {
@@ -3325,8 +3342,8 @@ function telaQuiz(){
   app.innerHTML = `
     ${hud()}
     <div class="topbar">
-      <button class="voltar" onclick="irMissao('${t.id}','${m.id}')">← Sair</button>
-      <div class="qprog">Pergunta ${i+1} de ${m.quiz.length}</div>
+      <button class="voltar" onclick="${quiz.prova?`irTerritorio('${t.id}')`:`irMissao('${t.id}','${quiz.mid}')`}">← Sair</button>
+      <div class="qprog">${quiz.prova?'🏆 Prova · ':''}Pergunta ${i+1} de ${qs.length}</div>
     </div>
     <div class="card">
       <div class="qn">${questao.p}</div>
@@ -3354,17 +3371,18 @@ function confirmar(){
 }
 function proxima(){ quiz.q++; quiz.enviado=false; render(); }
 function finalizarQuiz(){
-  const m = missoesDe(quiz.tid).find(x=>x.id===quiz.mid);
+  const qs = qzQs();
   let acertos=0;
-  m.quiz.forEach((q,i)=>{ if(quiz.ordem[i][quiz.resp[i]]===q.correta) acertos++; });
-  const antes = estado.melhores[quiz.mid] || 0;
-  if(acertos>antes) estado.melhores[quiz.mid]=acertos;
-  else if(estado.melhores[quiz.mid]==null) estado.melhores[quiz.mid]=acertos;
+  qs.forEach((q,i)=>{ if(quiz.ordem[i][quiz.resp[i]]===q.correta) acertos++; });
+  const chave = quiz.prova ? ('prova-'+quiz.tid) : quiz.mid;
+  const antes = estado.melhores[chave] || 0;
+  if(acertos>antes) estado.melhores[chave]=acertos;
+  else if(estado.melhores[chave]==null) estado.melhores[chave]=acertos;
   registrarDia();
   salvar();
   enviarRanking();
   view.tela='resultado';
-  view._ult = { acertos, total:m.quiz.length, novoRecorde:acertos>antes };
+  view._ult = { acertos, total:qs.length, novoRecorde:acertos>antes, prova:quiz.prova };
   render();
 }
 
@@ -3397,11 +3415,10 @@ function conectorTexto(t){
 /* ---- resultado ---- */
 function telaResultado(){
   const t = TERRITORIOS.find(x=>x.id===view.terr);
-  const m = missoesDe(view.terr).find(x=>x.id===view.miss);
   const r = view._ult;
   const pct = Math.round(r.acertos/r.total*100);
   let emoji,msg;
-  if(pct===100){ emoji='🏆'; msg='PERFEITO! Você é fera nessa missão!'; }
+  if(pct===100){ emoji='🏆'; msg=r.prova?'PERFEITO! Você DOMINOU a matéria!':'PERFEITO! Você é fera nessa missão!'; }
   else if(pct>=75){ emoji='🌟'; msg='Muito bem! Quase tudo certo!'; }
   else if(pct>=50){ emoji='💪'; msg='Bom começo! Revise e tente de novo.'; }
   else { emoji='🌱'; msg='Calma! Reler o resumo ajuda muito. Bora de novo!'; }
@@ -3419,7 +3436,7 @@ function telaResultado(){
         <div class="balao">${conectorTexto(t)}</div>
       </div>
       <div class="rkfb" id="rkfb" style="display:none"></div>
-      <button class="btn lg" onclick="iniciarQuiz('${t.id}','${m.id}')">Refazer o desafio 🔁</button>
+      <button class="btn lg" onclick="${r.prova?`iniciarProva('${t.id}')`:`iniciarQuiz('${t.id}','${view.miss}')`}">${r.prova?'Refazer a prova 🔁':'Refazer o desafio 🔁'}</button>
       <button class="btn lg sec" onclick="irTerritorio('${t.id}')">Voltar para ${t.nome}</button>
     </div>`;
   enviarRanking().then(rankingFeedback).then(function(msg){
@@ -3555,8 +3572,8 @@ function tocarPodcast(mat){
 function ouvirFala(fc){ try{ if(falaAudio) falaAudio.pause(); falaAudio=new Audio(URL_NARR+'_fala/'+fc+'.mp3'); falaAudio.play().catch(function(){}); }catch(e){} }
 function pararQuizAudio(){ if(quizAudio){ quizAudio.onended=null; quizAudio.pause(); quizAudio=null; } }
 function tocarSeq(urls){ pararQuizAudio(); var k=0; (function next(){ if(k>=urls.length) return; quizAudio=new Audio(urls[k++]); quizAudio.onended=next; quizAudio.onerror=next; var p=quizAudio.play(); if(p&&p.catch) p.catch(function(){}); })(); }
-function vozQuizEnunciado(){ var m=missoesDe(quiz.tid).find(function(x){return x.id===quiz.mid;}), i=quiz.q, q=m.quiz[i]; var u=[URL_NARR+'_quiz/'+quiz.mid+'-'+i+'-p.mp3']; if(q.af&&q.fc) u.push(URL_NARR+'_fala/'+q.fc+'.mp3'); tocarSeq(u); }
-function vozQuizFeedback(ok){ var i=quiz.q; tocarSeq([URL_NARR+'_quiz/_int/'+quiz.tid+'-'+(ok?'ok':'no')+'.mp3', URL_NARR+'_quiz/'+quiz.mid+'-'+i+'-x.mp3']); }
+function vozQuizEnunciado(){ var q=qzQs()[quiz.q]; var base=q.vc||(quiz.mid+'-'+quiz.q); var u=[URL_NARR+'_quiz/'+base+'-p.mp3']; if(q.af&&q.fc) u.push(URL_NARR+'_fala/'+q.fc+'.mp3'); tocarSeq(u); }
+function vozQuizFeedback(ok){ var q=qzQs()[quiz.q]; var base=q.vc||(quiz.mid+'-'+quiz.q); tocarSeq([URL_NARR+'_quiz/_int/'+quiz.tid+'-'+(ok?'ok':'no')+'.mp3', URL_NARR+'_quiz/'+base+'-x.mp3']); }
 function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} if(falaAudio){falaAudio.pause();} pararQuizAudio(); if(podAudio){podAudio.pause();} }catch(e){} }
 function tocarIntroMateria(id){
   var nm=slugNome(estado.perfil?estado.perfil.nome:'');
