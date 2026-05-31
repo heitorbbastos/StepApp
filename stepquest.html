@@ -3240,6 +3240,7 @@ function iniciarQuiz(tid,mid){
   });
   quiz = { tid, mid, q:0, ordem, resp:{}, enviado:false };
   view = { tela:'quiz', terr:tid, miss:mid };
+  ultimoQuizLido=null;
   render();
 }
 function telaQuiz(){
@@ -3279,12 +3280,16 @@ function telaQuiz(){
     </div>
     <div class="card">
       <div class="qn">${questao.p}</div>
-      ${questao.af?`<button class="btn sec" style="max-width:300px;margin:6px auto 12px" onclick="ouvirFala('${questao.fc}')">🔊 Ouvir de novo</button>`:''}
+      <button class="btn sec" style="max-width:300px;margin:6px auto 12px" onclick="vozQuizEnunciado()">🔊 Ouvir de novo</button>
       ${opts}
       ${feed}
       ${botoes}
     </div>`;
-  if(questao.af && !quiz.enviado){ setTimeout(function(){ ouvirFala(questao.fc); }, 250); }
+  var chaveQ = quiz.mid+'-'+i+'-'+(quiz.enviado?'e':'p');
+  if(chaveQ!==ultimoQuizLido){ ultimoQuizLido=chaveQ;
+    if(!quiz.enviado) vozQuizEnunciado();
+    else vozQuizFeedback(ordem[escolhida]===questao.correta);
+  }
   if(escolhida!=null && !quiz.enviado){
     const c=document.getElementById('conf'); if(c) c.disabled=false;
   }
@@ -3370,6 +3375,7 @@ function telaResultado(){
   enviarRanking().then(rankingFeedback).then(function(msg){
     var el=document.getElementById('rkfb'); if(el && msg){ el.textContent=msg; el.style.display='block'; }
   });
+  tocarSeq([URL_NARR+'_res/'+view.terr+'.mp3']);
 }
 
 /* ---- feedback de ranking (subiu posições / pódio) — bem variado ---- */
@@ -3433,9 +3439,13 @@ function telaRanking(){
 }
 
 /* ---- navegação ---- */
-let introAudio=null, falaAudio=null;
+let introAudio=null, falaAudio=null, quizAudio=null, ultimoQuizLido=null;
 function ouvirFala(fc){ try{ if(falaAudio) falaAudio.pause(); falaAudio=new Audio(URL_NARR+'_fala/'+fc+'.mp3'); falaAudio.play().catch(function(){}); }catch(e){} }
-function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} if(falaAudio){falaAudio.pause();} }catch(e){} }
+function pararQuizAudio(){ if(quizAudio){ quizAudio.onended=null; quizAudio.pause(); quizAudio=null; } }
+function tocarSeq(urls){ pararQuizAudio(); var k=0; (function next(){ if(k>=urls.length) return; quizAudio=new Audio(urls[k++]); quizAudio.onended=next; quizAudio.onerror=next; var p=quizAudio.play(); if(p&&p.catch) p.catch(function(){}); })(); }
+function vozQuizEnunciado(){ var m=missoesDe(quiz.tid).find(function(x){return x.id===quiz.mid;}), i=quiz.q, q=m.quiz[i]; var u=[URL_NARR+'_quiz/'+quiz.mid+'-'+i+'-p.mp3']; if(q.af&&q.fc) u.push(URL_NARR+'_fala/'+q.fc+'.mp3'); tocarSeq(u); }
+function vozQuizFeedback(ok){ var i=quiz.q; tocarSeq([URL_NARR+'_quiz/_int/'+quiz.tid+'-'+(ok?'ok':'no')+'.mp3', URL_NARR+'_quiz/'+quiz.mid+'-'+i+'-x.mp3']); }
+function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} if(falaAudio){falaAudio.pause();} pararQuizAudio(); }catch(e){} }
 function tocarIntroMateria(id){
   var nm=slugNome(estado.perfil?estado.perfil.nome:'');
   try{
