@@ -2982,7 +2982,9 @@ function ouvirNome(){
 }
 function entrar(nome){
   estado.perfil = { nome:nome, personagem:'explor' }; salvar();
-  try{ var a=new Audio(URL_NARR+'_nomes/'+slugNome(nome)+'.mp3'); a.play().catch(function(){}); }catch(e){}
+  try{ if(audioNome) audioNome.pause();
+    audioNome=new Audio(URL_NARR+'_nomes/'+slugNome(nome)+'.mp3');
+    audioNome.play().catch(function(){}); }catch(e){}
   render();
 }
 function entrarOutro(){
