@@ -2817,18 +2817,42 @@ const MIDIA = {};
    ============================================================ */
 const HOJE = new Date().toISOString().slice(0,10);   // data real do dispositivo
 const CHAVE = 'stepquest_jun';
+const SUPA_URL = 'https://ruhjrtlhccwkphqhqsdz.supabase.co';
+const SUPA_KEY = 'sb_publishable_tSbMZtCAg2087za2jXyaiQ_MANb49nU';
 let estado = carregar();
 let view = { tela:'mapa', terr:null, miss:null };
 let quiz = null;                            // {miss, ordem:[...], resp:{}, enviado}
 
+function novoId(){ return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x'+Date.now()+Math.random().toString(16).slice(2); }
 function novoEstado(){
-  return { perfil:null, melhores:{}, streak:0, ultimoDia:null };
+  return { id:novoId(), perfil:null, melhores:{}, streak:0, ultimoDia:null };
 }
 function carregar(){
-  try{ const s = JSON.parse(localStorage.getItem(CHAVE)); return s && s.melhores ? s : novoEstado(); }
+  try{ const s = JSON.parse(localStorage.getItem(CHAVE)); if(s && s.melhores){ if(!s.id) s.id=novoId(); return s; } return novoEstado(); }
   catch(e){ return novoEstado(); }
 }
 function salvar(){ try{ localStorage.setItem(CHAVE, JSON.stringify(estado)); }catch(e){} }
+
+/* ---- ranking da turma (Supabase) — falha em silêncio se estiver offline ---- */
+async function enviarRanking(){
+  if(!estado.perfil || !estado.id) return;
+  try{
+    await fetch(SUPA_URL+'/rest/v1/ranking', {
+      method:'POST',
+      headers:{ 'apikey':SUPA_KEY, 'Authorization':'Bearer '+SUPA_KEY,
+                'Content-Type':'application/json', 'Prefer':'resolution=merge-duplicates' },
+      body: JSON.stringify([{ id:estado.id, nome:estado.perfil.nome,
+                pontos:totalXP(), atualizado:new Date().toISOString() }])
+    });
+  }catch(e){}
+}
+async function carregarRanking(){
+  try{
+    const r = await fetch(SUPA_URL+'/rest/v1/ranking?select=id,nome,pontos&order=pontos.desc,atualizado.asc&limit=50',
+      { headers:{ 'apikey':SUPA_KEY } });
+    return r.ok ? await r.json() : null;
+  }catch(e){ return null; }
+}
 
 /* ---- progressão ---- */
 function totalXP(){ let x=0; for(const k in estado.melhores) x += estado.melhores[k]*25; return x; }
@@ -2893,6 +2917,7 @@ function render(){
   else if(view.tela==='missao') telaMissao();
   else if(view.tela==='quiz') telaQuiz();
   else if(view.tela==='resultado') telaResultado();
+  else if(view.tela==='ranking') telaRanking();
   window.scrollTo(0,0);
 }
 
@@ -2978,6 +3003,7 @@ function telaMapa(){
     ${hud()}
     <div class="titulo">🗺️ Mapa da Expedição</div>
     <div class="lead">Toque num território para estudar. Cada prova é o desafio final dele!</div>
+    <button class="btn" style="width:100%;margin:8px 0 4px" onclick="irRanking()">🏆 Ver o Placar da Turma</button>
     ${hoje}
     <div class="terrs">${cards}</div>
     <div class="rodape">StepQuest • 2ª Avaliação • <a onclick="zerar()">recomeçar do zero</a></div>`;
@@ -3133,6 +3159,7 @@ function finalizarQuiz(){
   else if(estado.melhores[quiz.mid]==null) estado.melhores[quiz.mid]=acertos;
   registrarDia();
   salvar();
+  enviarRanking();
   view.tela='resultado';
   view._ult = { acertos, total:m.quiz.length, novoRecorde:acertos>antes };
   render();
@@ -3169,8 +3196,37 @@ function telaResultado(){
     </div>`;
 }
 
+/* ---- ranking ---- */
+function telaRanking(){
+  app.innerHTML = `
+    ${hud()}
+    <div class="topbar">
+      <button class="voltar" onclick="irMapa()">← Mapa</button>
+      <div class="titulo" style="margin:0">🏆 Placar da Turma</div>
+    </div>
+    <div class="lead">Quem mais explorou o tempo! O placar soma o XP de toda a turma.</div>
+    <div id="rklist" class="card">Carregando o placar…</div>
+    <div class="rodape">Dica: faça missões e bata seus recordes pra subir! 🌟</div>`;
+  enviarRanking().then(carregarRanking).then(function(lista){
+    var el=document.getElementById('rklist'); if(!el) return;
+    if(lista===null){ el.innerHTML='Não consegui carregar o placar agora. Confira a internet e tente de novo. 🌀'; return; }
+    if(!lista.length){ el.innerHTML='Ainda não tem ninguém no placar. Seja a primeira a aparecer! 🚀'; return; }
+    el.innerHTML = lista.map(function(r,i){
+      var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'º';
+      var eu = (r.id===estado.id);
+      var estilo = 'display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid #eee;'
+        + (eu?'background:#fff3cd;font-weight:800;border-radius:8px;':'');
+      return '<div style="'+estilo+'">'
+        + '<span style="min-width:34px;text-align:center;font-size:18px">'+medal+'</span>'
+        + '<span style="flex:1">'+r.nome+(eu?' (você)':'')+'</span>'
+        + '<span style="color:#a06b00;font-weight:700">'+r.pontos+' XP</span></div>';
+    }).join('');
+  });
+}
+
 /* ---- navegação ---- */
 function irMapa(){ view={tela:'mapa'}; render(); }
+function irRanking(){ view={tela:'ranking'}; render(); }
 function irTerritorio(id){ view={tela:'territorio',terr:id}; render(); }
 function irMissao(tid,mid){ view={tela:'missao',terr:tid,miss:mid}; render(); }
 function zerar(){
