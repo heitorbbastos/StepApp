@@ -2827,10 +2827,10 @@ let quiz = null;                            // {miss, ordem:[...], resp:{}, envi
 
 function novoId(){ return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x'+Date.now()+Math.random().toString(16).slice(2); }
 function novoEstado(){
-  return { id:novoId(), perfil:null, melhores:{}, streak:0, ultimoDia:null };
+  return { id:novoId(), perfil:null, melhores:{}, streak:0, ultimoDia:null, lerAuto:true };
 }
 function carregar(){
-  try{ const s = JSON.parse(localStorage.getItem(CHAVE)); if(s && s.melhores){ if(!s.id) s.id=novoId(); return s; } return novoEstado(); }
+  try{ const s = JSON.parse(localStorage.getItem(CHAVE)); if(s && s.melhores){ if(!s.id) s.id=novoId(); if(s.lerAuto===undefined) s.lerAuto=true; return s; } return novoEstado(); }
   catch(e){ return novoEstado(); }
 }
 function salvar(){ try{ localStorage.setItem(CHAVE, JSON.stringify(estado)); }catch(e){} }
@@ -3070,6 +3070,7 @@ function pararNarracao(){
   document.querySelectorAll('.lnr').forEach(function(s){ s.style.background=''; s.style.fontWeight=''; });
   var b=document.getElementById('btnLer'); if(b) b.textContent='🔊 Cronos lê pra mim';
 }
+function toggleLerAuto(){ estado.lerAuto=!estado.lerAuto; salvar(); pararNarracao(); render(); }
 function lerJunto(mid){
   var btn=document.getElementById('btnLer');
   if(narrAudio){ pararNarracao(); return; }
@@ -3089,8 +3090,10 @@ function lerJunto(mid){
       });
     };
     narrAudio.onended=function(){ pararNarracao(); };
-    narrAudio.play();
-    btn.textContent='⏸ Pausar leitura';
+    var p=narrAudio.play();
+    if(p && p.then){ p.then(function(){ btn.textContent='⏸ Pausar leitura'; })
+                      .catch(function(){ narrAudio=null; btn.textContent='🔊 Cronos lê pra mim'; }); }
+    else btn.textContent='⏸ Pausar leitura';
   }).catch(function(){ btn.textContent='🔇 narração indisponível agora'; });
 }
 
@@ -3110,13 +3113,17 @@ function telaMissao(){
     <div class="card">
       <div class="cronos">
         <div class="face">👨‍🔬</div>
-        <div class="balao">${m.cronos}</div>
+        <div class="balao lnr">${m.cronos}</div>
       </div>
-      <button id="btnLer" class="btn" style="width:100%;margin:4px 0 10px" onclick="lerJunto('${m.id}')">🔊 Cronos lê pra mim</button>
+      <button id="btnLer" class="btn" style="width:100%;margin:4px 0 2px" onclick="lerJunto('${m.id}')">🔊 Cronos lê pra mim</button>
+      <div style="text-align:center;font-size:12px;margin:0 0 10px">
+        <a onclick="toggleLerAuto()" style="color:#888;cursor:pointer;text-decoration:underline">${estado.lerAuto?'leitura automática ligada — toque pra desligar':'leitura automática desligada — toque pra ligar'}</a>
+      </div>
       <div class="conteudo">${corpo}</div>
       <button class="btn lg" style="background:linear-gradient(90deg,${t.cor},${sombra(t.cor)})"
         onclick="pararNarracao();iniciarQuiz('${t.id}','${m.id}')">Iniciar o Desafio 🎯</button>
     </div>`;
+  if(estado.lerAuto){ setTimeout(function(){ if(view.tela==='missao' && view.miss===m.id) lerJunto(m.id); }, 350); }
 }
 
 /* ---- quiz ---- */
