@@ -2819,6 +2819,8 @@ const HOJE = new Date().toISOString().slice(0,10);   // data real do dispositivo
 const CHAVE = 'stepquest_jun';
 const SUPA_URL = 'https://ruhjrtlhccwkphqhqsdz.supabase.co';
 const SUPA_KEY = 'sb_publishable_tSbMZtCAg2087za2jXyaiQ_MANb49nU';
+const URL_NARR = 'https://heitorbbastos.github.io/StepApp/narracao/';
+let narrAudio=null, narrTimes=null;
 let estado = carregar();
 let view = { tela:'mapa', terr:null, miss:null };
 let quiz = null;                            // {miss, ordem:[...], resp:{}, enviado}
@@ -3062,14 +3064,47 @@ function telaTerritorio(){
     <div class="rodape">Os extras chegam quando o Professor Cronos terminar de gravar! 🌀</div>`;
 }
 
+/* ---- ler-junto (Cronos narra o card, a linha acende) ---- */
+function pararNarracao(){
+  if(narrAudio){ narrAudio.pause(); narrAudio=null; }
+  document.querySelectorAll('.lnr').forEach(function(s){ s.style.background=''; s.style.fontWeight=''; });
+  var b=document.getElementById('btnLer'); if(b) b.textContent='🔊 Cronos lê pra mim';
+}
+function lerJunto(mid){
+  var btn=document.getElementById('btnLer');
+  if(narrAudio){ pararNarracao(); return; }
+  btn.textContent='⏳ carregando a voz do Cronos...';
+  fetch(URL_NARR+mid+'.json').then(function(r){ return r.ok?r.json():null; }).then(function(d){
+    if(!d){ btn.textContent='🔇 narração em breve'; return; }
+    narrTimes=d.linhas;
+    narrAudio=new Audio(URL_NARR+mid+'.mp3');
+    narrAudio.ontimeupdate=function(){
+      var ct=narrAudio.currentTime, idx=0, i;
+      for(i=0;i<narrTimes.length;i++){ if(narrTimes[i].t<=ct) idx=i; }
+      document.querySelectorAll('.lnr').forEach(function(s,j){
+        var on=(j===idx);
+        s.style.background=on?'#fff3a0':''; s.style.fontWeight=on?'700':'';
+        s.style.borderRadius='6px'; s.style.transition='background .15s';
+        if(on) s.scrollIntoView({block:'center',behavior:'smooth'});
+      });
+    };
+    narrAudio.onended=function(){ pararNarracao(); };
+    narrAudio.play();
+    btn.textContent='⏸ Pausar leitura';
+  }).catch(function(){ btn.textContent='🔇 narração indisponível agora'; });
+}
+
 /* ---- missão (estudo) ---- */
 function telaMissao(){
+  pararNarracao();
   const t = TERRITORIOS.find(x=>x.id===view.terr);
   const m = missoesDe(t.id).find(x=>x.id===view.miss);
+  const linhas = m.resumo.split('<br>').map(function(s){return s.trim();}).filter(function(s){return s.length;});
+  const corpo = linhas.map(function(l){ return '<div class="lnr" style="padding:3px 6px;margin:1px 0">'+l+'</div>'; }).join('');
   app.innerHTML = `
     ${hud()}
     <div class="topbar">
-      <button class="voltar" onclick="irTerritorio('${t.id}')">← ${t.nome}</button>
+      <button class="voltar" onclick="pararNarracao();irTerritorio('${t.id}')">← ${t.nome}</button>
     </div>
     <div class="titulo" style="margin-top:6px">${m.emoji} ${m.titulo}</div>
     <div class="card">
@@ -3077,9 +3112,10 @@ function telaMissao(){
         <div class="face">👨‍🔬</div>
         <div class="balao">${m.cronos}</div>
       </div>
-      <div class="conteudo">${m.resumo}</div>
+      <button id="btnLer" class="btn" style="width:100%;margin:4px 0 10px" onclick="lerJunto('${m.id}')">🔊 Cronos lê pra mim</button>
+      <div class="conteudo">${corpo}</div>
       <button class="btn lg" style="background:linear-gradient(90deg,${t.cor},${sombra(t.cor)})"
-        onclick="iniciarQuiz('${t.id}','${m.id}')">Iniciar o Desafio 🎯</button>
+        onclick="pararNarracao();iniciarQuiz('${t.id}','${m.id}')">Iniciar o Desafio 🎯</button>
     </div>`;
 }
 
