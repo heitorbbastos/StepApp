@@ -2813,35 +2813,43 @@ const CONTEUDO = {
 const PERSONAS = {
   "historia": {
     "nome": "Prof. Cronos",
-    "emoji": "👨‍🔬"
+    "emoji": "👨‍🔬",
+    "intro": "historia-cronos"
   },
   "ciencias": {
     "nome": "Professora Volt",
-    "emoji": "👩‍🔬"
+    "emoji": "👩‍🔬",
+    "intro": "ciencias-volt"
   },
   "matematica": {
     "nome": "Mestre Ábaco",
-    "emoji": "🧙"
+    "emoji": "🧙",
+    "intro": "matematica-abaco"
   },
   "portugues": {
     "nome": "Dona Letra",
-    "emoji": "👩‍🏫"
+    "emoji": "👩‍🏫",
+    "intro": "portugues-letra"
   },
   "geografia": {
     "nome": "Capitã Bússola",
-    "emoji": "👩‍✈️"
+    "emoji": "👩‍✈️",
+    "intro": "geografia-bussola"
   },
   "artes": {
     "nome": "Mestre Pincel",
-    "emoji": "👨‍🎨"
+    "emoji": "👨‍🎨",
+    "intro": "artes-pincel"
   },
   "edfisica": {
     "nome": "Treinador Turbo",
-    "emoji": "🏋️"
+    "emoji": "🏋️",
+    "intro": "edfisica-turbo"
   },
   "ingles": {
     "nome": "Miss Joy",
-    "emoji": "🦜"
+    "emoji": "🦜",
+    "intro": "ingles-joy"
   }
 };
 
@@ -2965,7 +2973,18 @@ const ALUNOS = ["Alice D.","Alice M.","Alice P.","Bernardo","Betina","Cadu","Cla
   "Estevão","Gabriel","Giulia","João G.","João P.","Jota","Luca","Luiza","Mariana",
   "Miguel","Mila","Nina","Pedro B.","Pedro L.","Sérgio","Stella","Thiago","Vinícius"];
 
-function entrar(nome){ estado.perfil = { nome:nome, personagem:'explor' }; salvar(); render(); }
+function slugNome(n){ return (n||'').split(' ')[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z]/g,''); }
+let audioNome=null;
+function ouvirNome(){
+  try{ if(audioNome) audioNome.pause();
+    audioNome=new Audio(URL_NARR+'_nomes/'+slugNome(estado.perfil.nome)+'.mp3');
+    audioNome.play().catch(function(){}); }catch(e){}
+}
+function entrar(nome){
+  estado.perfil = { nome:nome, personagem:'explor' }; salvar();
+  try{ var a=new Audio(URL_NARR+'_nomes/'+slugNome(nome)+'.mp3'); a.play().catch(function(){}); }catch(e){}
+  render();
+}
 function entrarOutro(){
   var n = prompt('Digite o seu nome:');
   if(n && n.trim()) entrar(n.trim().slice(0,18));
@@ -3034,7 +3053,7 @@ function telaMapa(){
     const medal = territorioOuro(t.id) ? '🏆' : (territorioCompleto(t.id) ? '🥇' : '');
     return `
     <div class="terr" style="background:linear-gradient(135deg,${t.cor},${sombra(t.cor)})"
-         ${ativo?`onclick="irTerritorio('${t.id}')"`:''}>
+         ${ativo?`onclick="irMateria('${t.id}')"`:''}>
       ${medal?`<div class="med">${medal}</div>`:''}
       <div class="em">${t.emoji}</div>
       <div class="nm">${t.nome}</div>
@@ -3101,6 +3120,12 @@ function telaTerritorio(){
       <button class="voltar" onclick="irMapa()">← Mapa</button>
       <div class="titulo" style="margin:0">${t.emoji} ${t.nome}</div>
     </div>
+    <div class="card">
+      <div class="cronos">
+        <div class="face">${(PERSONAS[t.id]||{}).emoji||'👨‍🔬'}</div>
+        <div class="balao">${introMateriaTexto(t)}</div>
+      </div>
+    </div>
     <div class="lead">${textoContagem(t.id)}</div>
     ${lista}
     <div class="card extras">
@@ -3114,7 +3139,7 @@ function telaTerritorio(){
 
 /* ---- ler-junto (Cronos narra o card, a linha acende) ---- */
 function pararNarracao(){
-  if(narrAudio){ narrAudio.pause(); narrAudio=null; }
+  if(narrAudio){ narrAudio.ontimeupdate=null; narrAudio.onended=null; narrAudio.pause(); narrAudio=null; }
   document.querySelectorAll('.lnr').forEach(function(s){ s.style.background=''; s.style.fontWeight=''; });
   var b=document.getElementById('btnLer'); if(b) b.textContent='🔊 Cronos lê pra mim';
 }
@@ -3128,6 +3153,7 @@ function lerJunto(mid){
     narrTimes=d.linhas;
     narrAudio=new Audio(URL_NARR+mid+'.mp3');
     narrAudio.ontimeupdate=function(){
+      if(!narrAudio) return;
       var ct=narrAudio.currentTime, idx=0, i;
       for(i=0;i<narrTimes.length;i++){ if(narrTimes[i].t<=ct) idx=i; }
       document.querySelectorAll('.lnr').forEach(function(s,j){
@@ -3330,10 +3356,21 @@ function telaRanking(){
 }
 
 /* ---- navegação ---- */
-function irMapa(){ view={tela:'mapa'}; render(); }
-function irRanking(){ view={tela:'ranking'}; render(); }
-function irTerritorio(id){ view={tela:'territorio',terr:id}; render(); }
-function irMissao(tid,mid){ view={tela:'missao',terr:tid,miss:mid}; render(); }
+let introAudio=null;
+function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} }catch(e){} }
+function tocarIntroMateria(id){
+  var p=PERSONAS[id]; if(!p||!p.intro) return;
+  try{ introAudio=new Audio(URL_NARR+'_elenco/'+p.intro+'.mp3'); introAudio.play().catch(function(){}); }catch(e){}
+}
+function introMateriaTexto(t){
+  var p=PERSONAS[t.id]||{}; var nome=estado.perfil?estado.perfil.nome:'exploradora';
+  return 'Olá, '+nome+'! Eu sou <b>'+(p.nome||'seu guia')+'</b>. Bora estudar <b>'+t.nome+'</b>? Escolha uma missão aqui embaixo — a prova tá chegando! 🚀';
+}
+function irMapa(){ pararSolto(); pararNarracao(); view={tela:'mapa'}; render(); }
+function irRanking(){ pararSolto(); view={tela:'ranking'}; render(); }
+function irTerritorio(id){ pararSolto(); view={tela:'territorio',terr:id}; render(); }
+function irMateria(id){ pararSolto(); view={tela:'territorio',terr:id}; render(); tocarIntroMateria(id); }
+function irMissao(tid,mid){ pararSolto(); view={tela:'missao',terr:tid,miss:mid}; render(); }
 function zerar(){
   if(confirm('Recomeçar a expedição do zero? Todo o progresso será apagado.')){
     localStorage.removeItem(CHAVE); estado=novoEstado(); view={tela:'mapa'}; render();
