@@ -2940,6 +2940,60 @@ const JOGOS = {
     itens:[{txt:'jogo da argola',cat:'j'},{txt:'bocha',cat:'e'},{txt:'boliche caseiro',cat:'j'},{txt:'tiro com arco',cat:'e'},{txt:'acerte o alvo',cat:'j'},{txt:'golfe',cat:'e'}]}
 };
 let jogoEstado=null;
+/* PROVA FINAL — jogo de LIGAR (associar), 1 situação NOVA por assunto da matéria */
+const PROVAFINAL = {
+  portugues:{titulo:'Prova Final de Português',instrucao:'Ligue cada pista ao que ela é. Toque numa carta da esquerda e na sua parceira da direita!',
+    pares:[{a:'Texto pra reclamar de algo, com respeito',b:'Carta de reclamação'},
+           {a:'"Caju": o som no FINAL é forte',b:'escreve com U'},
+           {a:'"Pente": o som no final é fraquinho',b:'escreve com E'},
+           {a:'"Veloz" quer dizer o mesmo que "rápido"',b:'Sinônimos'},
+           {a:'"Manga" da blusa e "manga" fruta',b:'Homônimos'}]},
+  matematica:{titulo:'Prova Final de Matemática',instrucao:'Ligue cada situação ao conceito certo.',
+    pares:[{a:'O quanto uma corda MEDE de tamanho',b:'Comprimento'},
+           {a:'O quanto uma pedra PESA, na balança',b:'Massa'},
+           {a:'O quanto de água CABE numa garrafa',b:'Capacidade'},
+           {a:'De 8 horas até 11 horas: quanto durou',b:'Subtração'},
+           {a:'Máxima 30 graus, mínima 22: a diferença',b:'Variação de temperatura'},
+           {a:'Repartir 12 figurinhas igual entre 3',b:'Divisão'}]},
+  historia:{titulo:'Prova Final de História',instrucao:'Ligue cada jeito de viver ao seu nome.',
+    pares:[{a:'Andava atrás da comida, sem casa fixa',b:'Nômade'},
+           {a:'Plantar e colher no mesmo lugar',b:'Agricultura'},
+           {a:'As primeiras cidades nasceram pertinho disto',b:'Rios e lagos'},
+           {a:'Cidades trocando produtos, pessoas e palavras',b:'Circulação'},
+           {a:'O que MUDOU: a troca virou dinheiro',b:'Transformação'}]},
+  geografia:{titulo:'Prova Final de Geografia',instrucao:'Ligue cada coisa ao seu grupo.',
+    pares:[{a:'A lã e o leite vêm daqui',b:'Animal'},
+           {a:'A madeira e o trigo vêm daqui',b:'Vegetal'},
+           {a:'Tirar madeira, peixe ou ferro da natureza',b:'Extrativismo'},
+           {a:'Sol, vento e água: energia que não acaba',b:'Renovável'},
+           {a:'Usa a força da água, mas alaga florestas',b:'Hidrelétrica'}]},
+  artes:{titulo:'Prova Final de Artes',instrucao:'Ligue cada pista ao artista ou à ideia.',
+    pares:[{a:'Pintor norueguês, autor de "O Grito"',b:'Munch'},
+           {a:'A rainha das bolinhas, lá do Japão',b:'Kusama'},
+           {a:'Cidades voadoras e mundos imaginários',b:'Xul Solar'},
+           {a:'Verde podia mostrar o medo',b:'Cores e emoções'},
+           {a:'A obra mais famosa do Munch',b:'O Grito'}]},
+  ciencias:{titulo:'Prova Final de Ciências',instrucao:'Ligue cada experiência ao que aconteceu.',
+    pares:[{a:'Sal na água: sumiu, virou uma coisa só',b:'Mistura homogênea'},
+           {a:'Óleo na água: ficou em duas camadas',b:'Mistura heterogênea'},
+           {a:'Gelo derrete e vira água (dá pra desfazer)',b:'Transformação física'},
+           {a:'Papel queima e vira cinza (não volta)',b:'Transformação química'},
+           {a:'Repensar, Recusar, Reduzir, Reutilizar, Reciclar',b:'Os 5 R\'s'}]},
+  edfisica:{titulo:'Prova Final de Ed. Física',instrucao:'Ligue cada pista ao seu nome.',
+    pares:[{a:'Acertar um alvo com mira e controle',b:'Precisão'},
+           {a:'Regras flexíveis, mais diversão (argola, boliche)',b:'Jogo'},
+           {a:'Regras oficiais e competição (golfe, tiro com arco)',b:'Esporte'},
+           {a:'Chegar perto do bolim — até nas Paralimpíadas',b:'Bocha'},
+           {a:'Pôr a bola no buraco com menos tacadas',b:'Golfe'}]},
+  ingles:{titulo:'Final Test of English',instrucao:'Ligue cada palavra ao seu par.',
+    pares:[{a:'"Save water" — não desperdiçar',b:'Water'},
+           {a:'"Recycle" pra proteger a floresta',b:'Recycling'},
+           {a:'"Waste" quer dizer...',b:'desperdiçar'},
+           {a:'"Garbage" quer dizer...',b:'lixo'},
+           {a:'My, your, his, her — mostram de quem é',b:'Possessives'},
+           {a:'Coal, oil and gas — um dia acabam',b:'Fossil fuels'}]}
+};
+let provaEstado=null;
 let estado = carregar();
 let view = { tela:'mapa', terr:null, miss:null };
 let quiz = null;                            // {miss, ordem:[...], resp:{}, enviado}
@@ -3040,6 +3094,7 @@ function render(){
   else if(view.tela==='resultado') telaResultado();
   else if(view.tela==='ranking') telaRanking();
   else if(view.tela==='jogo') telaJogo();
+  else if(view.tela==='prova') telaProva();
   window.scrollTo(0,0);
 }
 
@@ -3302,14 +3357,63 @@ function iniciarQuiz(tid,mid){
   render();
 }
 function iniciarProva(mat){
-  var ms = missoesDe(mat);
-  var perguntas = ms.map(function(m){ var q=m.quiz[0]; return {p:q.p, op:q.op, correta:q.correta, explica:q.explica, af:q.af, fc:q.fc, vc:m.id+'-0'}; });
-  var ordem = perguntas.map(function(q){ var idx=q.op.map(function(_,k){return k;}); for(var i=idx.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0, tt=idx[i]; idx[i]=idx[j]; idx[j]=tt; } return idx; });
-  quiz = { tid:mat, mid:'prova-'+mat, q:0, ordem:ordem, resp:{}, enviado:false, prova:true, perguntas:perguntas };
-  view = { tela:'quiz', terr:mat, miss:'prova-'+mat };
-  ultimoQuizLido=null; render();
+  var g=PROVAFINAL[mat]; if(!g) return;
+  var pares=g.pares.map(function(p,idx){ return {a:p.a,b:p.b,idx:idx,feito:false}; });
+  var dir=pares.map(function(p){return p.idx;});
+  for(var i=dir.length-1;i>0;i--){ var j=(Math.random()*(i+1))|0, t=dir[i]; dir[i]=dir[j]; dir[j]=t; }
+  provaEstado={mat:mat,pares:pares,dir:dir,selA:null,erro:null,completo:false};
+  pararSolto(); view={tela:'prova',terr:mat}; render();
+  try{ introAudio=new Audio(URL_NARR+'_provaintro/'+mat+'.mp3'); introAudio.play().catch(function(){}); }catch(e){}
 }
-function qzQs(){ return quiz.prova ? quiz.perguntas : missoesDe(quiz.tid).find(function(x){return x.id===quiz.mid;}).quiz; }
+function provaSelA(i){ if(provaEstado.pares[i].feito) return; provaEstado.selA=(provaEstado.selA===i?null:i); provaEstado.erro=null; render(); }
+function provaMatch(bidx){
+  if(provaEstado.selA==null) return;
+  if(provaEstado.selA===bidx){
+    provaEstado.pares[bidx].feito=true; provaEstado.selA=null; provaEstado.erro=null;
+    if(provaEstado.pares.every(function(x){return x.feito;})){
+      var k='prova-'+provaEstado.mat; provaEstado.bonus=!estado.melhores[k];
+      if(provaEstado.bonus){ estado.melhores[k]=4; salvar(); enviarRanking(); }
+      provaEstado.completo=true; render();
+      tocarSeq([URL_NARR+'_res/'+provaEstado.mat+'.mp3']);
+    } else { render(); tocarSeq([URL_NARR+'_quiz/_int/'+provaEstado.mat+'-ok.mp3']); }
+  } else { provaEstado.erro=bidx; provaEstado.selA=null; render(); tocarSeq([URL_NARR+'_quiz/_int/'+provaEstado.mat+'-no.mp3']); }
+}
+function telaProva(){
+  var g=PROVAFINAL[provaEstado.mat], t=TERRITORIOS.find(function(x){return x.id===provaEstado.mat;});
+  if(provaEstado.completo){
+    app.innerHTML=`${hud()}
+      <div class="card res">
+        <div class="big pop">🏆✨</div>
+        <div class="nota">Prova Final dominada!</div>
+        ${provaEstado.bonus?'<div class="xp">+100 XP de bônus! ⚡</div>':'<div class="xp" style="background:#eee;color:#777">prova já dominada</div>'}
+        <button class="btn lg" onclick="iniciarProva('${provaEstado.mat}')">Jogar de novo 🔁</button>
+        <button class="btn lg sec" onclick="irTerritorio('${provaEstado.mat}')">Voltar para ${t.nome}</button>
+      </div>`;
+    return;
+  }
+  var esq=provaEstado.pares.map(function(p,i){
+    if(p.feito) return '<div class="jitem feito" style="font-size:12.5px">✓ '+p.a+'</div>';
+    return '<button class="jitem'+(provaEstado.selA===i?' sel':'')+'" style="font-size:12.5px;text-align:left" onclick="provaSelA('+i+')">'+p.a+'</button>';
+  }).join('');
+  var dirEl=provaEstado.dir.map(function(idx){
+    var p=provaEstado.pares[idx];
+    if(p.feito) return '<div class="jitem feito" style="font-size:12.5px">✓ '+p.b+'</div>';
+    return '<button class="jitem'+(provaEstado.erro===idx?' err':'')+'" style="font-size:12.5px" onclick="provaMatch('+idx+')">'+p.b+'</button>';
+  }).join('');
+  var faltam=provaEstado.pares.filter(function(x){return !x.feito;}).length;
+  app.innerHTML=`${hud()}
+    <div class="topbar"><button class="voltar" onclick="irTerritorio('${provaEstado.mat}')">← Sair</button>
+      <div class="qprog">🏆 faltam ${faltam}</div></div>
+    <div class="titulo" style="margin-top:6px">🏆 ${g.titulo}</div>
+    <div class="card">
+      <div class="lead" style="color:#a06b00;margin-bottom:12px">${g.instrucao}</div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;display:flex;flex-direction:column;gap:7px">${esq}</div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:7px">${dirEl}</div>
+      </div>
+    </div>`;
+}
+function qzQs(){ return missoesDe(quiz.tid).find(function(x){return x.id===quiz.mid;}).quiz; }
 function telaQuiz(){
   const t = TERRITORIOS.find(x=>x.id===quiz.tid);
   const qs = qzQs();
