@@ -3204,11 +3204,11 @@ function telaTerritorio(){
         <div style="font-size:20px">→</div>
       </div>
     </div>
-    <div class="card extras">
-      <div class="ex"><span class="em">🎧</span> Podcast bônus com ${pnome}
-        <span class="embreve">em breve</span></div>
+    <div class="card extras" onclick="tocarPodcast('${t.id}')" style="cursor:pointer">
+      <div class="ex"><span class="em">🎧</span> <span style="flex:1">Podcast bônus com ${pnome}${estado.melhores['pod-'+t.id]?' ✅':''}</span>
+        <span class="embreve" id="podst">${estado.melhores['pod-'+t.id]?'ouvir de novo':'ouça → +50 XP'}</span></div>
     </div>
-    <div class="rodape">O podcast bônus dá pontos extras — chega já já! 🌟</div>`;
+    <div class="rodape">Ouça o podcast até o fim e ganhe XP de bônus! 🌟</div>`;
 }
 
 /* ---- ler-junto (Cronos narra o card, a linha acende) ---- */
@@ -3542,13 +3542,22 @@ function telaRanking(){
 }
 
 /* ---- navegação ---- */
-let introAudio=null, falaAudio=null, quizAudio=null, ultimoQuizLido=null;
+let introAudio=null, falaAudio=null, quizAudio=null, ultimoQuizLido=null, podAudio=null;
+function tocarPodcast(mat){
+  var st=document.getElementById('podst');
+  try{ if(podAudio) podAudio.pause();
+    podAudio=new Audio(URL_NARR+'_podcast/'+mat+'.mp3');
+    if(st) st.textContent='tocando… 🎧';
+    podAudio.onended=function(){ var k='pod-'+mat; if(!estado.melhores[k]){ estado.melhores[k]=2; salvar(); enviarRanking(); } if(view.tela==='territorio') render(); };
+    var p=podAudio.play(); if(p&&p.catch) p.catch(function(){ if(st) st.textContent='toque pra ouvir'; });
+  }catch(e){}
+}
 function ouvirFala(fc){ try{ if(falaAudio) falaAudio.pause(); falaAudio=new Audio(URL_NARR+'_fala/'+fc+'.mp3'); falaAudio.play().catch(function(){}); }catch(e){} }
 function pararQuizAudio(){ if(quizAudio){ quizAudio.onended=null; quizAudio.pause(); quizAudio=null; } }
 function tocarSeq(urls){ pararQuizAudio(); var k=0; (function next(){ if(k>=urls.length) return; quizAudio=new Audio(urls[k++]); quizAudio.onended=next; quizAudio.onerror=next; var p=quizAudio.play(); if(p&&p.catch) p.catch(function(){}); })(); }
 function vozQuizEnunciado(){ var m=missoesDe(quiz.tid).find(function(x){return x.id===quiz.mid;}), i=quiz.q, q=m.quiz[i]; var u=[URL_NARR+'_quiz/'+quiz.mid+'-'+i+'-p.mp3']; if(q.af&&q.fc) u.push(URL_NARR+'_fala/'+q.fc+'.mp3'); tocarSeq(u); }
 function vozQuizFeedback(ok){ var i=quiz.q; tocarSeq([URL_NARR+'_quiz/_int/'+quiz.tid+'-'+(ok?'ok':'no')+'.mp3', URL_NARR+'_quiz/'+quiz.mid+'-'+i+'-x.mp3']); }
-function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} if(falaAudio){falaAudio.pause();} pararQuizAudio(); }catch(e){} }
+function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} if(falaAudio){falaAudio.pause();} pararQuizAudio(); if(podAudio){podAudio.pause();} }catch(e){} }
 function tocarIntroMateria(id){
   var nm=slugNome(estado.perfil?estado.perfil.nome:'');
   try{
