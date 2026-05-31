@@ -3148,15 +3148,7 @@ function telaTerritorio(){
     </div>`;
   }).join('');
 
-  const md = MIDIA[t.id] || {};
-  const videoCard = md.video
-    ? `<div class="card">
-         <div class="exhead"><span class="em">🎬</span> ${md.videoTitulo || 'Vídeo da matéria'}</div>
-         <video class="vid" controls preload="metadata" src="${md.video}"></video>
-       </div>`
-    : `<div class="ex"><span class="em">🎬</span> Vídeo da matéria
-         <span class="embreve">em breve</span></div>`;
-
+  var pnome = (PERSONAS[t.id]||{}).nome || 'o professor';
   app.innerHTML = `
     ${hud()}
     <div class="topbar">
@@ -3172,12 +3164,10 @@ function telaTerritorio(){
     <div class="lead">${textoContagem(t.id)}</div>
     ${lista}
     <div class="card extras">
-      <div class="ex"><span class="em">🎧</span> Podcast do Professor Cronos
+      <div class="ex"><span class="em">🎧</span> Podcast bônus com ${pnome}
         <span class="embreve">em breve</span></div>
-      ${md.video ? '' : videoCard}
     </div>
-    ${md.video ? videoCard : ''}
-    <div class="rodape">Os extras chegam quando o Professor Cronos terminar de gravar! 🌀</div>`;
+    <div class="rodape">O podcast bônus dá pontos extras — chega já já! 🌟</div>`;
 }
 
 /* ---- ler-junto (Cronos narra o card, a linha acende) ---- */
