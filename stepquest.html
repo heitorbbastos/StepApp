@@ -196,6 +196,19 @@
   .resumao[open] summary:before{ content:'▾ '; }
   .resumao-c{ font-size:13.5px; line-height:1.55; padding:0 0 10px; color:#3a3360; }
 
+  /* ---- joguinho de classificar ---- */
+  .jbins{ display:flex; gap:8px; margin-bottom:14px; }
+  .jbin{ flex:1; padding:14px 6px; border-radius:14px; background:linear-gradient(180deg,#efeafd,#e2d9fb);
+    color:#4a3f9e; font-weight:800; font-size:13px; border:2px solid #cdbff5; }
+  .jbin:active{ background:#fff; }
+  .jpool{ display:flex; flex-wrap:wrap; gap:8px; }
+  .jitem{ padding:11px 13px; border-radius:12px; background:#f5f3fc; color:#2a2350;
+    border:2px solid #e3def5; font-size:14px; font-weight:600; }
+  .jitem.sel{ border-color:#7b4dff; background:#fff; box-shadow:0 0 0 3px rgba(123,77,255,.2); }
+  .jitem.err{ border-color:var(--erro); background:#fbe9e8; animation:shake .3s; }
+  .jitem.feito{ background:#e7f6ec; color:#1d6b3a; border:2px solid #b6e3c5; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+
   /* ---- ranking ---- */
   .rkrow{ display:flex; align-items:center; gap:12px; padding:11px 8px; border-bottom:1px solid #eee; }
   .rkfb{ background:linear-gradient(135deg,#fff6da,#ffe7a8); color:#7a5b00; border-radius:14px;
@@ -2899,6 +2912,34 @@ const OBRAS = {
   'ar-kusama':[{img:'polka-dots',cap:'Polka Dots — Yayoi Kusama'},{img:'abobora',cap:'Abóbora — Yayoi Kusama'}],
   'ar-xul-solar':[{img:'drago',cap:'Drago (1927) — Xul Solar'},{img:'vuel-villa',cap:'Vuel Villa (1936) — Xul Solar'}]
 };
+/* jogos de classificar — um por matéria (conteúdo auditado) */
+const JOGOS = {
+  portugues:{titulo:'Sinônimo ou Antônimo?',instrucao:'O par quer dizer a MESMA coisa (sinônimo) ou o CONTRÁRIO (antônimo)?',
+    categorias:[{id:'s',label:'Sinônimos (igual)'},{id:'a',label:'Antônimos (contrário)'}],
+    itens:[{txt:'feliz / alegre',cat:'s'},{txt:'grande / pequeno',cat:'a'},{txt:'bonito / belo',cat:'s'},{txt:'rápido / lento',cat:'a'},{txt:'casa / lar',cat:'s'},{txt:'alto / baixo',cat:'a'}]},
+  matematica:{titulo:'O que cada medida mede?',instrucao:'Coloque cada unidade na grandeza certa.',
+    categorias:[{id:'c',label:'Comprimento 📏'},{id:'m',label:'Massa ⚖️'},{id:'cap',label:'Capacidade 🥛'}],
+    itens:[{txt:'metro',cat:'c'},{txt:'quilograma',cat:'m'},{txt:'litro',cat:'cap'},{txt:'centímetro',cat:'c'},{txt:'grama',cat:'m'},{txt:'mililitro',cat:'cap'}]},
+  historia:{titulo:'Nômade ou já vivia em cidade?',instrucao:'Classifique cada jeito de viver.',
+    categorias:[{id:'n',label:'Nômade (andava)'},{id:'s',label:'Cidade / Sedentário'}],
+    itens:[{txt:'caçava e coletava frutas',cat:'n'},{txt:'plantava e colhia',cat:'s'},{txt:'andava atrás da comida',cat:'n'},{txt:'morava perto do rio, na cidade',cat:'s'},{txt:'não tinha casa fixa',cat:'n'},{txt:'tinha mercado e governante',cat:'s'}]},
+  geografia:{titulo:'De onde vem a matéria-prima?',instrucao:'Animal, vegetal ou mineral?',
+    categorias:[{id:'a',label:'Animal 🐄'},{id:'v',label:'Vegetal 🌳'},{id:'m',label:'Mineral ⛏️'}],
+    itens:[{txt:'lã',cat:'a'},{txt:'madeira',cat:'v'},{txt:'ferro',cat:'m'},{txt:'leite',cat:'a'},{txt:'trigo',cat:'v'},{txt:'ouro',cat:'m'}]},
+  artes:{titulo:'De quem é a obra?',instrucao:'Ligue cada coisa ao artista certo.',
+    categorias:[{id:'mu',label:'Munch'},{id:'ku',label:'Kusama'},{id:'xu',label:'Xul Solar'}],
+    itens:[{txt:'O Grito',cat:'mu'},{txt:'bolinhas (polka dots)',cat:'ku'},{txt:'abóboras amarelas',cat:'ku'},{txt:'cidade voadora (Vuel Villa)',cat:'xu'},{txt:'cores das emoções',cat:'mu'},{txt:'mundos imaginários',cat:'xu'}]},
+  ciencias:{titulo:'Mistura: uma fase ou várias?',instrucao:'Homogênea = você vê UMA coisa só. Heterogênea = você vê as partes.',
+    categorias:[{id:'ho',label:'Homogênea (1 fase)'},{id:'he',label:'Heterogênea (2+ fases)'}],
+    itens:[{txt:'água com sal dissolvido',cat:'ho'},{txt:'água com óleo',cat:'he'},{txt:'o ar que respiramos',cat:'ho'},{txt:'salada de frutas',cat:'he'},{txt:'granito (com grãos)',cat:'he'},{txt:'açúcar dissolvido no café',cat:'ho'}]},
+  ingles:{titulo:'Water or Recycling?',instrucao:'Em que tema entra cada palavra?',
+    categorias:[{id:'w',label:'Water 💧'},{id:'r',label:'Recycling ♻️'}],
+    itens:[{txt:'shower (chuveiro)',cat:'w'},{txt:'recycle (reciclar)',cat:'r'},{txt:'save water',cat:'w'},{txt:'garbage (lixo)',cat:'r'},{txt:'waste (desperdiçar)',cat:'w'},{txt:'forest (floresta)',cat:'r'}]},
+  edfisica:{titulo:'Jogo ou Esporte de precisão?',instrucao:'Regras flexíveis = jogo. Regras oficiais e competição = esporte.',
+    categorias:[{id:'j',label:'Jogo 🎮'},{id:'e',label:'Esporte 🏅'}],
+    itens:[{txt:'jogo da argola',cat:'j'},{txt:'bocha',cat:'e'},{txt:'boliche caseiro',cat:'j'},{txt:'tiro com arco',cat:'e'},{txt:'acerte o alvo',cat:'j'},{txt:'golfe',cat:'e'}]}
+};
+let jogoEstado=null;
 let estado = carregar();
 let view = { tela:'mapa', terr:null, miss:null };
 let quiz = null;                            // {miss, ordem:[...], resp:{}, enviado}
@@ -2998,6 +3039,7 @@ function render(){
   else if(view.tela==='quiz') telaQuiz();
   else if(view.tela==='resultado') telaResultado();
   else if(view.tela==='ranking') telaRanking();
+  else if(view.tela==='jogo') telaJogo();
   window.scrollTo(0,0);
 }
 
@@ -3154,6 +3196,14 @@ function telaTerritorio(){
     </div>
     <div class="lead">${textoContagem(t.id)}</div>
     ${lista}
+    <div class="card" onclick="irJogo('${t.id}')" style="cursor:pointer;background:linear-gradient(135deg,#ffffff,#f1ecff)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:30px">🎮</div>
+        <div style="flex:1"><div style="font-weight:800;color:#5a4fae">Joguinho de ${t.nome}</div>
+          <div style="font-size:12.5px;color:#7d76a8">${estado.melhores['jogo-'+t.id]?'já dominado ⭐ — jogue de novo!':'classifique e ganhe +75 XP de bônus!'}</div></div>
+        <div style="font-size:20px">→</div>
+      </div>
+    </div>
     <div class="card extras">
       <div class="ex"><span class="em">🎧</span> Podcast bônus com ${pnome}
         <span class="embreve">em breve</span></div>
@@ -3408,6 +3458,59 @@ async function rankingFeedback(){
     '😎 '+pos+'º lugar, '+nome+'. O pódio tá logo ali!',
     '🌟 '+nome+', você segue em '+pos+'º. A turma tá de olho!',
     '🧭 Posição '+pos+'º, '+nome+'! Cada acerto te leva mais alto!']);
+}
+
+/* ---- joguinho de classificar (bônus) ---- */
+function irJogo(mat){
+  var g=JOGOS[mat]; if(!g) return;
+  var itens=g.itens.map(function(x){return {txt:x.txt,cat:x.cat,feito:false};});
+  for(var i=itens.length-1;i>0;i--){var j=(Math.random()*(i+1))|0,tmp=itens[i];itens[i]=itens[j];itens[j]=tmp;}
+  jogoEstado={mat:mat,itens:itens,sel:null,erro:null,completo:false};
+  pararSolto(); view={tela:'jogo',terr:mat}; render();
+}
+function jogoSel(i){ if(jogoEstado.itens[i].feito) return; jogoEstado.sel=(jogoEstado.sel===i?null:i); jogoEstado.erro=null; render(); }
+function jogoBin(cat){
+  if(jogoEstado.sel==null) return;
+  var it=jogoEstado.itens[jogoEstado.sel];
+  if(it.cat===cat){ it.feito=true; jogoEstado.sel=null; jogoEstado.erro=null;
+    if(jogoEstado.itens.every(function(x){return x.feito;})){
+      var k='jogo-'+jogoEstado.mat; jogoEstado.bonus=!estado.melhores[k];
+      if(jogoEstado.bonus){ estado.melhores[k]=3; salvar(); enviarRanking(); }
+      jogoEstado.completo=true;
+    }
+    render();
+  } else { jogoEstado.erro=jogoEstado.sel; jogoEstado.sel=null; render(); }
+}
+function telaJogo(){
+  var g=JOGOS[jogoEstado.mat], t=TERRITORIOS.find(function(x){return x.id===jogoEstado.mat;});
+  if(jogoEstado.completo){
+    app.innerHTML=`${hud()}
+      <div class="card res">
+        <div class="big pop">🎮🏆</div>
+        <div class="nota">Você classificou tudo certo!</div>
+        ${jogoEstado.bonus?'<div class="xp">+75 XP de bônus! ⚡</div>':'<div class="xp" style="background:#eee;color:#777">joguinho já dominado</div>'}
+        <button class="btn lg" onclick="irJogo('${jogoEstado.mat}')">Jogar de novo 🔁</button>
+        <button class="btn lg sec" onclick="irTerritorio('${jogoEstado.mat}')">Voltar para ${t.nome}</button>
+      </div>`;
+    return;
+  }
+  var bins=g.categorias.map(function(c){ return '<button class="jbin" onclick="jogoBin(\''+c.id+'\')">'+c.label+'</button>'; }).join('');
+  var pool=jogoEstado.itens.map(function(it,i){
+    if(it.feito) return '<div class="jitem feito">✓ '+it.txt+'</div>';
+    var cls='jitem'+(jogoEstado.sel===i?' sel':'')+(jogoEstado.erro===i?' err':'');
+    return '<button class="'+cls+'" onclick="jogoSel('+i+')">'+it.txt+'</button>';
+  }).join('');
+  var faltam=jogoEstado.itens.filter(function(x){return !x.feito;}).length;
+  app.innerHTML=`${hud()}
+    <div class="topbar"><button class="voltar" onclick="irTerritorio('${jogoEstado.mat}')">← ${t.nome}</button>
+      <div class="qprog">faltam ${faltam}</div></div>
+    <div class="titulo" style="margin-top:6px">🎮 ${g.titulo}</div>
+    <div class="card">
+      <div class="lead" style="color:#5a4fae;margin-bottom:12px">${g.instrucao}</div>
+      <div class="jbins">${bins}</div>
+      <div class="jpool">${pool}</div>
+      <div style="font-size:12px;color:#888;text-align:center;margin-top:10px">Toque numa carta e depois na caixa certa.</div>
+    </div>`;
 }
 
 /* ---- ranking ---- */
