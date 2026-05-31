@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StepQuest — Expedição pelo Tempo</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --pt:#E91E63; --mt:#2196F3; --hi:#FF9800; --ge:#4CAF50; --ci:#9C27B0;
+    --ouro:#FFC107; --ok:#2e9e5b; --erro:#e0443e;
+  }
+  html,body{ height:100%; }
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:#1a1740;
+    background:radial-gradient(1200px 600px at 70% -10%,#3b2d6e 0%,#1a1740 60%);
+    color:#fff; min-height:100%;
+  }
+  #app{ max-width:760px; margin:0 auto; padding:14px 14px 60px; }
+  h1,h2,h3{ line-height:1.2; }
+  button{ font-family:inherit; cursor:pointer; border:none; }
+  .hide{ display:none !important; }
+
+  /* ---- cartão genérico ---- */
+  .card{ background:#fff; color:#2a2350; border-radius:18px; padding:16px; margin:12px 0;
+    box-shadow:0 6px 20px rgba(0,0,0,.25); }
+
+  /* ---- cientista ---- */
+  .cronos{ display:flex; gap:10px; align-items:flex-start; margin:10px 0; }
+  .cronos .face{ font-size:38px; flex:0 0 auto; filter:drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
+  .cronos .balao{ background:#fff7d6; color:#5b4a00; border:2px solid #ffd84d;
+    border-radius:14px; padding:10px 12px; font-size:14.5px; position:relative; }
+  .cronos .balao b{ color:#a06b00; }
+
+  /* ---- abertura ---- */
+  .logo{ text-align:center; padding:18px 0 4px; }
+  .logo .big{ font-size:42px; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(90deg,#ffd84d,#ff8fc8,#7ec8ff);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .logo .sub{ color:#c9c2f0; font-size:15px; margin-top:2px; }
+  .campo{ width:100%; padding:12px; border-radius:12px; border:2px solid #d8d3f0;
+    font-size:16px; color:#2a2350; margin-top:6px; }
+  .chars{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:12px 0; }
+  .char{ background:#f1eefb; border:3px solid transparent; border-radius:14px;
+    padding:10px 4px; text-align:center; color:#2a2350; font-size:12px; font-weight:600; }
+  .char .e{ font-size:32px; display:block; }
+  .char.sel{ border-color:var(--pt); background:#fff; }
+  .btn{ display:block; width:100%; padding:14px; border-radius:14px; font-size:17px;
+    font-weight:700; color:#fff; background:linear-gradient(90deg,#7b4dff,#b14dff); }
+  .btn:disabled{ opacity:.45; }
+  .btn.lg{ margin-top:8px; }
+  .btn.sec{ background:#ece9f7; color:#5a4fae; }
+
+  /* ---- topo / HUD ---- */
+  .hud{ display:flex; align-items:center; gap:10px; background:#241f52;
+    border:1px solid #423a7e; border-radius:16px; padding:10px 12px; }
+  .hud .av{ font-size:30px; }
+  .hud .who{ flex:1; min-width:0; }
+  .hud .who .nm{ font-weight:700; font-size:15px; }
+  .hud .who .lv{ font-size:12px; color:#bdb4ee; }
+  .xpbar{ height:9px; background:#3a3370; border-radius:6px; overflow:hidden; margin-top:4px; }
+  .xpbar i{ display:block; height:100%; background:linear-gradient(90deg,#ffd84d,#ff8fc8); }
+  .streak{ background:#3a3370; border-radius:12px; padding:6px 10px; font-weight:700;
+    font-size:14px; white-space:nowrap; }
+
+  .titulo{ font-size:20px; margin:16px 4px 4px; }
+  .lead{ color:#c9c2f0; font-size:13.5px; margin:0 4px; }
+
+  /* ---- missão do dia ---- */
+  .hoje{ background:linear-gradient(120deg,#ffb74d,#ff8a65); color:#3a2200;
+    border-radius:18px; padding:14px; margin:12px 0; }
+  .hoje .lab{ font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; opacity:.8; }
+  .hoje .ms{ font-size:17px; font-weight:800; margin:2px 0 8px; }
+  .hoje button{ background:#3a2200; color:#ffd; padding:9px 14px; border-radius:10px; font-weight:700; }
+
+  /* ---- mapa: territórios ---- */
+  .terrs{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .terr{ border-radius:18px; padding:14px; color:#fff; position:relative; overflow:hidden;
+    min-height:118px; box-shadow:0 6px 16px rgba(0,0,0,.3); }
+  .terr .em{ font-size:34px; }
+  .terr .nm{ font-weight:800; font-size:17px; margin-top:2px; }
+  .terr .pg{ font-size:12px; opacity:.95; margin-top:3px; }
+  .terr .cd{ display:inline-block; background:rgba(0,0,0,.28); border-radius:8px;
+    padding:3px 8px; font-size:11.5px; font-weight:700; margin-top:7px; }
+  .terr .lock{ position:absolute; inset:0; background:rgba(20,16,50,.62);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    font-size:13px; font-weight:700; gap:4px; }
+  .terr .lock .bg{ font-size:26px; }
+  .terr .med{ position:absolute; top:8px; right:10px; font-size:22px; }
+  .progress{ height:7px; background:rgba(0,0,0,.28); border-radius:5px; margin-top:8px; overflow:hidden; }
+  .progress i{ display:block; height:100%; background:#fff; }
+
+  /* ---- território: lista de missões ---- */
+  .topbar{ display:flex; align-items:center; gap:8px; margin:6px 0 2px; }
+  .voltar{ background:#241f52; color:#fff; border:1px solid #423a7e; border-radius:10px;
+    padding:8px 12px; font-weight:700; font-size:14px; }
+  .miss{ display:flex; align-items:center; gap:12px; }
+  .miss .ic{ width:46px; height:46px; border-radius:12px; display:flex; align-items:center;
+    justify-content:center; font-size:24px; flex:0 0 auto; }
+  .miss .tx{ flex:1; min-width:0; }
+  .miss .tx .t{ font-weight:700; font-size:15.5px; }
+  .miss .tx .s{ font-size:12.5px; color:#7d76a8; }
+  .miss .go{ font-size:13px; font-weight:800; padding:8px 12px; border-radius:10px;
+    color:#fff; }
+  .selo{ font-size:20px; }
+  .extras{ background:#241f52; border:1px dashed #4b4290; }
+  .extras .ex{ display:flex; align-items:center; gap:10px; padding:8px 0; color:#cfc8f2; font-size:14px; }
+  .extras .ex .em{ font-size:22px; }
+  .embreve{ margin-left:auto; background:#3a3370; color:#cdb6ff; font-size:11px;
+    font-weight:700; padding:3px 8px; border-radius:8px; }
+  .exhead{ font-weight:700; color:#2a2350; font-size:15px; margin-bottom:8px; }
+  .exhead .em{ font-size:20px; }
+  .vid{ width:100%; border-radius:12px; background:#000; display:block; }
+
+  /* ---- conteúdo da missão ---- */
+  .box{ border-radius:12px; padding:11px 13px; margin:10px 0; font-size:14.5px; line-height:1.5; }
+  .box.def{ background:#eef7f0; border-left:5px solid var(--ge); color:#234a30; }
+  .box.dica{ background:#fff6e0; border-left:5px solid var(--ouro); color:#6a5200; }
+  .box.ex{ background:#e9f2fc; border-left:5px solid var(--mt); color:#1d3c5e; }
+  .conteudo p{ font-size:14.5px; line-height:1.55; margin:8px 2px; }
+  .conteudo h3{ font-size:16px; margin:14px 2px 4px; }
+  .conteudo ul{ margin:6px 0 6px 22px; font-size:14.5px; line-height:1.5; }
+  .tab{ width:100%; border-collapse:collapse; margin:10px 0; font-size:13.5px; }
+  .tab th,.tab td{ border:1px solid #ddd8f0; padding:6px 8px; text-align:left; }
+  .tab th{ background:#f1eefb; }
+  mark{ background:#fff1a8; padding:0 3px; border-radius:3px; }
+
+  /* ---- quiz ---- */
+  .qn{ font-weight:700; font-size:15.5px; margin:4px 2px 8px; }
+  .qprog{ font-size:12px; color:#7d76a8; font-weight:700; }
+  .opt{ display:block; width:100%; text-align:left; background:#f3f1fb; color:#2a2350;
+    border:2px solid #e3def5; border-radius:12px; padding:12px; font-size:14.5px;
+    margin:8px 0; }
+  .opt.sel{ border-color:#7b4dff; background:#fff; }
+  .opt.certa{ border-color:var(--ok); background:#e7f6ec; }
+  .opt.errada{ border-color:var(--erro); background:#fbe9e8; }
+  .feed{ font-size:13.5px; border-radius:10px; padding:10px; margin-top:6px; }
+  .feed.bom{ background:#e7f6ec; color:#1d6b3a; }
+  .feed.ruim{ background:#fbe9e8; color:#9a2a26; }
+
+  /* ---- resultado ---- */
+  .res{ text-align:center; }
+  .res .big{ font-size:54px; }
+  .res .nota{ font-size:30px; font-weight:800; margin:4px 0; }
+  .res .xp{ display:inline-block; background:#fff3c4; color:#7a5b00; font-weight:800;
+    padding:6px 14px; border-radius:12px; margin-top:4px; }
+  @keyframes pop{ 0%{ transform:scale(.4); } 70%{ transform:scale(1.15);} 100%{ transform:scale(1);} }
+  .pop{ display:inline-block; animation:pop .5s ease; }
+
+  .rodape{ text-align:center; color:#6b6498; font-size:11px; margin-top:24px; }
+  .rodape a{ color:#9a90d6; cursor:pointer; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   StepQuest — app de estudos da Mariana (2º Simulado)
+   Arquitetura: MOTOR (genérico) + CONTEÚDO (dados por matéria).
+   Para adicionar uma matéria, basta preencher CONTEUDO[id].
+   ============================================================ */
+
+/* ---------- datas das provas (2ª Avaliação — 08 a 12/jun/2026) ---------- */
+const PROVAS = {
+  "portugues": "2026-06-08",
+  "matematica": "2026-06-09",
+  "historia": "2026-06-10",
+  "geografia": "2026-06-10",
+  "artes": "2026-06-10",
+  "ciencias": "2026-06-11",
+  "edfisica": "2026-06-12",
+  "ingles": "2026-06-08"
+};
+
+/* ---------- territórios (matérias) ---------- */
+const TERRITORIOS = [
+  {
+    "id": "portugues",
+    "nome": "Português",
+    "emoji": "📜",
+    "cor": "#E91E63"
+  },
+  {
+    "id": "matematica",
+    "nome": "Matemática",
+    "emoji": "🔢",
+    "cor": "#2196F3"
+  },
+  {
+    "id": "historia",
+    "nome": "História",
+    "emoji": "🏺",
+    "cor": "#FF9800"
+  },
+  {
+    "id": "geografia",
+    "nome": "Geografia",
+    "emoji": "🗺️",
+    "cor": "#4CAF50"
+  },
+  {
+    "id": "artes",
+    "nome": "Artes",
+    "emoji": "🎨",
+    "cor": "#FF7043"
+  },
+  {
+    "id": "ciencias",
+    "nome": "Ciências",
+    "emoji": "🔬",
+    "cor": "#9C27B0"
+  },
+  {
+    "id": "edfisica",
+    "nome": "Ed. Física",
+    "emoji": "🏅",
+    "cor": "#795548"
+  },
+  {
+    "id": "ingles",
+    "nome": "Inglês",
+    "emoji": "🇬🇧",
+    "cor": "#00897B"
+  }
+];
+
+const PERSONAGENS = [
+  { id:'explor', emoji:'🧭', nome:'Explorador(a)' },
+  { id:'cient',  emoji:'🔭', nome:'Cientista' },
+  { id:'paleo',  emoji:'🦕', nome:'Caça-Dinos' },
+  { id:'tempo',  emoji:'⚡', nome:'Viajante' },
+];
+
+/* ---------- CONTEÚDO (transposto do Roblox — não editar à mão) ---------- */
+const CONTEUDO = {
+  "portugues": {
+    "missoes": [
+      {
+        "id": "pt-carta",
+        "emoji": "📜",
+        "titulo": "Carta de Reclamação",
+        "cronos": "Bzzzt exploradora! O dino comeu meu sapato. AGORA! Vou escrever uma CARTA DE RECLAMAÇÃO pro chefe da Vila. Calma, respeito, e o que eu quero — assim que se faz!",
+        "resumo": "CARTA DE RECLAMAÇÃO = pra reclamar de algo que te incomodou, pedindo solução.<br>Partes:<br>• Local e data (Belém, 27 de maio de 2026)<br>• Saudação (Prezado Senhor / Caro responsável)<br>• Corpo: 1) o PROBLEMA 2) sua OPINIÃO + ARGUMENTOS 3) o que você PEDE<br>• Despedida educada (Atenciosamente)<br>• Assinatura<br>TOM: respeitoso e claro — nada de xingar! Educação ABRE portas.",
+        "quiz": [
+          {
+            "p": "A carta de reclamação serve principalmente pra:",
+            "op": [
+              "reclamar de algo e pedir uma solução, com respeito",
+              "contar uma história engraçada",
+              "convidar alguém pra festa",
+              "dar uma receita de bolo"
+            ],
+            "correta": 0,
+            "explica": "É um gênero textual pra resolver insatisfações — sempre pedindo algo."
+          },
+          {
+            "p": "O João está montando uma carta de reclamação. Qual destas partes NÃO costuma aparecer nela?",
+            "op": [
+              "final de jogo de videogame",
+              "data e local",
+              "saudação inicial",
+              "despedida educada"
+            ],
+            "correta": 0,
+            "explica": "Data, saudação e despedida fazem parte da estrutura. Final de videogame não!"
+          },
+          {
+            "p": "Qual tom é mais EFICAZ numa carta de reclamação?",
+            "op": [
+              "respeitoso e claro",
+              "agressivo e xingando",
+              "bem confuso",
+              "fofo e sem objetivo"
+            ],
+            "correta": 0,
+            "explica": "Tom educado abre portas. Agressivo geralmente atrapalha a solução."
+          },
+          {
+            "p": "No CORPO da carta, qual a ordem mais comum?",
+            "op": [
+              "contar o problema → dar argumentos → pedir solução",
+              "pedir → reclamar → desistir",
+              "agradecer → reclamar → agradecer",
+              "só descrever o problema"
+            ],
+            "correta": 0,
+            "explica": "Apresentar o problema, justificar com argumentos e pedir uma ação clara."
+          }
+        ]
+      },
+      {
+        "id": "pt-ortografia-ou",
+        "emoji": "📜",
+        "titulo": "Ortografia: O ou U no final",
+        "cronos": "exploradora, 'cachorro' termina em O ou U?! Som fraco = O. Som forte = U. Truque do Cronos: bate a sílaba forte com o pé!",
+        "resumo": "Como saber se uso O ou U no final?<br>👉 A sílaba TÔNICA é a que você fala mais ALTO. Bate o pé com ela!<br><br>• Final FRACO (átono) → uso O: GAto, LIvro, caCHOrro, DEdo<br>  (a sílaba forte NÃO é a última)<br>• Final FORTE (tônico) → uso U: caJU, uruBU, bamBU, peRU, taTU<br>  (a sílaba forte É a última, com som /u/ batido)",
+        "quiz": [
+          {
+            "p": "Qual palavra termina com som FRACO (escrita com O)?",
+            "op": [
+              "cachorro",
+              "caju",
+              "tatu",
+              "urubu"
+            ],
+            "correta": 0,
+            "explica": "Em 'cachorro' o final é /u/ átono → escreve O. Caju/tatu/urubu são tônicos = U."
+          },
+          {
+            "p": "A Alice vai escrever 'peru' (a ave). Qual forma está CORRETA?",
+            "op": [
+              "peru",
+              "perô",
+              "perú",
+              "péro"
+            ],
+            "correta": 0,
+            "explica": "Peru tem som forte no final = U."
+          },
+          {
+            "p": "A regra geral pra escolher O ou U no final é olhar:",
+            "op": [
+              "se o som é fraco (O) ou forte (U)",
+              "se a palavra é grande ou pequena",
+              "se é masculina ou feminina",
+              "a primeira letra"
+            ],
+            "correta": 0,
+            "explica": "É a tonicidade do som final que decide."
+          },
+          {
+            "p": "Qual destas palavras está ERRADA?",
+            "op": [
+              "bambo (em vez de bambu)",
+              "livro",
+              "gato",
+              "dedo"
+            ],
+            "correta": 0,
+            "explica": "Bambu tem som forte no final → U. Os outros têm som fraco → O."
+          }
+        ]
+      },
+      {
+        "id": "pt-ortografia-ei",
+        "emoji": "📜",
+        "titulo": "Ortografia: E ou I no final",
+        "cronos": "exploradora, mesma história: som fraco = E, som forte = I. 'Leite' = E (som fraco). 'Aqui' = I (som forte). Sentiu?",
+        "resumo": "Mesma ideia do O/U!<br>👉 Onde está a sílaba TÔNICA (mais alta)?<br><br>• Final FRACO (átono) → uso E: LEIte, PENte, DOce, PONte, DENte<br>  (a sílaba forte NÃO é a última)<br>• Final FORTE (tônico) → uso I: aQUI, aLI, abacaXI, javaLI, coliBRI<br>  (a sílaba forte É a última)<br><br>Verbos no infinitivo (parTIR, sorRIR, aBRIR) sempre tônicos no fim → I.",
+        "quiz": [
+          {
+            "p": "Qual palavra termina com som FRACO de /i/ (escrita com E)?",
+            "op": [
+              "leite",
+              "aqui",
+              "ali",
+              "abacaxi"
+            ],
+            "correta": 0,
+            "explica": "Em 'leite' o final é átono → E. Os outros têm som tônico → I."
+          },
+          {
+            "p": "Como escrevo o verbo 'partir' no infinitivo?",
+            "op": [
+              "partir (com I)",
+              "parter (com E)",
+              "partyr",
+              "parti"
+            ],
+            "correta": 0,
+            "explica": "Verbos no infinitivo terminam em -AR, -ER, -IR. Som tônico = I."
+          },
+          {
+            "p": "O Pedro quer escrever 'doce'. Qual forma está CORRETA?",
+            "op": [
+              "doce",
+              "doci",
+              "docce",
+              "docê"
+            ],
+            "correta": 0,
+            "explica": "'Doce' termina em som fraco → E."
+          },
+          {
+            "p": "Por que 'abacaxi' termina com I e não com E?",
+            "op": [
+              "porque o som final é forte/tônico",
+              "porque é fruta",
+              "porque é grande",
+              "porque tem A"
+            ],
+            "correta": 0,
+            "explica": "A sílaba 'xi' é a mais forte da palavra → escrevo com I."
+          }
+        ]
+      },
+      {
+        "id": "pt-sinonimos-antonimos",
+        "emoji": "📜",
+        "titulo": "Sinônimos e Antônimos",
+        "cronos": "exploradora, sou Cronos o bonito — ou Cronos o belo? Mesma coisa! São SINÔNIMOS. Já bonito x feio? São ANTÔNIMOS — opostos!",
+        "resumo": "SINÔNIMOS = palavras com sentido IGUAL ou PARECIDO.<br>Ex.: bonito/belo · feliz/alegre · rápido/veloz · casa/lar · perto/próximo<br><br>ANTÔNIMOS = palavras com sentido CONTRÁRIO.<br>Ex.: bonito ↔ feio · feliz ↔ triste · rápido ↔ lento · alto ↔ baixo · novo ↔ velho<br><br>Usar sinônimos deixa o texto rico — evita repetir a mesma palavra.",
+        "quiz": [
+          {
+            "p": "A Alice quer trocar 'feliz' por um SINÔNIMO pra não repetir no texto. Qual é?",
+            "op": [
+              "alegre",
+              "triste",
+              "feio",
+              "lento"
+            ],
+            "correta": 0,
+            "explica": "Alegre = mesmo sentido de feliz. Triste é antônimo."
+          },
+          {
+            "p": "Qual é ANTÔNIMO de 'grande'?",
+            "op": [
+              "pequeno",
+              "enorme",
+              "gigante",
+              "imenso"
+            ],
+            "correta": 0,
+            "explica": "Pequeno é o contrário de grande. Os outros são sinônimos de grande."
+          },
+          {
+            "p": "Sinônimos servem principalmente pra:",
+            "op": [
+              "variar as palavras no texto sem repetir",
+              "deixar a frase mais difícil",
+              "esconder o sentido",
+              "criar antônimos"
+            ],
+            "correta": 0,
+            "explica": "Trocar uma palavra por outra de mesmo sentido enriquece o texto."
+          },
+          {
+            "p": "O Gabriel achou a palavra 'veloz' no texto. Ela é sinônimo de qual destas?",
+            "op": [
+              "rápido",
+              "devagar",
+              "parado",
+              "lento"
+            ],
+            "correta": 0,
+            "explica": "Veloz = rápido. Os outros 3 são antônimos."
+          }
+        ]
+      },
+      {
+        "id": "pt-homonimos-paronimos",
+        "emoji": "📜",
+        "titulo": "Homônimos e Parônimos",
+        "cronos": "exploradora, MANGA da blusa, MANGA da fruta. Escrevo igual, mas é coisa diferente — HOMÔNIMO! Já 'comprimento' e 'cumprimento' parecem irmãs mas não são — PARÔNIMOS!",
+        "resumo": "HOMÔNIMOS = mesma escrita ou mesmo som, sentidos DIFERENTES.<br>• manga (fruta) / manga (parte da blusa)<br>• rio (verbo rir) / rio (curso d'água)<br>• sessão (de cinema) / seção (de loja)<br><br>PARÔNIMOS = escrita PARECIDA mas sentidos DIFERENTES.<br>• comprimento (medida) ≠ cumprimento (saudação)<br>• descrição (descrever) ≠ discrição (discreto)<br>• tráfego (de carros) ≠ tráfico (ilegal)",
+        "quiz": [
+          {
+            "p": "A Mila disse: 'A MANGA da minha blusa está suja.' Aqui a palavra 'manga' significa:",
+            "op": [
+              "parte da blusa que cobre o braço",
+              "fruta amarela",
+              "objeto pra picar",
+              "rio grande"
+            ],
+            "correta": 0,
+            "explica": "É homônimo: mesma escrita, sentido diferente. Aqui é a parte da roupa."
+          },
+          {
+            "p": "A Clara contou: 'Medi o ___ do meu lápis.' Qual palavra (parônimo) completa certo?",
+            "op": [
+              "comprimento",
+              "cumprimento",
+              "complemento",
+              "compromisso"
+            ],
+            "correta": 0,
+            "explica": "Comprimento = medida. Cumprimento = saudação (oi!). Cuidado pra não confundir!"
+          },
+          {
+            "p": "Na frase 'O RIO está cheio de peixes', a palavra 'rio' é:",
+            "op": [
+              "substantivo (o curso d'água)",
+              "verbo rir (eu rio)",
+              "adjetivo",
+              "antônimo de seco"
+            ],
+            "correta": 0,
+            "explica": "Aqui 'rio' = substantivo. Em 'eu rio da piada', seria verbo. São homônimos."
+          },
+          {
+            "p": "A principal diferença entre homônimos e parônimos é:",
+            "op": [
+              "homônimo = escrita/som iguais; parônimo = escrita parecida mas diferente",
+              "homônimos são engraçados",
+              "parônimos não existem",
+              "são exatamente a mesma coisa"
+            ],
+            "correta": 0,
+            "explica": "Homônimos batem certinho na forma. Parônimos só PARECEM iguais."
+          }
+        ]
+      }
+    ]
+  },
+  "matematica": {
+    "missoes": [
+      {
+        "id": "mt-grandezas",
+        "emoji": "🔢",
+        "titulo": "Grandezas e Medidas",
+        "cronos": "exploradora, preciso saber: quantos METROS de corda? quantos QUILOS de pedra? quantos LITROS de água? Cada medida tem seu instrumento e sua unidade!",
+        "resumo": "✏️ DICA DO CRONOS: pega papel e lápis! Conversão fica MUITO mais clara quando você ESCREVE.<br><br>3 grandezas principais:<br><br>📏 COMPRIMENTO — quanto algo MEDE<br>Unidades: milímetro (mm), centímetro (cm), metro (m), quilômetro (km)<br>Instrumentos: régua, fita métrica, trena.<br>• 1 m = 100 cm = 1000 mm<br>• 1 km = 1000 m<br><br>⚖️ MASSA — quanto algo PESA<br>Unidades: grama (g), quilograma (kg), tonelada (t)<br>Instrumentos: balança.<br>• 1 kg = 1000 g<br>• 1 t = 1000 kg<br><br>🥛 CAPACIDADE — quanto algo CABE<br>Unidades: mililitro (mL), litro (L)<br>Instrumentos: copo medidor, proveta.<br>• 1 L = 1000 mL<br><br>Dica: ESTIMAR antes de medir ajuda a perceber se a resposta faz sentido!",
+        "quiz": [
+          {
+            "p": "A Clara vai medir o COMPRIMENTO da mesa da sala. Que instrumento ela usa?",
+            "op": [
+              "régua ou fita métrica",
+              "balança",
+              "copo medidor",
+              "termômetro"
+            ],
+            "correta": 0,
+            "explica": "Comprimento = régua, trena, fita métrica."
+          },
+          {
+            "p": "1 metro tem quantos centímetros?",
+            "op": [
+              "100 cm",
+              "10 cm",
+              "1000 cm",
+              "1 cm"
+            ],
+            "correta": 0,
+            "explica": "1 m = 100 cm. 1 km = 1000 m."
+          },
+          {
+            "p": "Pra medir quanto PESA um saco de arroz, eu uso:",
+            "op": [
+              "balança (em quilogramas)",
+              "régua",
+              "termômetro",
+              "relógio"
+            ],
+            "correta": 0,
+            "explica": "Massa (peso popular) = balança. Unidade comum: kg."
+          },
+          {
+            "p": "Quantos mililitros tem em 1 LITRO de suco?",
+            "op": [
+              "1000 mL",
+              "100 mL",
+              "10 mL",
+              "10 000 mL"
+            ],
+            "correta": 0,
+            "explica": "1 L = 1000 mL. Capacidade = quanto CABE."
+          }
+        ]
+      },
+      {
+        "id": "mt-tempo",
+        "emoji": "🔢",
+        "titulo": "Medidas de Tempo",
+        "cronos": "Pra viajar no tempo eu PRECISO medi-lo, exploradora! ⏰ Erra e caio na hora do almoço dos dinos — e eu NÃO quero ser o almoço!",
+        "resumo": "Unidades: segundo, minuto, hora, dia, semana, mês, ano, século.<br>• 1 dia = 24 horas<br>• 1 hora = 60 minutos<br>• meia hora = 30 minutos<br>• 1 minuto = 60 segundos<br>Relógio analógico: ponteiro menor = horas; maior = minutos.",
+        "quiz": [
+          {
+            "p": "Quantos minutos tem 1 hora?",
+            "op": [
+              "60",
+              "30",
+              "100",
+              "24"
+            ],
+            "correta": 0,
+            "explica": "1 hora = 60 minutos."
+          },
+          {
+            "p": "Quantas horas tem 1 dia inteiro?",
+            "op": [
+              "24",
+              "12",
+              "60",
+              "48"
+            ],
+            "correta": 0,
+            "explica": "Um dia = 24 horas."
+          },
+          {
+            "p": "Num relógio analógico, o ponteiro menor marca:",
+            "op": [
+              "as horas",
+              "os minutos",
+              "os segundos",
+              "os dias"
+            ],
+            "correta": 0,
+            "explica": "Ponteiro menor = horas; maior = minutos."
+          },
+          {
+            "p": "Meia hora = quantos minutos?",
+            "op": [
+              "30",
+              "15",
+              "60",
+              "45"
+            ],
+            "correta": 0,
+            "explica": "Metade de 60 = 30."
+          }
+        ]
+      },
+      {
+        "id": "mt-intervalo",
+        "emoji": "🔢",
+        "titulo": "Intervalos de Tempo",
+        "cronos": "Quanto tempo dura uma viagem no tempo? Pego a hora que cheguei e TIRO a hora que saí. É SUBTRAÇÃO!",
+        "resumo": "✏️ DICA DO CRONOS: pega papel e lápis! Subtração de horário fica fácil quando você ARMA a conta.<br><br>INTERVALO DE TEMPO = quanto durou.<br>Fórmula: HORA FINAL − HORA INICIAL.<br>Ex: 11:50 − 8:20 = 3h30min.<br>Junte hora com hora, minuto com minuto.",
+        "quiz": [
+          {
+            "p": "Pra descobrir quanto durou uma atividade, fazemos conta de:",
+            "op": [
+              "subtração",
+              "multiplicação",
+              "divisão",
+              "adição"
+            ],
+            "correta": 0,
+            "explica": "Hora final − hora inicial."
+          },
+          {
+            "p": "Passeio começou 8:20 e terminou 11:50. Quanto durou?",
+            "op": [
+              "3h e 30 min",
+              "4 horas",
+              "2h e 30 min",
+              "3 horas"
+            ],
+            "correta": 0,
+            "explica": "11:50 − 8:20 = 3h30min."
+          },
+          {
+            "p": "O Estevão ficou na festa de 15h15 até 17h25. Quanto tempo?",
+            "op": [
+              "2h e 10 min",
+              "2 horas",
+              "3h e 10 min",
+              "1h e 10 min"
+            ],
+            "correta": 0,
+            "explica": "17h25 − 15h15 = 2h10min."
+          },
+          {
+            "p": "Aula 10h00 até 10h45. Duração?",
+            "op": [
+              "45 min",
+              "1 hora",
+              "15 min",
+              "30 min"
+            ],
+            "correta": 0,
+            "explica": "10h45 − 10h00 = 45 min."
+          }
+        ]
+      },
+      {
+        "id": "mt-temperatura",
+        "emoji": "🔢",
+        "titulo": "Temperatura",
+        "cronos": "Na era dos dinos fazia uns 30°C, exploradora. Hoje uns 15°C. 🌡️ Quem mede? O TERMÔMETRO!",
+        "resumo": "✏️ DICA DO CRONOS: pega papel e lápis! Pra variação de temperatura, escrever ajuda a não trocar o sinal.<br><br>TEMPERATURA = quanto calor. Medida por TERMÔMETRO em °C (Celsius).<br>A gente lê a temperatura do tempo: a MÍNIMA (mais fria) e a MÁXIMA (mais quente) do dia.<br>VARIAÇÃO = máxima − mínima (subtração).",
+        "quiz": [
+          {
+            "p": "Unidade de temperatura mais usada no Brasil?",
+            "op": [
+              "grau Celsius (°C)",
+              "metro",
+              "litro",
+              "quilograma"
+            ],
+            "correta": 0,
+            "explica": "No Brasil = °C. Metro mede comprimento; litro, capacidade."
+          },
+          {
+            "p": "De manhã o termômetro marcou 18°C e à tarde, 25°C. De quanto a temperatura SUBIU?",
+            "op": [
+              "7°C",
+              "43°C",
+              "25°C",
+              "18°C"
+            ],
+            "correta": 0,
+            "explica": "Subiu 25 - 18 = 7°C. A variação é uma subtração (máxima − mínima)."
+          },
+          {
+            "p": "Cidade: máxima 33°C, mínima 24°C. Variação?",
+            "op": [
+              "9°C",
+              "57°C",
+              "33°C",
+              "3°C"
+            ],
+            "correta": 0,
+            "explica": "33 − 24 = 9°C."
+          },
+          {
+            "p": "Como se calcula variação de temperatura?",
+            "op": [
+              "máxima − mínima",
+              "máxima + mínima",
+              "máxima × mínima",
+              "mínima − máxima"
+            ],
+            "correta": 0,
+            "explica": "Diferença = subtração da máxima pela mínima."
+          }
+        ]
+      },
+      {
+        "id": "mt-problemas",
+        "emoji": "🔢",
+        "titulo": "Situações-Problema",
+        "cronos": "Problema é mistério, exploradora! 🕵️ A pergunta esconde uma pista: juntar, tirar, repartir... eu te ensino a achar a operação certa!",
+        "resumo": "✏️ DICA DO CRONOS: pega papel e lápis SEMPRE. Conta de cabeça erra; conta escrita acerta.<br><br>Palavras-pista:<br>• ADIÇÃO (+): juntar, ganhar, acrescentar<br>• SUBTRAÇÃO (−): tirar, gastar, quanto sobra, diferença<br>• MULTIPLICAÇÃO (×): grupos iguais várias vezes<br>• DIVISÃO (÷): repartir igualmente, formar grupos iguais.<br>Ler com calma, 2 vezes. ANOTAR o que pediram.",
+        "quiz": [
+          {
+            "p": "Na Páscoa Solidária, 496 barras de chocolate vão ser repartidas IGUAL entre 8 turmas. Que conta a Betina faz?",
+            "op": [
+              "divisão",
+              "adição",
+              "multiplicação",
+              "subtração"
+            ],
+            "correta": 0,
+            "explica": "'Repartir igualmente' = divisão."
+          },
+          {
+            "p": "A Giulia tinha 15 figurinhas e a Yumi deu mais 12 pra ela. Com quantas a Giulia ficou?",
+            "op": [
+              "27",
+              "3",
+              "180",
+              "12"
+            ],
+            "correta": 0,
+            "explica": "'Ganhou' = adição: 15 + 12 = 27."
+          },
+          {
+            "p": "Cada caixa tem 6 ovos. O Cadu levou 5 caixas pro bolo da festa. Quantos ovos no total?",
+            "op": [
+              "30",
+              "11",
+              "1",
+              "6"
+            ],
+            "correta": 0,
+            "explica": "Grupos iguais = multiplicação: 6 × 5 = 30."
+          },
+          {
+            "p": "O Miguel foi à feira com R$50 e gastou R$18 num açaí. Que conta diz quanto sobrou?",
+            "op": [
+              "subtração",
+              "adição",
+              "multiplicação",
+              "divisão"
+            ],
+            "correta": 0,
+            "explica": "'Quanto sobrou' = subtração."
+          }
+        ]
+      },
+      {
+        "id": "mt-capacidade",
+        "emoji": "🔢",
+        "titulo": "Litros & Mililitros",
+        "cronos": "exploradora, escuta essa: a água do planeta é reciclada pra sempre — então a água que você bebe HOJE já passou dentro de um dinossauro! 🦕 E pra medir essa água a gente usa CAPACIDADE: litro e mililitro. Vou te ensinar — e depois você joga o ENCHA O LITRO ali na bancada!",
+        "resumo": "✏️ DICA DO CRONOS: pega papel e lápis! Conta de capacidade fica fácil quando você ESCREVE.<br><br>🥛 CAPACIDADE = quanto CABE num recipiente (líquido).<br>Instrumentos: copo medidor, proveta, seringa.<br><br>Duas unidades do dia a dia:<br>• LITRO (L) — coisas grandes: caixa d'água, garrafa, leite, refrigerante de 2 L<br>• MILILITRO (mL) — coisas pequenas: copo, colher de xarope, latinha de 350 mL<br><br>🔑 A REGRA DE OURO:<br>1 L = 1000 mL<br><br>Como converter:<br>• De L pra mL → MULTIPLICA por 1000 (2 L = 2000 mL)<br>• De mL pra L → DIVIDE por 1000 (5000 mL = 5 L)<br><br>Dica esperta: ESTIMA antes! Uma piscina é em litros, uma gota é em mililitros. Se a resposta der estranha, refaz a conta.",
+        "quiz": [
+          {
+            "p": "A regra de ouro da capacidade: 1 litro tem quantos mililitros?",
+            "op": [
+              "1000 mL",
+              "100 mL",
+              "10 mL",
+              "1 mL"
+            ],
+            "correta": 0,
+            "explica": "1 L = 1000 mL. É a conta que destrava todas as outras."
+          },
+          {
+            "p": "Pra medir 25 mL de xarope, a unidade certa é:",
+            "op": [
+              "mililitro (mL) — é pouquinho",
+              "litro (L)",
+              "quilograma (kg)",
+              "metro (m)"
+            ],
+            "correta": 0,
+            "explica": "Dose de remédio é pequena → mililitro. Litro seria um vidro gigante de xarope!"
+          },
+          {
+            "p": "Qual instrumento serve pra MEDIR capacidade (quanto um líquido cabe)?",
+            "op": [
+              "copo medidor, proveta ou seringa",
+              "régua",
+              "balança",
+              "termômetro"
+            ],
+            "correta": 0,
+            "explica": "Capacidade = copo medidor/proveta/seringa. Régua mede comprimento, balança mede massa."
+          },
+          {
+            "p": "Sem medir, ESTIMA: quanto mais ou menos cabe num COPO de suco?",
+            "op": [
+              "200 mL",
+              "200 L",
+              "2 mL",
+              "20 L"
+            ],
+            "correta": 0,
+            "explica": "Estimar ajuda a conferir! Um copo cabe ~200 mL. 200 L seria uma caixa d'água; 2 mL, uma gotinha."
+          },
+          {
+            "p": "Na caixa d'água da escola cabem 5.000 ___. Litro ou mililitro?",
+            "op": [
+              "litros — é um reservatório enorme",
+              "mililitros",
+              "gramas",
+              "metros"
+            ],
+            "correta": 0,
+            "explica": "Caixa d'água guarda MUITA água → litros. 5000 mL seriam só 5 litros, daria pra uma garrafa."
+          },
+          {
+            "p": "✏️ Papel e lápis: 6.000 mL é igual a quantos litros?",
+            "op": [
+              "6 L",
+              "60 L",
+              "600 L",
+              "60000 L"
+            ],
+            "correta": 0,
+            "explica": "mL → L divide por 1000: 6000 ÷ 1000 = 6 L."
+          },
+          {
+            "p": "✏️ Quantos mililitros tem em 2 litros de água?",
+            "op": [
+              "2000 mL",
+              "200 mL",
+              "20 mL",
+              "20000 mL"
+            ],
+            "correta": 0,
+            "explica": "L → mL multiplica por 1000: 2 × 1000 = 2000 mL."
+          },
+          {
+            "p": "✏️ Leandro levou 2 L de suco e tem copos de 200 mL. Quantos copos ele enche?",
+            "op": [
+              "10 copos",
+              "4 copos",
+              "20 copos",
+              "200 copos"
+            ],
+            "correta": 0,
+            "explica": "2 L = 2000 mL. 2000 ÷ 200 = 10 copos."
+          },
+          {
+            "p": "✏️ Dona Fernanda tem 2 garrafas de 2 L e copos de 400 mL. Quantos copos pras 2 garrafas?",
+            "op": [
+              "10 copos",
+              "5 copos",
+              "8 copos",
+              "14 copos"
+            ],
+            "correta": 0,
+            "explica": "2 garrafas × 2 L = 4 L = 4000 mL. 4000 ÷ 400 = 10 copos."
+          },
+          {
+            "p": "✏️ Cada dinossauro de gel cresce com 300 mL de água. Pra 5 dinossauros, quanta água?",
+            "op": [
+              "1500 mL",
+              "350 mL",
+              "800 mL",
+              "3000 mL"
+            ],
+            "correta": 0,
+            "explica": "5 × 300 = 1500 mL (que é 1 L e meio)."
+          },
+          {
+            "p": "✏️ O professor encheu 8 copos de 190 mL pra um experimento. Quanta água usou?",
+            "op": [
+              "1520 mL",
+              "198 mL",
+              "152 mL",
+              "8000 mL"
+            ],
+            "correta": 0,
+            "explica": "8 × 190 = 1520 mL (1 L e 520 mL)."
+          },
+          {
+            "p": "✏️ DESAFIO: cada pacote de gelatina usa 230 mL de água quente + 230 mL fria. Em 4 pacotes, a água SUPERA 2 litros?",
+            "op": [
+              "Não — dá 1840 mL, menos que 2000 mL",
+              "Sim — passa de 2 litros",
+              "Dá exatamente 2 litros",
+              "Não dá pra saber"
+            ],
+            "correta": 0,
+            "explica": "Passo a passo: 230 + 230 = 460 mL por pacote. 4 × 460 = 1840 mL. Como 1840 < 2000, NÃO supera 2 L."
+          },
+          {
+            "p": "Uma latinha de refrigerante tem 350 ___. Litro ou mililitro?",
+            "op": [
+              "mililitros",
+              "litros",
+              "quilos",
+              "metros"
+            ],
+            "correta": 0,
+            "explica": "Latinha é pequena → 350 mL. 350 L encheria meia caixa d'água!"
+          },
+          {
+            "p": "Qual recipiente tem capacidade MENOR que 1 litro?",
+            "op": [
+              "uma xícara de café",
+              "uma caixa d'água",
+              "uma piscina",
+              "um tanque de carro"
+            ],
+            "correta": 0,
+            "explica": "Xícara cabe ~50 a 200 mL — bem menos que 1 L (1000 mL). Os outros são bem maiores."
+          }
+        ]
+      }
+    ]
+  },
+  "historia": {
+    "missoes": [
+      {
+        "id": "hi-antes-cidade",
+        "emoji": "🏺",
+        "titulo": "Antes da Cidade — Nômades",
+        "cronos": "Bzzzt! Oi exploradora! Olha em volta: caverna, fogueira, ninguém com casa fixa. ESSE era o mundo ANTES das cidades existirem. A gente vivia andando. Por quê? Porque a comida andava!",
+        "resumo": "Antes das cidades, os humanos eram NÔMADES — andavam o tempo todo atrás de comida.<br>• CAÇAVAM animais selvagens (mamute, bisão)<br>• PESCAVAM nos rios e lagos<br>• COLETAVAM frutas, raízes, sementes<br>Quando a caça/coleta acabava num lugar, andavam pra outro. Nada de casa fixa, nada de cidade.",
+        "quiz": [
+          {
+            "p": "Antes das cidades existirem, os humanos eram chamados de:",
+            "op": [
+              "nômades — andavam o tempo todo atrás de comida",
+              "sedentários — moravam sempre num mesmo lugar",
+              "agricultores",
+              "operários"
+            ],
+            "correta": 0,
+            "explica": "Nômade = sem lugar fixo. Andavam pra onde a comida estava."
+          },
+          {
+            "p": "Como esses humanos conseguiam comida?",
+            "op": [
+              "caçando, pescando e coletando frutas",
+              "comprando no mercado",
+              "plantando em fazenda grande",
+              "criando vaca em cercado"
+            ],
+            "correta": 0,
+            "explica": "Tudo veio da natureza: caça, pesca e coleta — não plantavam nem criavam ainda."
+          },
+          {
+            "p": "Por que ninguém tinha CASA FIXA nessa época?",
+            "op": [
+              "a comida acabava num lugar, precisavam mudar de lugar pra achar mais",
+              "ainda não sabiam construir",
+              "preferiam morar em árvores",
+              "tinham medo de cidades"
+            ],
+            "correta": 0,
+            "explica": "Sem agricultura, dependiam do que a natureza dava em cada região. Acabou → muda."
+          },
+          {
+            "p": "Sem CIDADES, sem casa fixa, o que segurava o grupo nômade unido?",
+            "op": [
+              "a CAÇA em grupo e o FOGO compartilhado pra cozinhar e se proteger",
+              "as escolas",
+              "os jornais e o rádio",
+              "a polícia"
+            ],
+            "correta": 0,
+            "explica": "Caça em grupo e fogo central eram a 'sala de estar' do bando nômade."
+          }
+        ]
+      },
+      {
+        "id": "hi-agricultura",
+        "emoji": "🏺",
+        "titulo": "A Descoberta da Agricultura",
+        "cronos": "Olha o que aconteceu, exploradora! Caiu uma sementinha perto da fogueira... e BROTOU. 'E se a gente plantar de propósito?' Foi assim que começou TUDO. A comida parou de andar — a gente pôde parar também!",
+        "resumo": "A AGRICULTURA mudou a história. Os humanos descobriram que podiam PLANTAR sementes e ESPERAR colher.<br>• Não precisavam mais andar atrás de comida<br>• Podiam criar animais em CERCADOS (PECUÁRIA)<br>• Começaram a viver no MESMO LUGAR = SEDENTARISMO<br><br>Isso aconteceu há milhares de anos. É o passo que vai TRANSFORMAR a humanidade — porque sem agricultura, NÃO HÁ CIDADE.",
+        "quiz": [
+          {
+            "p": "O que é AGRICULTURA?",
+            "op": [
+              "plantar sementes e colher o que cresce",
+              "caçar animais grandes",
+              "viver em cavernas",
+              "construir prédios"
+            ],
+            "correta": 0,
+            "explica": "Agricultura = plantar e colher. Foi a maior invenção da pré-história."
+          },
+          {
+            "p": "Quando os humanos começaram a plantar, eles puderam:",
+            "op": [
+              "ficar parados num lugar — virar SEDENTÁRIOS",
+              "andar mais rápido",
+              "esquecer do fogo",
+              "viver embaixo da terra"
+            ],
+            "correta": 0,
+            "explica": "Com comida garantida no MESMO lugar, não precisavam andar mais."
+          },
+          {
+            "p": "Criar animais em CERCADOS (vaca, ovelha, cabra) se chama:",
+            "op": [
+              "pecuária",
+              "caça",
+              "pesca",
+              "coleta"
+            ],
+            "correta": 0,
+            "explica": "Pecuária = criar animais. Junto com agricultura, é a base da vida fixa."
+          },
+          {
+            "p": "Por que a agricultura é o passo PRA cidade nascer?",
+            "op": [
+              "sem precisar andar atrás de comida, dá pra construir casa e ficar",
+              "porque as plantas só crescem em cidades",
+              "porque dá medo do mato",
+              "porque a agricultura inventou o dinheiro"
+            ],
+            "correta": 0,
+            "explica": "Cidade pressupõe gente PARADA. E parar só é possível com comida fixa."
+          }
+        ]
+      },
+      {
+        "id": "hi-primeiras-cidades",
+        "emoji": "🏺",
+        "titulo": "As Primeiras Cidades",
+        "cronos": "Chegamos, exploradora! Olha a aldeia: casas de barro, gente plantando, animais no curral, um chefe organizando tudo. Estamos na IDADE DOS METAIS — e as PRIMEIRAS cidades do mundo nasceram bem aqui, PERTO DOS RIOS E LAGOS.",
+        "resumo": "As primeiras cidades surgiram na IDADE DOS METAIS e nasceram PERTO DE RIOS E LAGOS.<br><br>POR QUE PERTO DA ÁGUA? A água servia pra IRRIGAR a plantação e dar de beber aos animais — assim sobrava comida o ano todo, e mais gente podia morar junto.<br><br>Um exemplo antigo de cidade foi ÇATAL HÜYÜK.<br><br>O QUE TINHA NUMA CIDADE?<br>• Casas fixas (de barro/pedra)<br>• Mercado pra trocar produtos<br>• Templo<br>• Chefe/governante<br>• ESPECIALISTAS: gente que só fazia uma coisa (ferreiro só forja, padeiro só faz pão)",
+        "quiz": [
+          {
+            "p": "Onde nasceram as PRIMEIRAS cidades do mundo?",
+            "op": [
+              "perto de rios e lagos",
+              "no meio do deserto, longe da água",
+              "no alto das montanhas geladas",
+              "no fundo do mar"
+            ],
+            "correta": 0,
+            "explica": "Perto da água: dava pra irrigar a plantação e criar animais. Isso na Idade dos Metais."
+          },
+          {
+            "p": "Por que essas cidades surgiram PERTO DOS RIOS?",
+            "op": [
+              "água pra irrigar plantação, dar de beber aos animais e pro transporte",
+              "porque rio é bonito",
+              "porque dava pra surfar",
+              "porque escondia das tribos inimigas"
+            ],
+            "correta": 0,
+            "explica": "Água é o coração da cidade antiga — sem água, plantação morre e ninguém vive."
+          },
+          {
+            "p": "Numa cidade antiga, havia gente ESPECIALIZADA. O que isso significa?",
+            "op": [
+              "cada pessoa fazia uma coisa específica (ferreiro só forja, padeiro só faz pão)",
+              "todo mundo fazia tudo",
+              "só os reis trabalhavam",
+              "ninguém trabalhava"
+            ],
+            "correta": 0,
+            "explica": "Como a comida estava garantida, dava pra cada um se dedicar a uma profissão."
+          },
+          {
+            "p": "Cidade tinha CHEFE/governante. Pra que servia?",
+            "op": [
+              "organizar a vida da cidade — colheita, defesa, regras, justiça",
+              "só pra mandar nos outros sem motivo",
+              "pra não fazer nada",
+              "pra fazer arte rupestre"
+            ],
+            "correta": 0,
+            "explica": "Cidade grande precisa de quem decide e organiza. Aí nasce o governo."
+          }
+        ]
+      },
+      {
+        "id": "hi-circulacao",
+        "emoji": "🏺",
+        "titulo": "Circulação de Pessoas, Produtos e Culturas",
+        "cronos": "Olha o barco chegando no lago, exploradora! Veio de outra cidade, traz TECIDO, leva nosso TRIGO. E junto vem PALAVRA nova, FERRAMENTA nova, ATÉ DEUS novo! Cidade não é só prédio — é MISTURA.",
+        "resumo": "Quando as cidades cresceram, elas começaram a TROCAR coisas entre si. Isso é a CIRCULAÇÃO.<br><br>CIRCULAVAM 3 coisas:<br>• PESSOAS — mercadores, viajantes, soldados, escravos<br>• PRODUTOS — trigo, tecido, tempero, metal, cerâmica<br>• CULTURAS — palavras (línguas), religião, técnicas, ideias, comida<br><br>O COMÉRCIO foi a chave: quem tinha sobrando trocava com quem tinha faltando. E sem perceber, levavam JEITOS DE VIVER junto. Por isso temos palavras de outros povos, comidas de outros povos, festas de outros povos.",
+        "quiz": [
+          {
+            "p": "Quando as cidades começaram a TROCAR coisas entre si, isso é o que chamamos de:",
+            "op": [
+              "circulação (de pessoas, produtos e culturas)",
+              "fim do mundo",
+              "guerra civil",
+              "agricultura"
+            ],
+            "correta": 0,
+            "explica": "Circulação = ir e vir, troca constante. É o motor da expansão das cidades."
+          },
+          {
+            "p": "Qual destas coisas CIRCULAVA entre cidades antigas?",
+            "op": [
+              "todas: pessoas, produtos e até palavras de outras línguas",
+              "só ouro",
+              "só guerreiros",
+              "nada — cidades eram fechadas"
+            ],
+            "correta": 0,
+            "explica": "Pessoas levavam produtos. Produtos vinham com palavras, comidas, deuses, ideias."
+          },
+          {
+            "p": "No aniversário do Luca teve PIZZA (italiana) e SUSHI (japonês). Por que a gente come comida de outros países aqui no Brasil?",
+            "op": [
+              "porque culturas circulam — comidas viajam junto com pessoas",
+              "porque é moda dos prédios",
+              "porque o Brasil inventou tudo",
+              "porque a comida nasceu aqui"
+            ],
+            "correta": 0,
+            "explica": "Imigrantes trouxeram suas comidas. Cultura circula até hoje."
+          },
+          {
+            "p": "O COMÉRCIO entre cidades funcionava trocando o quê?",
+            "op": [
+              "o que sobrava num lugar pelo que faltava no outro",
+              "só dinheiro do governo",
+              "armas só",
+              "presentes de aniversário"
+            ],
+            "correta": 0,
+            "explica": "Cidade da costa tinha peixe; do interior, trigo. Trocavam."
+          }
+        ]
+      },
+      {
+        "id": "hi-cidades-hoje",
+        "emoji": "🏺",
+        "titulo": "Da Aldeia à Cidade de Hoje",
+        "cronos": "exploradora, MUITA coisa mudou da aldeia antiga até Belém. Mas algumas coisas continuam IGUAIS — a gente ainda vive perto de água, ainda troca coisas, ainda tem chefe. Quem é detetive do tempo identifica o que MUDOU e o que CONTINUA!",
+        "resumo": "TRANSFORMAÇÕES = o que MUDOU da aldeia antiga pra cidade de hoje.<br>Ex.: casa de barro → prédio; carroça → carro; mercado de troca → loja com dinheiro; chefe da tribo → prefeito eleito.<br><br>PERMANÊNCIAS = o que CONTINUA igual.<br>Ex.: cidade ainda perto de rio; comércio ainda circula produtos; ainda tem alguém governando; ainda há especialistas (médicos, professores, padeiros).",
+        "quiz": [
+          {
+            "p": "Quando algo MUDA ao longo do tempo na história, chamamos de:",
+            "op": [
+              "transformação",
+              "permanência",
+              "circulação",
+              "agricultura"
+            ],
+            "correta": 0,
+            "explica": "Transformação = o que mudou. Permanência = o que continuou igual."
+          },
+          {
+            "p": "Qual destas é uma PERMANÊNCIA entre cidade antiga e cidade de hoje?",
+            "op": [
+              "as duas estão perto de rios/água",
+              "todas têm carros",
+              "todas têm internet",
+              "todas têm prédio gigante"
+            ],
+            "correta": 0,
+            "explica": "Belém fica bem na beira da baía e de rios — a gente ainda vive perto da água. Permanência clássica."
+          },
+          {
+            "p": "Qual destas é uma TRANSFORMAÇÃO da cidade antiga pra hoje?",
+            "op": [
+              "trocas eram feitas com produtos; hoje usamos DINHEIRO",
+              "ainda existe comércio",
+              "ainda existem casas",
+              "ainda existe governante"
+            ],
+            "correta": 0,
+            "explica": "Dinheiro substituiu a troca direta. As outras 3 são permanências."
+          },
+          {
+            "p": "Por que a CIRCULAÇÃO de produtos é uma PERMANÊNCIA?",
+            "op": [
+              "as cidades sempre dependeram de trocar — ontem e hoje",
+              "só hoje existe comércio",
+              "antigamente ninguém trocava nada",
+              "comércio é coisa nova"
+            ],
+            "correta": 0,
+            "explica": "Desde as primeiras cidades até hoje, cidades trocam coisas. Mudou o jeito, não o costume."
+          }
+        ]
+      }
+    ]
+  },
+  "geografia": {
+    "missoes": [
+      {
+        "id": "ge-materiaprima",
+        "emoji": "🗺️",
+        "titulo": "Matéria-prima e Produto",
+        "cronos": "Olha em volta, exploradora: mochila, lápis, tênis... tudo veio da natureza! 🌳",
+        "resumo": "RECURSOS NATURAIS = tudo da natureza que usamos.<br>• MATÉRIA-PRIMA: recurso natural usado pra fabricar<br>• PRODUTO: o que é fabricado<br>3 tipos de matéria-prima:<br>• ANIMAL: lã, leite, couro, carne (pecuária/pesca)<br>• VEGETAL: trigo, madeira, cacau (agricultura/extrativismo)<br>• MINERAL: ferro, cobre, petróleo (mineração)",
+        "quiz": [
+          {
+            "p": "O que é matéria-prima?",
+            "op": [
+              "recurso natural usado pra fabricar um produto",
+              "produto pronto na loja",
+              "dinheiro pra comprar",
+              "lixo descartado"
+            ],
+            "correta": 0,
+            "explica": "Matéria-prima = recurso natural pra fazer produto."
+          },
+          {
+            "p": "A Nina comeu pão no café da manhã. O pão é produto — qual é a matéria-prima dele?",
+            "op": [
+              "o trigo",
+              "a padaria",
+              "o dinheiro",
+              "o saco plástico"
+            ],
+            "correta": 0,
+            "explica": "Trigo vira pão."
+          },
+          {
+            "p": "Leite e lã são matérias-primas de origem:",
+            "op": [
+              "animal",
+              "vegetal",
+              "mineral",
+              "industrial"
+            ],
+            "correta": 0,
+            "explica": "Animais = animal."
+          },
+          {
+            "p": "O brinquedo de plástico do Luca é feito de qual matéria-prima?",
+            "op": [
+              "mineral (vem do petróleo)",
+              "vegetal (árvores)",
+              "animal (couro)",
+              "não é matéria-prima"
+            ],
+            "correta": 0,
+            "explica": "Petróleo = mineral."
+          }
+        ]
+      },
+      {
+        "id": "ge-campocidade",
+        "emoji": "🗺️",
+        "titulo": "Campo e Cidade",
+        "cronos": "Campo e cidade são melhores amigos, exploradora! 🏙️🌾",
+        "resumo": "CAMPO (zona rural) e CIDADE (urbana) se COMPLETAM:<br>• Campo: agricultura, pecuária, extrativismo<br>• Cidade: comércio, indústria, serviços<br>Maior parte das MATÉRIAS-PRIMAS vem do campo, vai pra cidade virar produto.",
+        "quiz": [
+          {
+            "p": "Principais atividades do campo:",
+            "op": [
+              "agricultura, pecuária e extrativismo",
+              "comércio, indústria e serviços",
+              "apenas turismo",
+              "apenas construção"
+            ],
+            "correta": 0,
+            "explica": "Campo predominam essas atividades."
+          },
+          {
+            "p": "Relação campo × cidade?",
+            "op": [
+              "interdependência — um depende do outro",
+              "competição",
+              "separação total",
+              "fazem as mesmas coisas"
+            ],
+            "correta": 0,
+            "explica": "Campo dá matéria-prima, cidade dá produtos."
+          },
+          {
+            "p": "Maior parte das matérias-primas vem de onde?",
+            "op": [
+              "do campo (zona rural)",
+              "da cidade",
+              "das lojas",
+              "das escolas"
+            ],
+            "correta": 0,
+            "explica": "Campo é a fonte."
+          },
+          {
+            "p": "Na cidade predominam:",
+            "op": [
+              "comércio, indústria e prestação de serviços",
+              "agricultura e pecuária",
+              "pesca e extrativismo",
+              "plantio de soja"
+            ],
+            "correta": 0,
+            "explica": "Atividades urbanas."
+          }
+        ]
+      },
+      {
+        "id": "ge-extrativismo",
+        "emoji": "🗺️",
+        "titulo": "Atividades Extrativistas",
+        "cronos": "exploradora, EXTRATIVISMO é tirar algo direto da natureza. Madeira do mato, ferro da mina, peixe do mar, água do rio. Tudo que a gente USA vem disso!",
+        "resumo": "EXTRATIVISMO = atividade de RETIRAR recursos da natureza pra usar/transformar.<br><br>3 tipos principais:<br>• VEGETAL — madeira, frutas do mato, borracha, açaí, castanha<br>• ANIMAL — pesca, caça (proibida), apicultura (mel)<br>• MINERAL — ferro, ouro, petróleo, areia, granito, pedra<br><br>Cuidado: muitos recursos são FINITOS — se tirar demais, acabam. Por isso o extrativismo precisa ser SUSTENTÁVEL (tirar respeitando o tempo de a natureza repor).",
+        "quiz": [
+          {
+            "p": "O que é uma atividade EXTRATIVISTA?",
+            "op": [
+              "tirar recursos direto da natureza",
+              "transformar matéria-prima em produto",
+              "vender em loja",
+              "fazer publicidade"
+            ],
+            "correta": 0,
+            "explica": "Extrativismo = extração de recursos da natureza."
+          },
+          {
+            "p": "O Sérgio foi pescar peixes no rio. A PESCA é extrativismo de tipo:",
+            "op": [
+              "animal",
+              "vegetal",
+              "mineral",
+              "industrial"
+            ],
+            "correta": 0,
+            "explica": "Tira animais (peixes) da natureza."
+          },
+          {
+            "p": "Tirar OURO de uma mina é extrativismo:",
+            "op": [
+              "mineral",
+              "animal",
+              "vegetal",
+              "alimentar"
+            ],
+            "correta": 0,
+            "explica": "Ouro é mineral. Mineração = extrativismo mineral."
+          },
+          {
+            "p": "Por que o extrativismo precisa ser SUSTENTÁVEL?",
+            "op": [
+              "muitos recursos são finitos — se tirar demais, acabam",
+              "tirar é sempre seguro",
+              "a natureza repõe na hora",
+              "não importa se acaba"
+            ],
+            "correta": 0,
+            "explica": "Tirar sem cuidado = recurso acaba pras próximas gerações."
+          }
+        ]
+      },
+      {
+        "id": "ge-energia-renovavel",
+        "emoji": "🗺️",
+        "titulo": "Energia: Renovável ou Não",
+        "cronos": "Pra eu acender essa lâmpada, exploradora, precisa de ENERGIA. Mas existe energia que ACABA — e energia que NÃO ACABA. As duas vêm da natureza, mas com IMPACTOS bem diferentes!",
+        "resumo": "Toda energia que usamos vem de FONTES — alguns acabam, outros não.<br><br>🌱 FONTES RENOVÁVEIS — não acabam (se forem bem usadas)<br>• Sol → energia solar (placas)<br>• Vento → energia eólica (cataventos)<br>• Água → energia hidrelétrica (rio/queda)<br>• Biomassa → cana, bagaço, lenha<br><br>🛢️ FONTES NÃO RENOVÁVEIS — acabam, demoraram milhões de anos pra se formar<br>• Petróleo (vira gasolina, plástico)<br>• Carvão mineral<br>• Gás natural<br><br>No Brasil, a maior parte da energia elétrica vem das HIDRELÉTRICAS — renovável, mas com impactos na natureza (próxima missão!).",
+        "quiz": [
+          {
+            "p": "A Alice quer escolher uma fonte de energia RENOVÁVEL. Qual destas é?",
+            "op": [
+              "energia solar (do Sol)",
+              "petróleo",
+              "carvão mineral",
+              "gás natural"
+            ],
+            "correta": 0,
+            "explica": "Sol não acaba. Petróleo, carvão e gás levaram milhões de anos pra se formar."
+          },
+          {
+            "p": "O que torna o PETRÓLEO uma fonte NÃO RENOVÁVEL?",
+            "op": [
+              "demorou milhões de anos pra se formar; quando acabar, acabou",
+              "é renovado a cada chuva",
+              "vem do Sol",
+              "nasce de novo todo dia"
+            ],
+            "correta": 0,
+            "explica": "Combustíveis fósseis = formação muito lenta, uso muito rápido."
+          },
+          {
+            "p": "ENERGIA EÓLICA vem de onde?",
+            "op": [
+              "do vento (cataventos giram)",
+              "do Sol direto",
+              "do petróleo",
+              "da lenha"
+            ],
+            "correta": 0,
+            "explica": "Eólica = vento. Lembra de 'Eolo', deus dos ventos."
+          },
+          {
+            "p": "Por que o Brasil usa MUITO energia hidrelétrica?",
+            "op": [
+              "temos muitos rios grandes — fonte abundante e renovável",
+              "porque não tem Sol",
+              "porque o vento aqui é fraco",
+              "porque não tem terra"
+            ],
+            "correta": 0,
+            "explica": "Geografia ajuda: rios caudalosos = potencial hidrelétrico enorme."
+          }
+        ]
+      },
+      {
+        "id": "ge-hidreletrica",
+        "emoji": "🗺️",
+        "titulo": "Hidrelétricas: o Impacto",
+        "cronos": "exploradora, a usina hidrelétrica é boa: usa força da ÁGUA pra gerar luz. Mas pra construir, ela ALAGA uma região inteira. Aldeia, floresta, bicho — embaixo d'água. É preciso pesar o que ganha e o que perde!",
+        "resumo": "USINA HIDRELÉTRICA = usa a FORÇA DA ÁGUA caindo pra girar uma turbina, que gera ENERGIA ELÉTRICA.<br><br>VANTAGENS:<br>• Fonte RENOVÁVEL (rio não acaba)<br>• Não solta fumaça (como solta a queima de carvão)<br>• Energia barata<br><br>IMPACTOS NEGATIVOS:<br>• ALAGA uma área enorme — formação de represa/lago artificial<br>• Florestas, casas e cidades inteiras precisam ser realocadas<br>• Animais perdem habitat; alguns morrem<br>• Peixes não conseguem subir o rio (barragem bloqueia)<br>• Comunidades INDÍGENAS e RIBEIRINHAS são deslocadas<br><br>⚠️ MUITO IMPORTANTE: a hidrelétrica é RENOVÁVEL (o rio não acaba), mas NÃO é considerada uma energia LIMPA — justamente por causa desses impactos. É uma TROCA: a natureza local paga um preço alto.",
+        "quiz": [
+          {
+            "p": "Uma usina HIDRELÉTRICA gera energia usando:",
+            "op": [
+              "a força da água que cai/corre",
+              "o calor do Sol direto",
+              "o vento dos cataventos",
+              "o petróleo"
+            ],
+            "correta": 0,
+            "explica": "Água em movimento gira turbinas → eletricidade."
+          },
+          {
+            "p": "Qual o MAIOR impacto negativo de uma hidrelétrica?",
+            "op": [
+              "alaga uma área enorme, desloca pessoas e animais, destrói florestas",
+              "polui o ar com fumaça",
+              "gasta petróleo",
+              "esgota o vento"
+            ],
+            "correta": 0,
+            "explica": "Represas viram lagos artificiais que cobrem tudo o que estava lá."
+          },
+          {
+            "p": "A hidrelétrica é uma energia LIMPA?",
+            "op": [
+              "Não — é renovável, mas NÃO é limpa, por causa dos impactos",
+              "Sim, é totalmente limpa e sem impacto",
+              "Não, porque solta muita fumaça",
+              "Sim, porque é barata"
+            ],
+            "correta": 0,
+            "explica": "Renovável (o rio não acaba), mas NÃO é limpa: alagar a área causa grande impacto na natureza."
+          },
+          {
+            "p": "Quem é mais afetado pela construção de uma hidrelétrica?",
+            "op": [
+              "famílias que moram na área alagada — incluindo indígenas e ribeirinhos",
+              "só os engenheiros",
+              "só os turistas",
+              "só os animais marinhos"
+            ],
+            "correta": 0,
+            "explica": "Comunidades inteiras precisam sair pra que a represa se forme."
+          }
+        ]
+      }
+    ]
+  },
+  "artes": {
+    "missoes": [
+      {
+        "id": "ar-munch-vida",
+        "emoji": "🎨",
+        "titulo": "Edvard Munch — Vida",
+        "cronos": "Oi exploradora! Vou te apresentar Edvard Munch, um pintor norueguês famoso que viveu há mais de 100 anos. Ele tinha muita imaginação!",
+        "resumo": "Edvard Munch (1863-1944):<br>• Nasceu em 12/12/1863 na NORUEGA<br>• Filho de Christian Munch (médico militar)<br>• Passou a INFÂNCIA DOENTE — não foi à escola, foi ALFABETIZADO EM CASA<br>• Como criança, DESENHAVA TUDO: paisagens, retratos, salas<br>• Considerado um dos artistas MODERNISTAS mais importantes",
+        "quiz": [
+          {
+            "p": "Em que ano Edvard Munch nasceu?",
+            "op": [
+              "1863",
+              "1893",
+              "1944",
+              "1763"
+            ],
+            "correta": 0,
+            "explica": "12/12/1863. 1893 é quando pintou O Grito; 1944 é quando morreu."
+          },
+          {
+            "p": "Em qual país Edvard Munch nasceu?",
+            "op": [
+              "Noruega",
+              "Itália",
+              "França",
+              "Espanha"
+            ],
+            "correta": 0,
+            "explica": "Noruega — país da Escandinávia, norte da Europa."
+          },
+          {
+            "p": "Por que Munch não foi à escola quando criança?",
+            "op": [
+              "passou a infância doente",
+              "não tinha escola perto",
+              "preferia trabalhar",
+              "era muito rico"
+            ],
+            "correta": 0,
+            "explica": "Foi alfabetizado em casa por causa da saúde."
+          },
+          {
+            "p": "Quando criança, o que Munch mais gostava de fazer?",
+            "op": [
+              "desenhar",
+              "jogar bola",
+              "ler",
+              "cantar"
+            ],
+            "correta": 0,
+            "explica": "Desenhava paisagens, retratos, salas — tudo!"
+          }
+        ]
+      },
+      {
+        "id": "ar-kusama",
+        "emoji": "🎨",
+        "titulo": "Yayoi Kusama — a Rainha das Bolinhas",
+        "cronos": "Olha as BOLINHAS, exploradora! Por todo lado! Essa é a YAYOI KUSAMA — artista japonesa que enche tudo de BOLINHAS e pontos — virou a marca dela no mundo todo!",
+        "resumo": "YAYOI KUSAMA (1929—) — artista JAPONESA, viva até hoje, uma das mais famosas do mundo.<br><br>O QUE ELA PINTA:<br>• BOLINHAS COLORIDAS (pontos, polka dots) — sua marca registrada<br>• ABÓBORAS gigantes (amarelas com bolinhas pretas)<br>• INSTALAÇÕES — salas inteiras de espelhos com pontos infinitos<br><br>TÉCNICAS:<br>• Pintura, escultura, performance, instalações<br>• Cores fortes e contrastantes (vermelho+branco, amarelo+preto)<br>• Padrões repetitivos que cobrem TUDO<br><br>POR QUÊ? Kusama convive com uma doença desde a infância. Em vez de fugir, ela TRANSFORMOU o que sente em ARTE — seu jeito de mostrar o mundo que enxerga.",
+        "quiz": [
+          {
+            "p": "Qual é a marca registrada da artista Yayoi Kusama?",
+            "op": [
+              "bolinhas/pontos coloridos cobrindo tudo",
+              "paisagens realistas",
+              "retratos clássicos",
+              "esculturas de mármore"
+            ],
+            "correta": 0,
+            "explica": "Polka dots são a assinatura de Kusama desde os anos 1960."
+          },
+          {
+            "p": "De qual país é Yayoi Kusama?",
+            "op": [
+              "Japão",
+              "Argentina",
+              "Noruega",
+              "Brasil"
+            ],
+            "correta": 0,
+            "explica": "Kusama nasceu em Matsumoto, Japão, em 1929."
+          },
+          {
+            "p": "A ABÓBORA é um símbolo recorrente nas obras de Kusama. Como ela aparece?",
+            "op": [
+              "gigante, amarela, coberta de bolinhas pretas",
+              "pequena e realista",
+              "verde e quadrada",
+              "transparente"
+            ],
+            "correta": 0,
+            "explica": "Esculturas e pinturas de abóboras com pontos são icônicas dela."
+          },
+          {
+            "p": "Kusama usa MUITO padrões REPETITIVOS porque:",
+            "op": [
+              "transformou em arte o jeito como ela enxerga o mundo",
+              "é moda no Japão",
+              "é mais fácil de pintar",
+              "não gosta de cores"
+            ],
+            "correta": 0,
+            "explica": "Ela convive com uma doença desde criança e fez da arte sua forma de se expressar."
+          }
+        ]
+      },
+      {
+        "id": "ar-o-grito",
+        "emoji": "🎨",
+        "titulo": "O Grito",
+        "cronos": "A obra mais famosa de Munch, exploradora! O Grito — pintada em 1893, baseada num momento real que ele viveu!",
+        "resumo": "O GRITO (1893):<br>• Obra mais famosa de Munch<br>• Inspirada num momento REAL: Munch caminhava com 2 amigos quando o céu ficou VERMELHO COMO SANGUE — ele sentiu PÂNICO<br>• Pintada na colina Ekeberg, Oslo (Noruega)<br>• Existem 5 VERSÕES da obra<br>• 4 estão no Museu da Noruega; 1 (1895) com um financista de Nova York<br>• Mostra uma figura GRITANDO sobre uma PONTE",
+        "quiz": [
+          {
+            "p": "Qual obra de Munch é a mais famosa?",
+            "op": [
+              "O Grito",
+              "A Menina Doente",
+              "Madonna",
+              "Vampiro"
+            ],
+            "correta": 0,
+            "explica": "O Grito (1893)."
+          },
+          {
+            "p": "Em que ano Munch pintou 'O Grito'?",
+            "op": [
+              "1893",
+              "1863",
+              "1944",
+              "1995"
+            ],
+            "correta": 0,
+            "explica": "1893 — 1 ano depois do surto de pânico."
+          },
+          {
+            "p": "Quantas versões existem da obra 'O Grito'?",
+            "op": [
+              "5",
+              "1",
+              "10",
+              "100"
+            ],
+            "correta": 0,
+            "explica": "5 versões. 4 na Noruega + 1 em NY."
+          },
+          {
+            "p": "O que Munch sentiu antes de pintar 'O Grito'?",
+            "op": [
+              "pânico, com o céu vermelho como sangue",
+              "muita alegria",
+              "muito frio",
+              "fome"
+            ],
+            "correta": 0,
+            "explica": "Surto de pânico ao ver o pôr-do-sol vermelho."
+          }
+        ]
+      },
+      {
+        "id": "ar-cores-emocoes",
+        "emoji": "🎨",
+        "titulo": "Cores e Emoções",
+        "cronos": "Cores podem MOSTRAR sentimentos, exploradora! Munch usava cores DIFERENTES do esperado — verde pra medo, vermelho pra desconforto.",
+        "resumo": "Munch usava cores de jeito POUCO CONVENCIONAL:<br>• VERDE → medo<br>• VERMELHO SANGUE → desconforto/urgência<br>• Cada cor expressava uma EMOÇÃO<br>• Atmosfera intensa criada pelas escolhas de cor<br>• Ele 'pintava sentimentos', não só objetos",
+        "quiz": [
+          {
+            "p": "O Bernardo vai pintar o MEDO igual o Munch fazia. Que cor ele usaria?",
+            "op": [
+              "verde",
+              "rosa",
+              "amarelo claro",
+              "branco"
+            ],
+            "correta": 0,
+            "explica": "Verde — escolha não convencional."
+          },
+          {
+            "p": "Pra Munch, um céu em VERMELHO SANGUE transmitiria:",
+            "op": [
+              "desconforto, urgência",
+              "calma",
+              "alegria",
+              "frio"
+            ],
+            "correta": 0,
+            "explica": "Vermelho sangue = atmosfera intensa de desconforto."
+          },
+          {
+            "p": "Por que Munch escolhia cores 'pouco convencionais'?",
+            "op": [
+              "pra expressar emoções diversas",
+              "porque era moda",
+              "era cego pra cores",
+              "não tinha outras tintas"
+            ],
+            "correta": 0,
+            "explica": "Cor = ferramenta de expressão emocional."
+          },
+          {
+            "p": "Munch usava as cores pra:",
+            "op": [
+              "transmitir atmosfera de emoções",
+              "imitar a realidade exatamente",
+              "deixar tudo bonito",
+              "esconder o desenho"
+            ],
+            "correta": 0,
+            "explica": "Cor = emoção, não realismo."
+          }
+        ]
+      },
+      {
+        "id": "ar-xul-solar",
+        "emoji": "🎨",
+        "titulo": "Xul Solar — o Inventor de Mundos",
+        "cronos": "exploradora, esse aqui é o XUL SOLAR — argentino, MISTURA de pintor, músico, astrólogo e INVENTOR! Pintava cidades flutuantes, anjos, símbolos. Tudo com cores brilhantes e linhas finas!",
+        "resumo": "XUL SOLAR (1887—1963) — argentino, nascido em San Fernando (Argentina). Nome real: Oscar Alejandro Schulz Solari.<br><br>O QUE PINTAVA:<br>• MUNDOS IMAGINÁRIOS — cidades flutuantes, escadas pro céu, criaturas mágicas<br>• ANJOS, símbolos místicos, formas geométricas<br>• Inventou até LÍNGUAS NOVAS e JOGOS DE TABULEIRO próprios!<br><br>CARACTERÍSTICAS:<br>• MUITAS FORMAS pequenas dentro de uma obra grande<br>• LINHAS finas e marcantes — desenho preciso<br>• Cores VIVAS (azul, amarelo, vermelho, verde)<br>• Aquarela em papel pequeno (a maioria das obras é pequena)<br>• Tema ONÍRICO — mundos de sonho e fábula<br><br>O apelido 'Xul' foi dado pelo amigo pintor Emilio Pettoruti.",
+        "quiz": [
+          {
+            "p": "De qual país é Xul Solar?",
+            "op": [
+              "Argentina",
+              "Brasil",
+              "Japão",
+              "Noruega"
+            ],
+            "correta": 0,
+            "explica": "San Fernando, Argentina. Mesmo país do Maradona, do tango."
+          },
+          {
+            "p": "O que mais aparece nas obras de Xul Solar?",
+            "op": [
+              "mundos imaginários — cidades flutuantes, anjos, símbolos",
+              "fotos da vida real",
+              "retratos sérios",
+              "natureza-morta clássica"
+            ],
+            "correta": 0,
+            "explica": "Xul pintava mundos de sonho e fábula, que não existem."
+          },
+          {
+            "p": "As OBRAS de Xul Solar são feitas COMO?",
+            "op": [
+              "em geral aquarelas em papel pequeno, com muitas formas e linhas finas",
+              "telas gigantes a óleo",
+              "esculturas de bronze",
+              "fotografias antigas"
+            ],
+            "correta": 0,
+            "explica": "Aquarela, papel pequeno, muito detalhe miúdo."
+          },
+          {
+            "p": "Além de pintor, Xul Solar também era:",
+            "op": [
+              "músico, astrólogo e INVENTOR (até de línguas e jogos!)",
+              "só pintor — mais nada",
+              "engenheiro só de pontes",
+              "fotógrafo"
+            ],
+            "correta": 0,
+            "explica": "Multitalento — uma personalidade única na arte argentina."
+          }
+        ]
+      }
+    ]
+  },
+  "ciencias": {
+    "missoes": [
+      {
+        "id": "ci-mistura-homo",
+        "emoji": "🔬",
+        "titulo": "Misturas Homogêneas",
+        "cronos": "Bzzzt exploradora! Joguei sal nesse copo d'água e... CADÊ O SAL? Sumiu? Não sumiu — virou UMA COISA só com a água. Isso é mistura HOMOGÊNEA!",
+        "resumo": "MISTURA HOMOGÊNEA = você só vê UMA FASE. Os componentes se misturam TÃO bem que parecem uma coisa só.<br><br>Exemplos:<br>• Sal + água (água salgada)<br>• Açúcar + café<br>• Álcool + água<br>• Ar que respiramos (oxigênio + nitrogênio + outros gases)<br>• Aço (ferro + carbono)<br><br>Dica: se mexer e parecer 'um líquido só', é HOMOGÊNEA.",
+        "quiz": [
+          {
+            "p": "A Cientista Maluca pediu pro Cadu jogar sal na água. O sal 'sumiu'! Que tipo de mistura ficou?",
+            "op": [
+              "homogênea — uma fase só",
+              "heterogênea — duas fases",
+              "não é mistura",
+              "uma transformação química"
+            ],
+            "correta": 0,
+            "explica": "O sal se dissolveu. Olhando, vê um líquido só = homogênea."
+          },
+          {
+            "p": "A Stella tem 4 misturas na bancada e precisa achar a HOMOGÊNEA. Qual é?",
+            "op": [
+              "açúcar dissolvido no café",
+              "água com pedras de gelo",
+              "água com areia",
+              "salada de frutas"
+            ],
+            "correta": 0,
+            "explica": "Açúcar dissolvido = uma fase só. As outras têm pedaços visíveis = heterogêneas."
+          },
+          {
+            "p": "O AR que a gente respira é uma mistura:",
+            "op": [
+              "homogênea (vários gases formando um só)",
+              "heterogênea",
+              "não é mistura",
+              "sólida"
+            ],
+            "correta": 0,
+            "explica": "Oxigênio, nitrogênio, outros gases — mas a gente vê 'ar' como uma coisa só."
+          },
+          {
+            "p": "Numa mistura homogênea você consegue ver:",
+            "op": [
+              "apenas UMA fase (parece uma coisa só)",
+              "duas ou mais fases distintas",
+              "as cores dos componentes separadas",
+              "os pedaços de cada coisa"
+            ],
+            "correta": 0,
+            "explica": "Uma fase = visualmente uniforme."
+          }
+        ]
+      },
+      {
+        "id": "ci-mistura-hetero",
+        "emoji": "🔬",
+        "titulo": "Misturas Heterogêneas",
+        "cronos": "Agora, exploradora, eu jogo ÓLEO na água. Olha — não mistura! Óleo fica em cima, água embaixo. DUAS FASES visíveis. Isso é mistura HETEROGÊNEA!",
+        "resumo": "MISTURA HETEROGÊNEA = você consegue VER 2 OU MAIS FASES diferentes.<br><br>Exemplos:<br>• Água + óleo (separam em camadas)<br>• Água + areia (areia decanta)<br>• Granito (rocha com 3 minerais visíveis: quartzo, feldspato, mica)<br>• Sangue (vários componentes visíveis ao microscópio)<br>• Salada de frutas (cada pedaço é uma coisa)<br>• Concreto (cimento + areia + brita)<br><br>Dica: se você vê PEDAÇOS ou CAMADAS, é HETEROGÊNEA.",
+        "quiz": [
+          {
+            "p": "O Miguel misturou água e óleo e viu o óleo boiar em cima, formando 2 camadas. Essa mistura é:",
+            "op": [
+              "heterogênea — duas fases visíveis (camadas)",
+              "homogênea — uma fase só",
+              "não é mistura",
+              "líquido único"
+            ],
+            "correta": 0,
+            "explica": "Óleo sobe, água fica embaixo. Duas fases = heterogênea."
+          },
+          {
+            "p": "A Giulia olhou de pertinho o GRANITO da calçada e viu vários grãos coloridos diferentes. O granito é:",
+            "op": [
+              "heterogêneo — dá pra ver vários grãos coloridos diferentes",
+              "homogêneo — uma coisa só",
+              "líquido",
+              "gás"
+            ],
+            "correta": 0,
+            "explica": "Granito = quartzo + feldspato + mica. Cada um é uma fase visível."
+          },
+          {
+            "p": "Salada de frutas é HETEROGÊNEA porque:",
+            "op": [
+              "você vê cada fruta separada — várias fases",
+              "tudo virou uma coisa só",
+              "tem só um ingrediente",
+              "não é uma mistura"
+            ],
+            "correta": 0,
+            "explica": "Pedaços visíveis = várias fases."
+          },
+          {
+            "p": "A diferença essencial entre homogênea e heterogênea é:",
+            "op": [
+              "número de FASES visíveis (1 homo / 2+ hetero)",
+              "tamanho da mistura",
+              "a temperatura",
+              "a cor"
+            ],
+            "correta": 0,
+            "explica": "Conta quantas fases dá pra distinguir."
+          }
+        ]
+      },
+      {
+        "id": "ci-transf-fisica",
+        "emoji": "🔬",
+        "titulo": "Transformação Física",
+        "cronos": "exploradora, vou DERRETER esse gelo. Mudou? Mudou — virou água. Mas é AINDA H2O! Não virou outra coisa. Isso é transformação FÍSICA: muda a CARA, não muda a SUBSTÂNCIA. E dá pra desfazer!",
+        "resumo": "TRANSFORMAÇÃO FÍSICA = a substância MUDA DE ESTADO ou de FORMA, mas continua sendo a MESMA substância. Em geral é REVERSÍVEL (dá pra desfazer).<br><br>Exemplos:<br>• Gelo derrete → vira água (mas continua H2O)<br>• Água ferve → vira vapor (continua H2O)<br>• Papel é rasgado em pedaços (continua papel)<br>• Ferro é dobrado/martelado (continua ferro)<br>• Açúcar dissolve na água (depois evapora e o açúcar volta)<br><br>Dica: se desfez sem virar outra coisa, é FÍSICA.",
+        "quiz": [
+          {
+            "p": "O Bernardo esqueceu um gelo no sol e ele DERRETEU, virando água. Essa transformação é:",
+            "op": [
+              "física — mudou de estado, mas continua sendo H2O",
+              "química — virou outra substância",
+              "uma mistura",
+              "não é transformação"
+            ],
+            "correta": 0,
+            "explica": "Mudou só o estado físico. Substância continua a mesma."
+          },
+          {
+            "p": "A Mila precisa apontar a transformação FÍSICA entre estas. Qual é?",
+            "op": [
+              "papel sendo rasgado em pedaços",
+              "papel sendo queimado",
+              "ferro enferrujando",
+              "ovo cozinhando"
+            ],
+            "correta": 0,
+            "explica": "Rasgar muda só a forma. Os outros 3 são transformações químicas."
+          },
+          {
+            "p": "Transformação física geralmente é REVERSÍVEL. O que isso quer dizer?",
+            "op": [
+              "dá pra desfazer e voltar ao estado original",
+              "nunca mais volta",
+              "vira outra substância",
+              "é sempre rápida"
+            ],
+            "correta": 0,
+            "explica": "Reversível = dá pra reverter. Gelo virou água; pode congelar de novo."
+          },
+          {
+            "p": "A Clara mexeu açúcar no café e ele 'sumiu'. A transformação do açúcar é:",
+            "op": [
+              "física — se evaporar o líquido, o açúcar volta",
+              "química — virou outra coisa pra sempre",
+              "não houve transformação",
+              "uma mistura nova"
+            ],
+            "correta": 0,
+            "explica": "Açúcar continua açúcar — só está dissolvido. Não nasce substância nova, por isso é FÍSICA — e a mistura que se forma é HOMOGÊNEA."
+          }
+        ]
+      },
+      {
+        "id": "ci-transf-quimica",
+        "emoji": "🔬",
+        "titulo": "Transformação Química",
+        "cronos": "Olha exploradora, vou QUEIMAR esse papelzinho. PUFF! Virou CINZA. E cinza... NÃO vira papel de volta! Isso é química — nasceu uma SUBSTÂNCIA NOVA, e geralmente NÃO TEM VOLTA!",
+        "resumo": "TRANSFORMAÇÃO QUÍMICA = aparece UMA SUBSTÂNCIA NOVA, com características DIFERENTES das originais. Em geral é IRREVERSÍVEL (não dá pra desfazer).<br><br>Sinais de transformação química:<br>• Mudança de COR<br>• Aparecimento de FUMAÇA ou CHEIRO novo<br>• Formação de BOLHAS (gás)<br>• Liberação de CALOR/LUZ (chama)<br><br>Exemplos:<br>• Queimar papel (vira cinza+fumaça)<br>• Ferro enferrujando (ferrugem é nova substância)<br>• Ovo cozinhando (proteína muda pra sempre)<br>• Misturar vinagre + bicarbonato (espuma!)<br><br>🍌 DECOMPOSIÇÃO — um caso especial:<br>Aquela banana preta? Foi um EXÉRCITO invisível de FUNGOS e BACTÉRIAS que comeu ela! Eles transformam fruta podre, folha caída e até bicho morto em substâncias novas. Nojento? É. Mas sem eles o mundo seria uma montanha de lixo que nunca some. Isso é a decomposição — transformação química que faz a CICLAGEM da matéria: o que era ser vivo vira adubo e nutre a natureza de novo.",
+        "quiz": [
+          {
+            "p": "O Estevão queimou um papelzinho e ele virou cinza + fumaça. Que transformação é essa?",
+            "op": [
+              "química — virou cinza + fumaça (substâncias novas)",
+              "física — só mudou de forma",
+              "uma mistura",
+              "não é transformação"
+            ],
+            "correta": 0,
+            "explica": "Cinza não é papel. Substância nova = química."
+          },
+          {
+            "p": "O portão da casa do Thiago ENFERRUJOU. Por que isso é transformação química?",
+            "op": [
+              "a ferrugem é uma substância NOVA, diferente do ferro",
+              "o ferro só mudou de cor",
+              "é só sujeira",
+              "é reversível"
+            ],
+            "correta": 0,
+            "explica": "Ferrugem é óxido de ferro — composto novo, com propriedades diferentes."
+          },
+          {
+            "p": "Qual destes SINAIS indica que aconteceu transformação química?",
+            "op": [
+              "mudança de cor + fumaça + cheiro novo",
+              "só ficou mais quente",
+              "só ficou maior",
+              "nada visível"
+            ],
+            "correta": 0,
+            "explica": "Esses sinais (cor, fumaça, cheiro, bolhas, chama) avisam que a substância mudou."
+          },
+          {
+            "p": "A Betina cozinhou um OVO no café da manhã. Por que isso é transformação química?",
+            "op": [
+              "a clara/gema mudam pra sempre — não voltam ao estado cru",
+              "só ficou mais quente",
+              "é reversível",
+              "não houve mudança"
+            ],
+            "correta": 0,
+            "explica": "A proteína coagulou — não tem como descozinhar."
+          },
+          {
+            "p": "A banana esquecida na lancheira do Vinícius ficou preta e mole — fungos e bactérias agiram nela. Esse processo é a:",
+            "op": [
+              "decomposição — transformação química que recicla a matéria",
+              "transformação física reversível",
+              "uma mistura homogênea",
+              "evaporação"
+            ],
+            "correta": 0,
+            "explica": "Decomposição = fungos/bactérias transformam o que era vivo em substâncias novas (ciclagem da matéria)."
+          }
+        ]
+      },
+      {
+        "id": "ci-cinco-rs",
+        "emoji": "🔬",
+        "titulo": "Os 5 R's da Sustentabilidade",
+        "cronos": "exploradora, olha a quantidade de lixo nessa praia! Eu uso a regra dos 5 R's pra cuidar do planeta. E a ORDEM importa: REPENSAR vem antes de RECICLAR!",
+        "resumo": "Os 5 R's são 5 atitudes pra DIMINUIR o lixo e PROTEGER o planeta — em ORDEM de importância:<br><br>1️⃣ REPENSAR — antes de comprar, pergunta: 'eu PRECISO disso?'<br>2️⃣ RECUSAR — não aceita o que faz mal pro planeta (canudo plástico, sacola, embalagem extra)<br>3️⃣ REDUZIR — usa menos: menos água, menos energia, menos produtos descartáveis<br>4️⃣ REUTILIZAR — dá segunda vida (pote de vidro vira porta-lápis, roupa vira pano)<br>5️⃣ RECICLAR — transforma o lixo em matéria-prima nova (papel, plástico, vidro, metal)<br><br>A reciclagem é IMPORTANTE — mas o melhor lixo é o que NÃO foi gerado.",
+        "quiz": [
+          {
+            "p": "Qual é a ordem CORRETA dos 5 R's da sustentabilidade?",
+            "op": [
+              "Repensar, Recusar, Reduzir, Reutilizar, Reciclar",
+              "Reciclar, Reduzir, Reutilizar, Recusar, Repensar",
+              "Reciclar, Repensar, Recusar, Reduzir, Reutilizar",
+              "Reduzir, Reciclar, Reutilizar, Repensar, Recusar"
+            ],
+            "correta": 0,
+            "explica": "RePensar → Recusar → Reduzir → Reutilizar → Reciclar. Ordem do mais importante pro último recurso."
+          },
+          {
+            "p": "A Luiza quer REUTILIZAR alguma coisa em casa. Qual destas é uma ação de reutilizar?",
+            "op": [
+              "pote de vidro de azeitona vira porta-lápis",
+              "jogar uma garrafa no lixo reciclável",
+              "comprar uma sacola nova",
+              "imprimir mais papel"
+            ],
+            "correta": 0,
+            "explica": "Reutilizar = dar nova função ao mesmo objeto, sem virar matéria-prima."
+          },
+          {
+            "p": "No lanche, o Sérgio disse 'não, obrigado' ao canudo plástico. Ele está praticando qual dos 5 R's?",
+            "op": [
+              "o segundo R: Recusar",
+              "Reciclagem",
+              "Redução de imposto",
+              "Repensamento do menu"
+            ],
+            "correta": 0,
+            "explica": "Recusar = não aceitar o que vai virar lixo desnecessário."
+          },
+          {
+            "p": "Por que REPENSAR vem ANTES de RECICLAR?",
+            "op": [
+              "o melhor lixo é o que NEM existe — repensar evita que ele seja gerado",
+              "porque reciclar é difícil",
+              "porque ninguém recicla",
+              "porque reciclar polui mais"
+            ],
+            "correta": 0,
+            "explica": "Evitar gerar lixo é sempre melhor do que tratar o lixo depois."
+          }
+        ]
+      }
+    ]
+  },
+  "edfisica": {
+    "missoes": [
+      {
+        "id": "ed-jogo-vs-esporte",
+        "emoji": "🏅",
+        "titulo": "Jogo ou Esporte? Precisão!",
+        "cronos": "Bzzzt exploradora! Boliche é um JOGO ou um ESPORTE? Tem coisa em comum nos dois — mas a regra muda. Vou te ensinar a diferenciar!",
+        "resumo": "Em atividades de PRECISÃO, a gente acerta um ALVO usando MIRA e CONTROLE do movimento. Mas tem diferença:<br><br>🎮 JOGO de precisão<br>• Regras MAIS FLEXÍVEIS<br>• Foco no DIVERTIMENTO<br>• Geralmente recreativo, não competitivo profissional<br>• Ex.: jogo da argola, boliche caseiro, acerte o alvo, jogo da linha<br><br>🏅 ESPORTE de precisão<br>• Regras OFICIAIS, federações<br>• Treino sério, competição organizada<br>• Pode ter Olimpíada<br>• Ex.: bocha (paralímpica!), tiro com arco (olímpico), golfe (olímpico), shuffleboard<br><br>Os DOIS desenvolvem mira, concentração e controle do corpo.",
+        "quiz": [
+          {
+            "p": "Em jogos/esportes de PRECISÃO, o objetivo principal é:",
+            "op": [
+              "acertar um ALVO com mira e controle",
+              "correr o mais rápido possível",
+              "levantar peso",
+              "lutar contra o adversário"
+            ],
+            "correta": 0,
+            "explica": "Precisão = acertar com exatidão. Boliche, dardo, golfe, bocha..."
+          },
+          {
+            "p": "Qual a principal DIFERENÇA entre jogo e esporte de precisão?",
+            "op": [
+              "esporte tem regras OFICIAIS e competição organizada; jogo é mais flexível e recreativo",
+              "jogo é mais difícil",
+              "esporte é mais barato",
+              "não existe diferença"
+            ],
+            "correta": 0,
+            "explica": "Esporte = federações, regras formais. Jogo = recreação."
+          },
+          {
+            "p": "O Jota precisa escolher um ESPORTE de precisão (com regras oficiais). Qual destas é?",
+            "op": [
+              "bocha (até nas Paralimpíadas!)",
+              "jogo da argola na festa junina",
+              "jogo da linha no recreio",
+              "queda de braço no recreio"
+            ],
+            "correta": 0,
+            "explica": "Bocha tem federação e Olimpíadas. Os outros são jogos recreativos."
+          },
+          {
+            "p": "Tanto jogo quanto esporte de precisão desenvolvem:",
+            "op": [
+              "mira, concentração e controle do corpo",
+              "só força bruta",
+              "só velocidade",
+              "só flexibilidade"
+            ],
+            "correta": 0,
+            "explica": "Habilidades comuns: mira + foco + coordenação fina."
+          }
+        ]
+      },
+      {
+        "id": "ed-habilidades",
+        "emoji": "🏅",
+        "titulo": "Habilidades e Características",
+        "cronos": "Pra ACERTAR o alvo, exploradora, não basta força. Tem que ter MIRA, CALMA, jeito de respirar. É o esporte da CABEÇA!",
+        "resumo": "CARACTERÍSTICAS de jogos/esportes de precisão:<br>• Movimento CONTROLADO (não brusco)<br>• Distância e alvo bem definidos<br>• Usa objeto específico (bola, dardo, argola, taco, flecha)<br>• Pontuação baseada em quão PERTO do alvo ou QUANTOS alvos<br><br>HABILIDADES DESENVOLVIDAS:<br>• MIRA — olhar e alinhar o alvo<br>• CONCENTRAÇÃO — bloquear distrações<br>• COORDENAÇÃO motora fina — controle preciso do braço/mão<br>• EQUILÍBRIO — postura estável na hora do arremesso<br>• CONTROLE DA RESPIRAÇÃO — não treme se respira certo<br>• PACIÊNCIA — esperar o momento certo",
+        "quiz": [
+          {
+            "p": "Qual habilidade é a MAIS IMPORTANTE em esportes de precisão?",
+            "op": [
+              "mira + concentração",
+              "força bruta",
+              "velocidade",
+              "altura do corpo"
+            ],
+            "correta": 0,
+            "explica": "Sem mira e concentração, mesmo o mais forte erra o alvo."
+          },
+          {
+            "p": "Por que a RESPIRAÇÃO importa em esportes de precisão?",
+            "op": [
+              "se respira certo, o corpo não treme — mira fica firme",
+              "pra correr mais rápido",
+              "porque é divertido",
+              "não importa"
+            ],
+            "correta": 0,
+            "explica": "Respiração calma = músculo estável = mira precisa."
+          },
+          {
+            "p": "O movimento típico de quem joga precisão é:",
+            "op": [
+              "CONTROLADO, não brusco",
+              "agressivo e rápido",
+              "muito forte",
+              "aleatório"
+            ],
+            "correta": 0,
+            "explica": "Controle > força. Movimento bruto erra o alvo."
+          },
+          {
+            "p": "A pontuação em esportes de precisão geralmente é por:",
+            "op": [
+              "quão PERTO do centro do alvo ou QUANTOS alvos acertou",
+              "quão rápido terminou",
+              "quão alto pulou",
+              "quão pesado é o equipamento"
+            ],
+            "correta": 0,
+            "explica": "Conta a EXATIDÃO da pontaria, não velocidade ou força."
+          }
+        ]
+      },
+      {
+        "id": "ed-jogos",
+        "emoji": "🏅",
+        "titulo": "Tipos de JOGOS de Precisão",
+        "cronos": "exploradora, vou listar os jogos: ARGOLA, BOLICHE, ACERTE O ALVO, JOGO DA LINHA. Tudo isso é recreação — mas treina a precisão de verdade!",
+        "resumo": "4 JOGOS DE PRECISÃO típicos da escola/lazer:<br><br>🪀 JOGO DA ARGOLA — jogar argolas pra encaixar em uma estaca/pino fixo. Comum em festas.<br><br>🎳 BOLICHE — lançar a bola pra derrubar o maior número de pinos (ou garrafas) no fim da pista.<br><br>🎯 ACERTE O ALVO — arremessar bolinha/dardo em um alvo desenhado no chão ou parede com pontuação por zona.<br><br>🪢 JOGO DA LINHA — jogar uma bolinha tentando acertar/parar em cima de uma linha desenhada no chão (ou o mais próximo possível dela).<br><br>Todos podem ser feitos com materiais simples — argola de PVC, bolas, fita crepe no chão.",
+        "quiz": [
+          {
+            "p": "Na festa junina, o Pedro brincou de JOGO DA ARGOLA. Em que ele consiste?",
+            "op": [
+              "jogar argolas pra encaixar em uma estaca/pino",
+              "chutar bola no gol",
+              "correr 100 metros",
+              "pular corda"
+            ],
+            "correta": 0,
+            "explica": "Argola voando, pino parado, ela tem que descer encaixada."
+          },
+          {
+            "p": "BOLICHE: o objetivo é:",
+            "op": [
+              "derrubar pinos rolando a bola pela pista",
+              "encestar uma bola no aro",
+              "correr pra um ponto",
+              "lançar a bola pro mais longe"
+            ],
+            "correta": 0,
+            "explica": "Pinos no fim da pista. Quem derruba mais, vence."
+          },
+          {
+            "p": "ACERTE O ALVO se joga assim:",
+            "op": [
+              "arremessar bolinha/dardo num alvo, pontuando por zona",
+              "chutar uma bola pro alto",
+              "correr ao redor do alvo",
+              "pular sobre o alvo"
+            ],
+            "correta": 0,
+            "explica": "Quanto mais perto do centro, mais pontos."
+          },
+          {
+            "p": "No JOGO DA LINHA, o objetivo é:",
+            "op": [
+              "acertar/parar a bolinha o mais próximo da linha possível",
+              "pular sobre a linha",
+              "correr ao longo da linha",
+              "pintar a linha"
+            ],
+            "correta": 0,
+            "explica": "Precisão fina: chegar exatamente na linha, não passar."
+          }
+        ]
+      },
+      {
+        "id": "ed-bocha-shuffleboard",
+        "emoji": "🏅",
+        "titulo": "Esportes: Bocha e Shuffleboard",
+        "cronos": "exploradora, BOCHA e SHUFFLEBOARD: parecem simples, mas têm regras de competição mundial! Bocha até nas Paralimpíadas!",
+        "resumo": "🥎 BOCHA (paralímpica!)<br>• Joga-se com bolas de bocha e uma bola menor, o BOLIM<br>• Objetivo: chegar com SUA BOLA o mais perto possível do BOLIM<br>• Esporte INCLUSIVO — disputado por pessoas com e sem deficiência<br><br>🟦 SHUFFLEBOARD<br>• Pista lisa e longa (madeira ou cimento)<br>• Empurra-se um DISCO com um TACO LONGO<br>• Objetivo: parar o disco em zonas com pontuação no fim da pista<br>• Origem: surgiu na INGLATERRA e depois ficou popular nos ESTADOS UNIDOS<br><br>Ambos exigem CONTROLE da força (nem fraco demais, nem forte demais).",
+        "quiz": [
+          {
+            "p": "No BOCHA, o objetivo é:",
+            "op": [
+              "chegar com sua bola o mais perto do BOLIM (bola branca menor)",
+              "encestar no aro",
+              "derrubar pinos",
+              "rebater com taco"
+            ],
+            "correta": 0,
+            "explica": "Quanto mais perto do bolim, mais pontos."
+          },
+          {
+            "p": "O SHUFFLEBOARD se joga com:",
+            "op": [
+              "taco longo empurrando um disco numa pista lisa",
+              "raquete batendo bola",
+              "pé chutando bola",
+              "mão arremessando dardo"
+            ],
+            "correta": 0,
+            "explica": "Disco + taco + pista comprida = shuffleboard."
+          },
+          {
+            "p": "Bocha é um esporte INCLUSIVO porque:",
+            "op": [
+              "é disputado também em Paralimpíadas — pessoas com e sem deficiência",
+              "só pessoas altas jogam",
+              "é só pra adultos",
+              "tem só 2 jogadores"
+            ],
+            "correta": 0,
+            "explica": "É um dos esportes da história das Paralimpíadas."
+          },
+          {
+            "p": "O que esses 2 esportes têm em COMUM?",
+            "op": [
+              "exigem CONTROLE DA FORÇA — nem fraco, nem forte demais",
+              "exigem corrida",
+              "exigem salto alto",
+              "exigem chute"
+            ],
+            "correta": 0,
+            "explica": "Força excessiva = passa do alvo. Força fraca = não chega."
+          }
+        ]
+      },
+      {
+        "id": "ed-tiro-golfe",
+        "emoji": "🏅",
+        "titulo": "Esportes: Tiro com Arco e Golfe",
+        "cronos": "PRECISÃO TOTAL, exploradora! No TIRO COM ARCO e no GOLFE, um errinho minúsculo muda tudo. Mira fininha!",
+        "resumo": "🏹 TIRO COM ARCO (olímpico)<br>• Arco + flecha + alvo redondo — o objetivo é acertar o CENTRO do alvo<br>• Habilidade-chave: controlar a respiração na hora de soltar a flecha<br>• Mira, postura, força do braço — tudo conta<br><br>⛳ GOLFE (surgiu na ESCÓCIA)<br>• Usa TACOS pra bater numa bola pequena<br>• Campo grande com vários buracos<br>• Objetivo: colocar a bola no buraco com o MENOR número de tacadas<br>• Habilidade: controlar a força e o ângulo da tacada<br><br>Ambos são esportes de PRECISÃO MILIMÉTRICA — pequena variação muda muito a pontuação.",
+        "quiz": [
+          {
+            "p": "No TIRO COM ARCO, pra fazer mais pontos você acerta:",
+            "op": [
+              "o CENTRO do alvo",
+              "a borda externa",
+              "o pé do alvo",
+              "qualquer lugar"
+            ],
+            "correta": 0,
+            "explica": "O centro do alvo é o que vale mais pontos."
+          },
+          {
+            "p": "GOLFE: objetivo é:",
+            "op": [
+              "colocar a bola no buraco com o MENOR número de tacadas",
+              "fazer o MAIS rápido",
+              "rebater pro mais longe",
+              "trocar de buraco rápido"
+            ],
+            "correta": 0,
+            "explica": "No golfe, MENOS é melhor — economizar tacadas."
+          },
+          {
+            "p": "Por que arqueiros 'seguram a respiração' antes de soltar a flecha?",
+            "op": [
+              "respirar move o peito → flecha desvia. Pausa = corpo parado",
+              "porque é tradição",
+              "pra fazer barulho",
+              "pra olhar pro alto"
+            ],
+            "correta": 0,
+            "explica": "Movimento mínimo do peito altera a mira em metros lá longe."
+          },
+          {
+            "p": "O GOLFE é um esporte que surgiu em qual país?",
+            "op": [
+              "na Escócia",
+              "no Brasil",
+              "no Japão",
+              "no Egito"
+            ],
+            "correta": 0,
+            "explica": "O golfe surgiu na Escócia, jogado em campos com vários buracos."
+          }
+        ]
+      }
+    ]
+  },
+  "ingles": {
+    "missoes": [
+      {
+        "id": "en-speaking",
+        "emoji": "🇬🇧",
+        "titulo": "Speaking Skills (Cambridge)",
+        "cronos": "Hi exploradora! In the Speaking test, the teacher will TALK to you. Don't worry — answer with FULL sentences, smile, and stay calm!",
+        "resumo": "SPEAKING TIPS (Cambridge Starters/Movers/Flyers):<br>• Answer with COMPLETE sentences ('I have a brother' — not just 'yes')<br>• It's OK to ask: 'Sorry, can you repeat?' or 'Pardon?'<br>• Look at the examiner, smile, take your time<br>• Vocabulary to know:<br>  - 'Tell me about your family/friend/pet'<br>  - 'What do you like to do?'<br>  - 'Describe this picture'<br>• When you DON'T know a word, DESCRIBE it: 'a thing that...'<br>• Pronounce CLEAR even if slow — clarity > speed",
+        "quiz": [
+          {
+            "p": "In the Speaking test, you should answer with:",
+            "op": [
+              "FULL sentences ('I have a brother', not just 'yes')",
+              "one word only",
+              "in Portuguese",
+              "in silence"
+            ],
+            "correta": 0,
+            "explica": "Frases completas mostram domínio do idioma."
+          },
+          {
+            "p": "What can you say if you don't understand the question?",
+            "op": [
+              "'Sorry, can you repeat?'",
+              "'No talk'",
+              "'Bye'",
+              "stay silent"
+            ],
+            "correta": 0,
+            "explica": "Pedir pra repetir é educado e correto. Não é erro!"
+          },
+          {
+            "p": "If you don't know the WORD for something, you can:",
+            "op": [
+              "describe it: 'a thing that...'",
+              "stop talking",
+              "guess randomly",
+              "say only in Portuguese"
+            ],
+            "correta": 0,
+            "explica": "Descrever em inglês mostra estratégia de comunicação."
+          },
+          {
+            "p": "Which is MORE important in the Speaking test?",
+            "op": [
+              "speaking CLEARLY (mesmo devagar)",
+              "speaking fast",
+              "using long, hard words",
+              "speaking loud"
+            ],
+            "correta": 0,
+            "explica": "Clareza > velocidade. Examinador precisa entender você."
+          }
+        ]
+      },
+      {
+        "id": "en-water",
+        "emoji": "🇬🇧",
+        "titulo": "Water Conservation",
+        "cronos": "Listen up exploradora! We need to SAVE WATER. Did you know a long shower wastes a LOT of water?",
+        "resumo": "VOCABULARY:<br>• shower = chuveiro<br>• waste = desperdiçar<br>• gallon = ~3.7 liters<br>• save water = economizar água<br>• water bill = conta de água<br>Key idea: short showers SAVE water.",
+        "quiz": [
+          {
+            "p": "What does 'waste' mean in 'wasted gallons of water'?",
+            "op": [
+              "desperdiçou",
+              "economizou",
+              "tomou",
+              "pagou"
+            ],
+            "correta": 0,
+            "explica": "Waste = desperdiçar."
+          },
+          {
+            "p": "What's a 'water bill'?",
+            "op": [
+              "conta de água",
+              "balde de água",
+              "saco de água",
+              "torneira de água"
+            ],
+            "correta": 0,
+            "explica": "Bill = conta."
+          },
+          {
+            "p": "Best way to save water in the shower:",
+            "op": [
+              "take shorter showers",
+              "use hot water only",
+              "shower twice a day",
+              "leave water running"
+            ],
+            "correta": 0,
+            "explica": "Banhos curtos = mais água economizada."
+          },
+          {
+            "p": "1 gallon = how many liters approximately?",
+            "op": [
+              "3.7",
+              "1",
+              "10",
+              "100"
+            ],
+            "correta": 0,
+            "explica": "1 galão ≈ 3.7 litros."
+          }
+        ]
+      },
+      {
+        "id": "en-recycling",
+        "emoji": "🇬🇧",
+        "titulo": "Saving the Earth — Recycling",
+        "cronos": "Hey exploradora, we can help the planet! Recycling paper saves FORESTS. Let's learn how!",
+        "resumo": "RECYCLING vocabulary:<br>• recycle = reciclar<br>• garbage = lixo<br>• collect = coletar<br>• forest = floresta<br>• clean-up = limpeza<br>Idea: separate garbage by type, recycle paper to save forests.",
+        "quiz": [
+          {
+            "p": "By recycling paper, we can...",
+            "op": [
+              "protect the forests",
+              "make more trash",
+              "use more water",
+              "buy new cars"
+            ],
+            "correta": 0,
+            "explica": "Recycle paper = save forests."
+          },
+          {
+            "p": "What does 'garbage' mean?",
+            "op": [
+              "lixo",
+              "jardim",
+              "garagem",
+              "garrafa"
+            ],
+            "correta": 0,
+            "explica": "Garbage = lixo."
+          },
+          {
+            "p": "'Separate different types of garbage' means:",
+            "op": [
+              "separar tipos de lixo",
+              "juntar tudo",
+              "queimar tudo",
+              "enterrar"
+            ],
+            "correta": 0,
+            "explica": "Separar = primeiro passo da reciclagem."
+          },
+          {
+            "p": "What's a 'clean-up party'?",
+            "op": [
+              "festa de limpeza",
+              "festa suja",
+              "festa com música",
+              "festa de aniversário"
+            ],
+            "correta": 0,
+            "explica": "Clean-up party = se reúne pra limpar um lugar (parque, praia)."
+          }
+        ]
+      },
+      {
+        "id": "en-listening",
+        "emoji": "🇬🇧",
+        "titulo": "Listening Comprehension",
+        "cronos": "Listening practice, exploradora! In English class, you HEAR a story and answer questions. Sharp ears!",
+        "resumo": "Dicas de listening:<br>• PAY ATTENTION to numbers, names, places<br>• Anote palavras-chave<br>• 'Suggests' = sugere<br>• 'Wasted' = desperdiçou<br>• 'Bill' = conta<br>Não precisa entender CADA palavra — só a IDEIA.",
+        "quiz": [
+          {
+            "p": "If you hear 'the man wasted 50 gallons', it means he:",
+            "op": [
+              "used too much water",
+              "drank 50 gallons",
+              "sold 50 gallons",
+              "bought 50 gallons"
+            ],
+            "correta": 0,
+            "explica": "Wasted = used too much/desperdiçou."
+          },
+          {
+            "p": "'Once a month' means:",
+            "op": [
+              "uma vez por mês",
+              "uma vez por semana",
+              "uma vez por ano",
+              "todo dia"
+            ],
+            "correta": 0,
+            "explica": "Once = uma vez."
+          },
+          {
+            "p": "'The girl SUGGESTS taking shorter showers' means she:",
+            "op": [
+              "recommends/sugere",
+              "forces/obriga",
+              "stops/impede",
+              "buys/compra"
+            ],
+            "correta": 0,
+            "explica": "Suggest = sugerir/recomendar."
+          },
+          {
+            "p": "If the bill was '$130 last month', how much did he pay?",
+            "op": [
+              "$130",
+              "$13",
+              "$1300",
+              "$30"
+            ],
+            "correta": 0,
+            "explica": "Leitura literal — $130."
+          }
+        ]
+      },
+      {
+        "id": "en-writing",
+        "emoji": "🇬🇧",
+        "titulo": "Writing Skills (Cambridge)",
+        "cronos": "Pencil ready, exploradora! In Writing, you WRITE small texts about pictures, or about topics like RECYCLING and WATER WASTE. Capital letters, full stops, neat handwriting!",
+        "resumo": "WRITING TIPS (Cambridge):<br>• ALWAYS use CAPITAL LETTERS at the start + after a full stop (.)<br>• Use a PERIOD at the end of every sentence<br>• Don't use Portuguese words!<br>• Common topics: Recycling, Water waste, My family, My day<br>• Useful phrases:<br>  - 'I think we should...'<br>  - 'It is important to...'<br>  - 'We can recycle paper, glass and plastic.'<br>  - 'We should not waste water.'<br>• Check spelling: 'WATER' (not 'wather'), 'RECYCLING' (not 'rycling').",
+        "quiz": [
+          {
+            "p": "Which sentence is WRITTEN correctly?",
+            "op": [
+              "We should not waste water.",
+              "we should not waste water",
+              "WE SHOULD NOT WASTE water",
+              "we should not Waste water"
+            ],
+            "correta": 0,
+            "explica": "Letra maiúscula no início + ponto no fim. Resto minúsculo."
+          },
+          {
+            "p": "Complete: 'I think we should ___ paper, glass and plastic.'",
+            "op": [
+              "recycle",
+              "reciclar",
+              "drink",
+              "eat"
+            ],
+            "correta": 0,
+            "explica": "Recycle = reciclar. Não usar palavras em português!"
+          },
+          {
+            "p": "Which phrase shows your OPINION in writing?",
+            "op": [
+              "'I think we should...'",
+              "'Bye bye'",
+              "'See you'",
+              "'Hi'"
+            ],
+            "correta": 0,
+            "explica": "'I think we should...' introduz uma opinião / sugestão."
+          },
+          {
+            "p": "What does 'We should not waste water' MEAN?",
+            "op": [
+              "não devemos desperdiçar água",
+              "não devemos beber água",
+              "devemos jogar água fora",
+              "devemos esquecer da água"
+            ],
+            "correta": 0,
+            "explica": "'Should not' = não devemos. 'Waste' = desperdiçar."
+          }
+        ]
+      },
+      {
+        "id": "en-possessives",
+        "emoji": "🇬🇧",
+        "titulo": "Possessive Adjectives",
+        "cronos": "Hi exploradora! Whose book is this? It's MY book. Whose dog? HER dog. Possessive adjectives show WHO OWNS something — and they come right BEFORE the thing!",
+        "resumo": "POSSESSIVE ADJECTIVES show who something belongs to. They go BEFORE the noun.<br><br>Personal → Possessive:<br>• I → MY  (my book)<br>• you → YOUR  (your pen)<br>• he → HIS  (his bike)<br>• she → HER  (her shoes)<br>• it → ITS  (the dog and its ball)<br>• we → OUR  (our classroom)<br>• they → THEIR  (their toys)<br><br>Tip: the possessive comes BEFORE the noun → 'my book', NOT 'book my'.<br>Careful: ITS = belongs to it (its tail). Don't mix with IT'S = it is.",
+        "quiz": [
+          {
+            "p": "A possessive adjective comes ___ the noun.",
+            "op": [
+              "BEFORE the noun → 'my book'",
+              "AFTER the noun → 'book my'",
+              "at the end of the sentence",
+              "it doesn't matter"
+            ],
+            "correta": 0,
+            "explica": "Possessive vem antes: my book, her dog, our school."
+          },
+          {
+            "p": "Complete: 'I → ___'",
+            "op": [
+              "my",
+              "mine",
+              "me",
+              "I's"
+            ],
+            "correta": 0,
+            "explica": "I → MY. 'This is MY book.'"
+          },
+          {
+            "p": "Stella is a girl. 'The piano belongs to ___ brother.'",
+            "op": [
+              "her",
+              "his",
+              "their",
+              "its"
+            ],
+            "correta": 0,
+            "explica": "Stella = she → HER. The brother belongs to Stella."
+          },
+          {
+            "p": "'Cadu has a new bike. That's a gift from ___ father.'",
+            "op": [
+              "his",
+              "her",
+              "your",
+              "its"
+            ],
+            "correta": 0,
+            "explica": "Cadu = he → HIS father."
+          },
+          {
+            "p": "'The children are crying because they can't find ___ toys.'",
+            "op": [
+              "their",
+              "his",
+              "her",
+              "our"
+            ],
+            "correta": 0,
+            "explica": "The children = they → THEIR toys."
+          },
+          {
+            "p": "'The dog is playing with ___ ball.' (the dog = it)",
+            "op": [
+              "its",
+              "it's",
+              "his",
+              "their"
+            ],
+            "correta": 0,
+            "explica": "it → ITS (no apostrophe). 'It's' would mean 'it is'."
+          },
+          {
+            "p": "'We can't find ___ classroom!' (we)",
+            "op": [
+              "our",
+              "your",
+              "their",
+              "his"
+            ],
+            "correta": 0,
+            "explica": "we → OUR classroom."
+          }
+        ]
+      },
+      {
+        "id": "en-fossil-fuels",
+        "emoji": "🇬🇧",
+        "titulo": "Reading: Fossil Fuels",
+        "cronos": "Bzzzt, exploradora! This black rock is COAL — a SQUASHED FOREST from millions of years ago! Coal, oil and gas are FOSSIL FUELS. We burn them for energy... but when they're gone, they're GONE forever!",
+        "resumo": "FOSSIL FUELS = coal, petroleum (oil) and natural gas. They are the remains of organisms that lived long ago (coal from plants; oil and gas from tiny algae). About 90% of our energy comes from burning them.<br><br>Key ideas:<br>• NONRENEWABLE = once they are used up, they are gone forever (they take millions of years to form).<br>• Burning them releases HARMFUL GASES → ACID RAIN and the GREENHOUSE EFFECT (the warming of Earth's atmosphere).<br>• Cleaner alternatives: SOLAR (sun), WIND, WATER and NUCLEAR power.<br><br>(This connects to Geografia: renewable × non-renewable energy!)",
+        "quiz": [
+          {
+            "p": "What are fossil fuels?",
+            "op": [
+              "sources of energy from living things that died long ago",
+              "types of animals",
+              "kinds of water",
+              "rocks used for building"
+            ],
+            "correta": 0,
+            "explica": "Fossil fuels = remains of ancient organisms, burned for energy."
+          },
+          {
+            "p": "Which of these is NOT a fossil fuel?",
+            "op": [
+              "Wind",
+              "Coal",
+              "Natural gas",
+              "Petroleum"
+            ],
+            "correta": 0,
+            "explica": "Wind is a RENEWABLE source. Coal, gas and petroleum are fossil fuels."
+          },
+          {
+            "p": "Where did COAL come from?",
+            "op": [
+              "plants",
+              "animals",
+              "rocks",
+              "water"
+            ],
+            "correta": 0,
+            "explica": "Coal formed from plants; oil and gas mainly from algae."
+          },
+          {
+            "p": "What happens when fossil fuels are burned?",
+            "op": [
+              "they release harmful gases",
+              "they make clean air",
+              "they create water",
+              "they disappear with no effect"
+            ],
+            "correta": 0,
+            "explica": "Burning releases gases that cause acid rain and warming."
+          },
+          {
+            "p": "What is the GREENHOUSE EFFECT?",
+            "op": [
+              "the heating of Earth's atmosphere",
+              "the cooling of the Earth",
+              "the freezing of oceans",
+              "wind movement"
+            ],
+            "correta": 0,
+            "explica": "Burning fossil fuels warms the atmosphere — the greenhouse effect."
+          },
+          {
+            "p": "Why are fossil fuels called NONRENEWABLE?",
+            "op": [
+              "once used up, they are gone forever",
+              "they come back every day",
+              "they are made by factories",
+              "the sun makes more each morning"
+            ],
+            "correta": 0,
+            "explica": "They took millions of years to form — we can't make more quickly."
+          },
+          {
+            "p": "Name an ALTERNATIVE (clean) energy source from the text.",
+            "op": [
+              "solar, wind, water or nuclear",
+              "coal",
+              "petroleum",
+              "natural gas"
+            ],
+            "correta": 0,
+            "explica": "Scientists use sun, wind, water and nuclear instead of fossil fuels."
+          }
+        ]
+      },
+      {
+        "id": "en-pollution",
+        "emoji": "🇬🇧",
+        "titulo": "Writing: Pollution",
+        "cronos": "Yuck, exploradora! Dirty air, dirty water, dirty ground! POLLUTION is when we make the planet dirty with waste and chemicals. THREE kinds: air, water and land. Grab your pencil — let's write how to STOP it!",
+        "resumo": "POLLUTION = when the environment is contaminated (made dirty) by waste, chemicals and harmful substances. THREE main forms:<br><br>• AIR pollution — mostly from BURNING FOSSIL FUELS. Causes acid rain and global warming.<br>• WATER pollution — dumping garbage and sewage in rivers/oceans; farm chemicals (fertilizers, pesticides).<br>• LAND pollution — LITTERING (throwing trash on the ground) and dangerous chemicals in the soil. It destroys habitats (homes of plants and animals).<br><br>WRITING TIP: organise in paragraphs, use linking words (first, also, finally), capital letters and full stops. Say the PROBLEM and give a SOLUTION ('We should...', 'We can recycle...').",
+        "quiz": [
+          {
+            "p": "What are the THREE main forms of pollution?",
+            "op": [
+              "air, water and land",
+              "fire, water and wind",
+              "rain, snow and sun",
+              "cars, trains and planes"
+            ],
+            "correta": 0,
+            "explica": "Air, water and land — the three forms in the text."
+          },
+          {
+            "p": "Most AIR pollution comes from:",
+            "op": [
+              "burning fossil fuels",
+              "planting trees",
+              "drinking water",
+              "recycling paper"
+            ],
+            "correta": 0,
+            "explica": "Factories, cars and power plants burn fossil fuels → air pollution."
+          },
+          {
+            "p": "'LITTERING' (throwing trash on the ground) is a form of:",
+            "op": [
+              "land pollution",
+              "air pollution",
+              "water pollution",
+              "no pollution"
+            ],
+            "correta": 0,
+            "explica": "Litter on the ground = land pollution; it destroys habitats."
+          },
+          {
+            "p": "What does 'WASTE' mean in 'waste and chemicals'?",
+            "op": [
+              "lixo / resíduo",
+              "água limpa",
+              "comida boa",
+              "ar puro"
+            ],
+            "correta": 0,
+            "explica": "Waste (noun) = lixo/resíduo que suja o ambiente."
+          },
+          {
+            "p": "In a good writing, after showing the PROBLEM you should give a:",
+            "op": [
+              "SOLUTION ('We should...', 'We can recycle...')",
+              "drawing only",
+              "list of names",
+              "phone number"
+            ],
+            "correta": 0,
+            "explica": "Problema + solução, com linking words e parágrafos."
+          },
+          {
+            "p": "A 'habitat' is:",
+            "op": [
+              "the home of plants and animals",
+              "a kind of trash",
+              "a type of car",
+              "a chemical"
+            ],
+            "correta": 0,
+            "explica": "Habitat = lar dos seres vivos — destruído pela poluição."
+          }
+        ]
+      }
+    ]
+  }
+};
+
+const MIDIA = {};
+
+/* ============================================================
+   MOTOR
+   ============================================================ */
+const HOJE = new Date().toISOString().slice(0,10);   // data real do dispositivo
+const CHAVE = 'stepquest_jun';
+let estado = carregar();
+let view = { tela:'mapa', terr:null, miss:null };
+let quiz = null;                            // {miss, ordem:[...], resp:{}, enviado}
+
+function novoEstado(){
+  return { perfil:null, melhores:{}, streak:0, ultimoDia:null };
+}
+function carregar(){
+  try{ const s = JSON.parse(localStorage.getItem(CHAVE)); return s && s.melhores ? s : novoEstado(); }
+  catch(e){ return novoEstado(); }
+}
+function salvar(){ try{ localStorage.setItem(CHAVE, JSON.stringify(estado)); }catch(e){} }
+
+/* ---- progressão ---- */
+function totalXP(){ let x=0; for(const k in estado.melhores) x += estado.melhores[k]*25; return x; }
+function nivel(){ return Math.floor(totalXP()/100)+1; }
+function xpNoNivel(){ return totalXP()%100; }
+function missoesDe(id){ return CONTEUDO[id] ? CONTEUDO[id].missoes : []; }
+function feita(mid){ return estado.melhores[mid]!=null; }
+function territorioCompleto(id){
+  const ms = missoesDe(id); return ms.length>0 && ms.every(m=>feita(m.id));
+}
+function territorioOuro(id){
+  const ms = missoesDe(id); return ms.length>0 && ms.every(m=>estado.melhores[m.id]===4);
+}
+
+/* ---- streak ---- */
+function diaAnterior(iso){
+  const d = new Date(iso+'T12:00:00'); d.setDate(d.getDate()-1);
+  return d.toISOString().slice(0,10);
+}
+function registrarDia(){
+  if(estado.ultimoDia===HOJE) return;
+  if(estado.ultimoDia===diaAnterior(HOJE)) estado.streak++;
+  else estado.streak = 1;
+  estado.ultimoDia = HOJE;
+}
+
+/* ---- contagem regressiva ---- */
+function diasAte(iso){
+  const a=new Date(HOJE+'T12:00:00'), b=new Date(iso+'T12:00:00');
+  return Math.round((b-a)/86400000);
+}
+function textoContagem(id){
+  const d = diasAte(PROVAS[id]);
+  if(d<0) return 'prova já passou';
+  if(d===0) return '📣 prova é HOJE!';
+  if(d===1) return '📣 prova é AMANHÃ!';
+  return '🗓️ prova em '+d+' dias';
+}
+
+/* ---- missão do dia ---- */
+function missaoDoDia(){
+  for(const t of TERRITORIOS){
+    for(const m of missoesDe(t.id)){
+      if(!feita(m.id)) return {terr:t, miss:m, revisao:false};
+    }
+  }
+  for(const t of TERRITORIOS){
+    const ms = missoesDe(t.id);
+    if(ms.length){ return {terr:t, miss:ms[0], revisao:true}; }
+  }
+  return null;
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const app = document.getElementById('app');
+function render(){
+  if(!estado.perfil){ telaAbertura(); return; }
+  if(view.tela==='mapa') telaMapa();
+  else if(view.tela==='territorio') telaTerritorio();
+  else if(view.tela==='missao') telaMissao();
+  else if(view.tela==='quiz') telaQuiz();
+  else if(view.tela==='resultado') telaResultado();
+  window.scrollTo(0,0);
+}
+
+/* ---- abertura ---- */
+let escolha = { personagem:null, nome:'' };
+function telaAbertura(){
+  app.innerHTML = `
+    <div class="logo">
+      <div class="big">🌀 StepQuest</div>
+      <div class="sub">Expedição pelo Tempo</div>
+    </div>
+    <div class="card">
+      <div class="cronos">
+        <div class="face">👨‍🔬</div>
+        <div class="balao">Olá, expedicionária! Eu sou o <b>Professor Cronos</b>, o cientista
+        mais maluco do tempo! 🌀 Vamos viajar pelas matérias para você arrasar no simulado.
+        Primeiro, escolha quem você quer ser:</div>
+      </div>
+      <div class="chars" id="chars">
+        ${PERSONAGENS.map(p=>`
+          <div class="char" data-p="${p.id}">
+            <span class="e">${p.emoji}</span>${p.nome}
+          </div>`).join('')}
+      </div>
+      <input class="campo" id="nome" placeholder="Digite seu nome" maxlength="18" value="Mariana">
+      <button class="btn lg" id="comecar" disabled>Começar a expedição!</button>
+    </div>
+    <div class="rodape">StepQuest • feito com carinho para a Mariana</div>`;
+
+  document.querySelectorAll('#chars .char').forEach(el=>{
+    el.onclick = ()=>{
+      document.querySelectorAll('#chars .char').forEach(c=>c.classList.remove('sel'));
+      el.classList.add('sel');
+      escolha.personagem = el.dataset.p;
+      document.getElementById('comecar').disabled = false;
+    };
+  });
+  document.getElementById('comecar').onclick = ()=>{
+    const nome = document.getElementById('nome').value.trim() || 'Exploradora';
+    estado.perfil = { nome, personagem:escolha.personagem };
+    salvar(); render();
+  };
+}
+
+function emojiPersonagem(){
+  const p = PERSONAGENS.find(p=>p.id===estado.perfil.personagem);
+  return p ? p.emoji : '🧭';
+}
+
+/* ---- HUD (topo) ---- */
+function hud(){
+  return `
+  <div class="hud">
+    <div class="av">${emojiPersonagem()}</div>
+    <div class="who">
+      <div class="nm">${estado.perfil.nome}</div>
+      <div class="lv">Nível ${nivel()} • ${totalXP()} XP</div>
+      <div class="xpbar"><i style="width:${xpNoNivel()}%"></i></div>
+    </div>
+    <div class="streak">🔥 ${estado.streak}</div>
+  </div>`;
+}
+
+/* ---- mapa ---- */
+function telaMapa(){
+  const md = missaoDoDia();
+  let hoje = '';
+  if(md){
+    hoje = `
+    <div class="hoje">
+      <div class="lab">${md.revisao?'Revisão de hoje':'Missão de hoje'}</div>
+      <div class="ms">${md.terr.emoji} ${md.miss.titulo}</div>
+      <button onclick="irMissao('${md.terr.id}','${md.miss.id}')">
+        ${md.revisao?'Revisar agora':'Começar agora'} →</button>
+    </div>`;
+  }
+  const cards = TERRITORIOS.map(t=>{
+    const ms = missoesDe(t.id);
+    const ativo = ms.length>0;
+    const feitas = ms.filter(m=>feita(m.id)).length;
+    const pct = ativo ? Math.round(feitas/ms.length*100) : 0;
+    const medal = territorioOuro(t.id) ? '🏆' : (territorioCompleto(t.id) ? '🥇' : '');
+    return `
+    <div class="terr" style="background:linear-gradient(135deg,${t.cor},${sombra(t.cor)})"
+         ${ativo?`onclick="irTerritorio('${t.id}')"`:''}>
+      ${medal?`<div class="med">${medal}</div>`:''}
+      <div class="em">${t.emoji}</div>
+      <div class="nm">${t.nome}</div>
+      <div class="pg">${ativo? feitas+'/'+ms.length+' missões' : 'mapa em preparo'}</div>
+      <div class="cd">${textoContagem(t.id)}</div>
+      ${ativo?`<div class="progress"><i style="width:${pct}%"></i></div>`:''}
+      ${ativo?'':`<div class="lock"><span class="bg">🔒</span>em breve</div>`}
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    ${hud()}
+    <div class="titulo">🗺️ Mapa da Expedição</div>
+    <div class="lead">Toque num território para estudar. Cada prova é o desafio final dele!</div>
+    ${hoje}
+    <div class="terrs">${cards}</div>
+    <div class="rodape">StepQuest • 2ª Avaliação • <a onclick="zerar()">recomeçar do zero</a></div>`;
+}
+function sombra(hex){
+  // escurece a cor para o gradiente
+  const n = parseInt(hex.slice(1),16);
+  let r=(n>>16)-40, g=((n>>8)&255)-40, b=(n&255)-40;
+  r=Math.max(0,r); g=Math.max(0,g); b=Math.max(0,b);
+  return '#'+(r<<16|g<<8|b).toString(16).padStart(6,'0');
+}
+
+/* ---- território ---- */
+function telaTerritorio(){
+  const t = TERRITORIOS.find(x=>x.id===view.terr);
+  const ms = missoesDe(t.id);
+  const lista = ms.map(m=>{
+    const f = feita(m.id);
+    const nota = estado.melhores[m.id];
+    const selo = nota===4 ? '⭐' : (f ? '✅' : '');
+    return `
+    <div class="card miss" onclick="irMissao('${t.id}','${m.id}')">
+      <div class="ic" style="background:${t.cor}22;color:${t.cor}">${m.emoji}</div>
+      <div class="tx">
+        <div class="t">${m.titulo}</div>
+        <div class="s">${f? 'melhor: '+nota+'/4 acertos' : 'ainda não estudada'}</div>
+      </div>
+      ${selo?`<div class="selo">${selo}</div>`
+            :`<div class="go" style="background:${t.cor}">estudar</div>`}
+    </div>`;
+  }).join('');
+
+  const md = MIDIA[t.id] || {};
+  const videoCard = md.video
+    ? `<div class="card">
+         <div class="exhead"><span class="em">🎬</span> ${md.videoTitulo || 'Vídeo da matéria'}</div>
+         <video class="vid" controls preload="metadata" src="${md.video}"></video>
+       </div>`
+    : `<div class="ex"><span class="em">🎬</span> Vídeo da matéria
+         <span class="embreve">em breve</span></div>`;
+
+  app.innerHTML = `
+    ${hud()}
+    <div class="topbar">
+      <button class="voltar" onclick="irMapa()">← Mapa</button>
+      <div class="titulo" style="margin:0">${t.emoji} ${t.nome}</div>
+    </div>
+    <div class="lead">${textoContagem(t.id)}</div>
+    ${lista}
+    <div class="card extras">
+      <div class="ex"><span class="em">🎧</span> Podcast do Professor Cronos
+        <span class="embreve">em breve</span></div>
+      ${md.video ? '' : videoCard}
+    </div>
+    ${md.video ? videoCard : ''}
+    <div class="rodape">Os extras chegam quando o Professor Cronos terminar de gravar! 🌀</div>`;
+}
+
+/* ---- missão (estudo) ---- */
+function telaMissao(){
+  const t = TERRITORIOS.find(x=>x.id===view.terr);
+  const m = missoesDe(t.id).find(x=>x.id===view.miss);
+  app.innerHTML = `
+    ${hud()}
+    <div class="topbar">
+      <button class="voltar" onclick="irTerritorio('${t.id}')">← ${t.nome}</button>
+    </div>
+    <div class="titulo" style="margin-top:6px">${m.emoji} ${m.titulo}</div>
+    <div class="card">
+      <div class="cronos">
+        <div class="face">👨‍🔬</div>
+        <div class="balao">${m.cronos}</div>
+      </div>
+      <div class="conteudo">${m.resumo}</div>
+      <button class="btn lg" style="background:linear-gradient(90deg,${t.cor},${sombra(t.cor)})"
+        onclick="iniciarQuiz('${t.id}','${m.id}')">Iniciar o Desafio 🎯</button>
+    </div>`;
+}
+
+/* ---- quiz ---- */
+function iniciarQuiz(tid,mid){
+  const m = missoesDe(tid).find(x=>x.id===mid);
+  // embaralha a ordem das opções de cada questão
+  const ordem = m.quiz.map(q=>{
+    const idx = q.op.map((_,i)=>i);
+    for(let i=idx.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [idx[i],idx[j]]=[idx[j],idx[i]]; }
+    return idx;
+  });
+  quiz = { tid, mid, q:0, ordem, resp:{}, enviado:false };
+  view = { tela:'quiz', terr:tid, miss:mid };
+  render();
+}
+function telaQuiz(){
+  const t = TERRITORIOS.find(x=>x.id===quiz.tid);
+  const m = missoesDe(quiz.tid).find(x=>x.id===quiz.mid);
+  const i = quiz.q;
+  const questao = m.quiz[i];
+  const ordem = quiz.ordem[i];
+  const escolhida = quiz.resp[i];          // índice REAL (na ordem embaralhada)
+  const opts = ordem.map((realIdx,pos)=>{
+    let cls='opt';
+    if(quiz.enviado){
+      if(realIdx===questao.correta) cls+=' certa';
+      else if(pos===escolhida) cls+=' errada';
+    } else if(pos===escolhida) cls+=' sel';
+    return `<button class="${cls}" ${quiz.enviado?'disabled':''}
+      onclick="marcar(${pos})">${questao.op[realIdx]}</button>`;
+  }).join('');
+
+  let feed='', botoes='';
+  if(quiz.enviado){
+    const acertou = ordem[escolhida]===questao.correta;
+    feed = `<div class="feed ${acertou?'bom':'ruim'}">
+      ${acertou?'✅ Isso aí! ':'❌ Quase! '}${questao.explica}</div>`;
+    botoes = i < m.quiz.length-1
+      ? `<button class="btn lg" onclick="proxima()">Próxima →</button>`
+      : `<button class="btn lg" onclick="finalizarQuiz()">Ver resultado 🏁</button>`;
+  } else {
+    botoes = `<button class="btn lg" id="conf" disabled onclick="confirmar()">Confirmar</button>`;
+  }
+
+  app.innerHTML = `
+    ${hud()}
+    <div class="topbar">
+      <button class="voltar" onclick="irMissao('${t.id}','${m.id}')">← Sair</button>
+      <div class="qprog">Pergunta ${i+1} de ${m.quiz.length}</div>
+    </div>
+    <div class="card">
+      <div class="qn">${questao.p}</div>
+      ${opts}
+      ${feed}
+      ${botoes}
+    </div>`;
+  if(escolhida!=null && !quiz.enviado){
+    const c=document.getElementById('conf'); if(c) c.disabled=false;
+  }
+}
+function marcar(pos){
+  if(quiz.enviado) return;
+  quiz.resp[quiz.q]=pos; render();
+}
+function confirmar(){
+  if(quiz.resp[quiz.q]==null) return;
+  quiz.enviado=true; render();
+}
+function proxima(){ quiz.q++; quiz.enviado=false; render(); }
+function finalizarQuiz(){
+  const m = missoesDe(quiz.tid).find(x=>x.id===quiz.mid);
+  let acertos=0;
+  m.quiz.forEach((q,i)=>{ if(quiz.ordem[i][quiz.resp[i]]===q.correta) acertos++; });
+  const antes = estado.melhores[quiz.mid] || 0;
+  if(acertos>antes) estado.melhores[quiz.mid]=acertos;
+  else if(estado.melhores[quiz.mid]==null) estado.melhores[quiz.mid]=acertos;
+  registrarDia();
+  salvar();
+  view.tela='resultado';
+  view._ult = { acertos, total:m.quiz.length, novoRecorde:acertos>antes };
+  render();
+}
+
+/* ---- resultado ---- */
+function telaResultado(){
+  const t = TERRITORIOS.find(x=>x.id===view.terr);
+  const m = missoesDe(view.terr).find(x=>x.id===view.miss);
+  const r = view._ult;
+  const pct = Math.round(r.acertos/r.total*100);
+  let emoji,msg;
+  if(pct===100){ emoji='🏆'; msg='PERFEITO! Você é fera nessa missão!'; }
+  else if(pct>=75){ emoji='🌟'; msg='Muito bem! Quase tudo certo!'; }
+  else if(pct>=50){ emoji='💪'; msg='Bom começo! Revise e tente de novo.'; }
+  else { emoji='🌱'; msg='Calma! Reler o resumo ajuda muito. Bora de novo!'; }
+
+  app.innerHTML = `
+    ${hud()}
+    <div class="card res">
+      <div class="big pop">${emoji}</div>
+      <div class="nota">${r.acertos} de ${r.total} acertos</div>
+      <div>${msg}</div>
+      ${r.novoRecorde?`<div class="xp">+${r.acertos*25} XP de recorde! ⚡</div>`
+                     :`<div class="xp" style="background:#eee;color:#777">sem novo recorde desta vez</div>`}
+      <div class="cronos" style="margin-top:14px;text-align:left">
+        <div class="face">👨‍🔬</div>
+        <div class="balao">${pct===100
+          ? 'Uau! Nem na era dos dinossauros eu vi alguém tão esperto! 🦖'
+          : 'Cada tentativa deixa o cérebro mais forte. Refaça quando quiser — eu te espero aqui! 🌀'}</div>
+      </div>
+      <button class="btn lg" onclick="iniciarQuiz('${t.id}','${m.id}')">Refazer o desafio 🔁</button>
+      <button class="btn lg sec" onclick="irTerritorio('${t.id}')">Voltar para ${t.nome}</button>
+    </div>`;
+}
+
+/* ---- navegação ---- */
+function irMapa(){ view={tela:'mapa'}; render(); }
+function irTerritorio(id){ view={tela:'territorio',terr:id}; render(); }
+function irMissao(tid,mid){ view={tela:'missao',terr:tid,miss:mid}; render(); }
+function zerar(){
+  if(confirm('Recomeçar a expedição do zero? Todo o progresso será apagado.')){
+    localStorage.removeItem(CHAVE); estado=novoEstado(); view={tela:'mapa'}; render();
+  }
+}
+
+/* rede de segurança: se algo travar, mostra o erro NA TELA (fundo claro)
+   em vez de deixar a tela escura vazia — ajuda a diagnosticar no celular */
+function mostrarErro(txt){
+  var el = document.getElementById('app');
+  if(el) el.innerHTML =
+    '<div style="background:#fff;color:#a00;padding:18px;border-radius:14px;'
+    + 'margin:24px 0;font-size:14px;line-height:1.6">'
+    + '<b>Ops! Algo travou ao abrir o StepQuest.</b><br>'
+    + 'Tire um print desta tela e mostre para o papai:<br><br>'
+    + '<code style="word-break:break-word">' + txt + '</code></div>';
+}
+window.onerror = function(msg,src,linha){ mostrarErro(msg + ' (linha ' + linha + ')'); };
+try{ render(); }
+catch(e){ mostrarErro((e && e.message) ? e.message : String(e)); }
+</script>
+</body>
+</html>
