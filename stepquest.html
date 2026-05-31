@@ -2907,32 +2907,18 @@ function telaAbertura(){
     <div class="card">
       <div class="cronos">
         <div class="face">👨‍🔬</div>
-        <div class="balao">Olá, expedicionária! Eu sou o <b>Professor Cronos</b>, o cientista
-        mais maluco do tempo! 🌀 Vamos viajar pelas matérias para você arrasar no simulado.
-        Primeiro, escolha quem você quer ser:</div>
+        <div class="balao">Olá, exploradora! Eu sou o <b>Professor Cronos</b>, o cientista
+        mais maluco do tempo! 🌀 Vamos viajar pelas matérias para você arrasar na prova.
+        Como é o seu nome?</div>
       </div>
-      <div class="chars" id="chars">
-        ${PERSONAGENS.map(p=>`
-          <div class="char" data-p="${p.id}">
-            <span class="e">${p.emoji}</span>${p.nome}
-          </div>`).join('')}
-      </div>
-      <input class="campo" id="nome" placeholder="Digite seu nome" maxlength="18" value="Mariana">
-      <button class="btn lg" id="comecar" disabled>Começar a expedição!</button>
+      <input class="campo" id="nome" placeholder="Digite seu nome" maxlength="18" autofocus>
+      <button class="btn lg" id="comecar">Começar a expedição! 🚀</button>
     </div>
     <div class="rodape">StepQuest • feito com carinho para a Mariana</div>`;
 
-  document.querySelectorAll('#chars .char').forEach(el=>{
-    el.onclick = ()=>{
-      document.querySelectorAll('#chars .char').forEach(c=>c.classList.remove('sel'));
-      el.classList.add('sel');
-      escolha.personagem = el.dataset.p;
-      document.getElementById('comecar').disabled = false;
-    };
-  });
   document.getElementById('comecar').onclick = ()=>{
     const nome = document.getElementById('nome').value.trim() || 'Exploradora';
-    estado.perfil = { nome, personagem:escolha.personagem };
+    estado.perfil = { nome, personagem:'explor' };
     salvar(); render();
   };
 }
