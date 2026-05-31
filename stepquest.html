@@ -13,24 +13,36 @@
   html,body{ height:100%; }
   body{
     font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    background:#1a1740;
-    background:radial-gradient(1200px 600px at 70% -10%,#3b2d6e 0%,#1a1740 60%);
+    background:#15123a;
+    background:
+      radial-gradient(900px 500px at 12% -8%, #4a2f86 0%, transparent 55%),
+      radial-gradient(1000px 600px at 88% 0%, #2b6fb0 0%, transparent 50%),
+      linear-gradient(180deg,#1d1748 0%,#140f33 100%);
+    background-attachment:fixed;
     color:#fff; min-height:100%;
   }
-  #app{ max-width:760px; margin:0 auto; padding:14px 14px 60px; }
+  #app{ max-width:760px; margin:0 auto; padding:14px 14px 64px; animation:fadein .35s ease; }
+  @keyframes fadein{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none;} }
   h1,h2,h3{ line-height:1.2; }
-  button{ font-family:inherit; cursor:pointer; border:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; transition:transform .08s ease, filter .15s; }
+  button:active{ transform:scale(.97); }
   .hide{ display:none !important; }
 
   /* ---- cartão genérico ---- */
-  .card{ background:#fff; color:#2a2350; border-radius:18px; padding:16px; margin:12px 0;
-    box-shadow:0 6px 20px rgba(0,0,0,.25); }
+  .card{ background:#fff; color:#2a2350; border-radius:20px; padding:16px; margin:12px 0;
+    box-shadow:0 10px 28px rgba(10,5,40,.35); border:1px solid rgba(255,255,255,.5); }
 
-  /* ---- cientista ---- */
-  .cronos{ display:flex; gap:10px; align-items:flex-start; margin:10px 0; }
-  .cronos .face{ font-size:38px; flex:0 0 auto; filter:drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
-  .cronos .balao{ background:#fff7d6; color:#5b4a00; border:2px solid #ffd84d;
-    border-radius:14px; padding:10px 12px; font-size:14.5px; position:relative; }
+  /* ---- guia (personagem) ---- */
+  .cronos{ display:flex; gap:12px; align-items:flex-start; margin:6px 0; }
+  .cronos .face{ font-size:30px; flex:0 0 auto; width:54px; height:54px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 25%,#fff,#efe9ff);
+    box-shadow:0 4px 12px rgba(80,40,160,.3), inset 0 0 0 3px #fff, inset 0 0 0 5px #d9ccff; }
+  .cronos .balao{ background:linear-gradient(180deg,#fffae6,#fff3cf); color:#5b4a00;
+    border:2px solid #ffd84d; border-radius:16px; padding:11px 13px; font-size:14.5px;
+    position:relative; flex:1; box-shadow:0 3px 10px rgba(150,110,0,.12); }
+  .cronos .balao:before{ content:''; position:absolute; left:-9px; top:18px; width:0; height:0;
+    border:8px solid transparent; border-right-color:#ffd84d; }
   .cronos .balao b{ color:#a06b00; }
 
   /* ---- abertura ---- */
@@ -47,15 +59,18 @@
   .char .e{ font-size:32px; display:block; }
   .char.sel{ border-color:var(--pt); background:#fff; }
   .btn{ display:block; width:100%; padding:14px; border-radius:14px; font-size:17px;
-    font-weight:700; color:#fff; background:linear-gradient(90deg,#7b4dff,#b14dff); }
-  .btn:disabled{ opacity:.45; }
-  .btn.lg{ margin-top:8px; }
-  .btn.sec{ background:#ece9f7; color:#5a4fae; }
+    font-weight:700; color:#fff; background:linear-gradient(90deg,#7b4dff,#b14dff);
+    box-shadow:0 6px 16px rgba(120,70,255,.35); }
+  .btn:disabled{ opacity:.45; box-shadow:none; }
+  .btn.lg{ margin-top:10px; }
+  .btn.sec{ background:#ece9f7; color:#5a4fae; box-shadow:none; }
 
   /* ---- topo / HUD ---- */
   .hud{ display:flex; align-items:center; gap:10px; background:#241f52;
     border:1px solid #423a7e; border-radius:16px; padding:10px 12px; }
-  .hud .av{ font-size:30px; }
+  .hud .av{ font-size:24px; width:44px; height:44px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 25%,#5b4bb0,#37306f); box-shadow:inset 0 0 0 2px #6b5cc8; }
   .hud .who{ flex:1; min-width:0; }
   .hud .who .nm{ font-weight:700; font-size:15px; }
   .hud .who .lv{ font-size:12px; color:#bdb4ee; }
@@ -76,10 +91,14 @@
 
   /* ---- mapa: territórios ---- */
   .terrs{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .terr{ border-radius:18px; padding:14px; color:#fff; position:relative; overflow:hidden;
-    min-height:118px; box-shadow:0 6px 16px rgba(0,0,0,.3); }
-  .terr .em{ font-size:34px; }
-  .terr .nm{ font-weight:800; font-size:17px; margin-top:2px; }
+  .terr{ border-radius:20px; padding:15px; color:#fff; position:relative; overflow:hidden;
+    min-height:128px; box-shadow:0 8px 20px rgba(0,0,0,.32); }
+  .terr:after{ content:''; position:absolute; right:-22px; top:-22px; width:92px; height:92px;
+    background:rgba(255,255,255,.12); border-radius:50%; }
+  .terr .em{ font-size:32px; width:52px; height:52px; border-radius:14px; position:relative; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); }
+  .terr .nm{ font-weight:800; font-size:18px; margin-top:8px; text-shadow:0 1px 3px rgba(0,0,0,.25); }
   .terr .pg{ font-size:12px; opacity:.95; margin-top:3px; }
   .terr .cd{ display:inline-block; background:rgba(0,0,0,.28); border-radius:8px;
     padding:3px 8px; font-size:11.5px; font-weight:700; margin-top:7px; }
@@ -150,6 +169,29 @@
 
   .rodape{ text-align:center; color:#6b6498; font-size:11px; margin-top:24px; }
   .rodape a{ color:#9a90d6; cursor:pointer; }
+
+  /* ---- identificação (lista da turma) ---- */
+  .alunos{ display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:9px; margin-top:12px; }
+  .aluno{ padding:12px 6px; border:2px solid #ffe08a; border-radius:14px;
+    background:linear-gradient(180deg,#fffdf5,#fff4d6); color:#6a5410; font-weight:700;
+    font-size:14px; box-shadow:0 3px 8px rgba(150,110,0,.1); }
+  .aluno:active{ background:#fff; border-color:#ffb84d; }
+  .aluno.outro{ border-style:dashed; border-color:#cfc8e8; background:#f6f5fb; color:#7d76a8; }
+
+  /* ---- welcome ---- */
+  .welcome{ text-align:center; padding:16px; background:linear-gradient(135deg,#ffffff,#f3efff); }
+  .welcome b{ color:#6a3fd0; }
+
+  /* ---- ler-junto: linha sendo lida ---- */
+  .conteudo .lnr{ padding:5px 9px; margin:2px 0; border-radius:9px;
+    transition:background .2s ease, transform .2s ease; }
+  .lnr.lendo{ background:linear-gradient(90deg,#fff1a8,#ffe27a); font-weight:700;
+    box-shadow:0 2px 8px rgba(220,170,0,.25); transform:scale(1.012); }
+
+  /* ---- ranking ---- */
+  .rkrow{ display:flex; align-items:center; gap:12px; padding:11px 8px; border-bottom:1px solid #eee; }
+  .rkfb{ background:linear-gradient(135deg,#fff6da,#ffe7a8); color:#7a5b00; border-radius:14px;
+    padding:11px 13px; font-weight:700; font-size:14px; margin-top:10px; text-align:center; }
 </style>
 </head>
 <body>
@@ -2993,8 +3035,7 @@ function entrarOutro(){
 }
 function telaAbertura(){
   var botoes = ALUNOS.map(function(a){
-    return '<button onclick="entrar(\''+a+'\')" style="padding:11px 6px;border:2px solid #ffd84d;'
-      + 'border-radius:12px;background:#fff7d6;color:#5b4a00;font-weight:700;font-size:14px;cursor:pointer">'+a+'</button>';
+    return '<button class="aluno" onclick="entrar(\''+a+'\')">'+a+'</button>';
   }).join('');
   app.innerHTML = `
     <div class="logo">
@@ -3007,9 +3048,9 @@ function telaAbertura(){
         <div class="balao">Olá, turma do <b>4º ano do Step by Step</b>! 🌀 Eu sou o Professor Cronos.
         Antes de começar, vamos nos identificar — <b>qual aluno é você?</b></div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:10px">
+      <div class="alunos">
         ${botoes}
-        <button onclick="entrarOutro()" style="padding:11px 6px;border:2px dashed #bbb;border-radius:12px;background:#f5f5f5;color:#666;font-weight:700;cursor:pointer">✏️ Outro</button>
+        <button class="aluno outro" onclick="entrarOutro()">✏️ Outro</button>
       </div>
     </div>
     <div class="rodape">StepQuest • feito com carinho para a turma</div>`;
@@ -3068,9 +3109,9 @@ function telaMapa(){
 
   app.innerHTML = `
     ${hud()}
-    <div class="card" style="text-align:center;padding:12px;margin-bottom:8px">
-      <b>Olá, ${estado.perfil.nome}!</b> 👋 Bem-vinda ao seu guia de estudos do 4º ano.<br>
-      A prova começa em <b>${Math.max(0,diasAte('2026-06-08'))} dias</b> (8 de junho) — bora arrasar! 🚀
+    <div class="card welcome" style="margin-bottom:8px">
+      ${fraseMapa()}
+      <br><button class="btn" style="margin-top:10px;max-width:260px;margin-left:auto;margin-right:auto" onclick="ouvirNome()">🔊 Ouvir o Cronos</button>
     </div>
     <div class="titulo">🗺️ Mapa da Expedição</div>
     <div class="lead">Toque num território para estudar. Cada prova é o desafio final dele!</div>
@@ -3142,7 +3183,7 @@ function telaTerritorio(){
 /* ---- ler-junto (Cronos narra o card, a linha acende) ---- */
 function pararNarracao(){
   if(narrAudio){ narrAudio.ontimeupdate=null; narrAudio.onended=null; narrAudio.pause(); narrAudio=null; }
-  document.querySelectorAll('.lnr').forEach(function(s){ s.style.background=''; s.style.fontWeight=''; });
+  document.querySelectorAll('.lnr').forEach(function(s){ s.classList.remove('lendo'); });
   var b=document.getElementById('btnLer'); if(b) b.textContent='🔊 Cronos lê pra mim';
 }
 function toggleLerAuto(){ estado.lerAuto=!estado.lerAuto; salvar(); pararNarracao(); render(); }
@@ -3159,9 +3200,7 @@ function lerJunto(mid){
       var ct=narrAudio.currentTime, idx=0, i;
       for(i=0;i<narrTimes.length;i++){ if(narrTimes[i].t<=ct) idx=i; }
       document.querySelectorAll('.lnr').forEach(function(s,j){
-        var on=(j===idx);
-        s.style.background=on?'#fff3a0':''; s.style.fontWeight=on?'700':'';
-        s.style.borderRadius='6px'; s.style.transition='background .15s';
+        var on=(j===idx); s.classList.toggle('lendo', on);
         if(on) s.scrollIntoView({block:'center',behavior:'smooth'});
       });
     };
@@ -3179,7 +3218,7 @@ function telaMissao(){
   const t = TERRITORIOS.find(x=>x.id===view.terr);
   const m = missoesDe(t.id).find(x=>x.id===view.miss);
   const linhas = m.resumo.split('<br>').map(function(s){return s.trim();}).filter(function(s){return s.length;});
-  const corpo = linhas.map(function(l){ return '<div class="lnr" style="padding:3px 6px;margin:1px 0">'+l+'</div>'; }).join('');
+  const corpo = linhas.map(function(l){ return '<div class="lnr">'+l+'</div>'; }).join('');
   app.innerHTML = `
     ${hud()}
     <div class="topbar">
@@ -3286,6 +3325,16 @@ function finalizarQuiz(){
 
 /* ---- conectores personalizados (parabéns + progresso + próxima, no tom do guia) ---- */
 function pick(a){ return (a&&a.length)? a[(Math.random()*a.length)|0] : ''; }
+function fraseMapa(){
+  var nome = estado.perfil.nome, d = Math.max(0, diasAte('2026-06-08'));
+  var saud = pick(['Olá de novo, '+nome+'! 👋','Que bom te ver, '+nome+'! ✨',
+    'Bora pra mais uma, '+nome+'? 💪','E aí, '+nome+'! Pronta pra explorar? 🧭',
+    'De volta à expedição, '+nome+'! 🚀','Salve, '+nome+'! O tempo não para! ⏳']);
+  var cont = d<=0 ? 'A prova é HOJE — você se preparou, arrasa lá! 🎯'
+    : d===1 ? 'É <b>AMANHÃ</b>! Última revisão e bora! 🔥'
+    : 'Faltam <b>'+d+' dias</b> pra prova (8/jun). Cada missão te deixa mais forte! 🌟';
+  return saud+'<br>'+cont;
+}
 function conectorTexto(t){
   var c = CONECTORES[t.id];
   var nome = estado.perfil ? estado.perfil.nome : 'exploradora';
@@ -3324,9 +3373,45 @@ function telaResultado(){
         <div class="face">${(PERSONAS[view.terr]||{}).emoji||'👨‍🔬'}</div>
         <div class="balao">${conectorTexto(t)}</div>
       </div>
+      <div class="rkfb" id="rkfb" style="display:none"></div>
       <button class="btn lg" onclick="iniciarQuiz('${t.id}','${m.id}')">Refazer o desafio 🔁</button>
       <button class="btn lg sec" onclick="irTerritorio('${t.id}')">Voltar para ${t.nome}</button>
     </div>`;
+  enviarRanking().then(rankingFeedback).then(function(msg){
+    var el=document.getElementById('rkfb'); if(el && msg){ el.textContent=msg; el.style.display='block'; }
+  });
+}
+
+/* ---- feedback de ranking (subiu posições / pódio) — bem variado ---- */
+async function rankingFeedback(){
+  var lista = await carregarRanking(); if(!lista || !lista.length) return '';
+  var pos = 0, i;
+  for(i=0;i<lista.length;i++){ if(lista[i].id===estado.id){ pos=i+1; break; } }
+  if(!pos) return '';
+  var nome = estado.perfil.nome;
+  var ant = estado.ultPos||0; estado.ultPos = pos; salvar();
+  var rotulo = pos<=3 ? ['🥇 1º','🥈 2º','🥉 3º'][pos-1] : pos+'º';
+  if(ant && pos<ant){
+    var d=ant-pos, pl=d>1?'posições':'posição';
+    return pick([
+      '🚀 UAU, '+nome+'! Você subiu '+d+' '+pl+' e já é '+rotulo+' na turma!',
+      '📈 Foguete ligado, '+nome+'! Mais '+d+' '+pl+' — agora você é '+rotulo+'!',
+      '⚡ Que escalada! '+nome+', você pulou '+d+' '+pl+' e está em '+rotulo+'!',
+      '🔥 Subindo no placar, '+nome+'! '+rotulo+' lugar agora!',
+      '🏃 Disparou, '+nome+'! '+d+' '+pl+' pra cima — '+rotulo+' da turma!']);
+  }
+  if(pos<=3) return pick([
+    '🏆 '+nome+', você está no PÓDIO: '+rotulo+' da turma! Que orgulho!',
+    '👑 Top da turma! '+nome+', você é '+rotulo+'. Arrasou!',
+    '⭐ '+rotulo+' lugar, '+nome+'! Você está voando no placar!']);
+  if(!ant) return pick([
+    '🎉 '+nome+', você entrou no placar em '+pos+'º! A escalada começou!',
+    '📋 Bem-vinda ao placar, '+nome+'! Você está em '+pos+'º. Bora subir!']);
+  return pick([
+    '💪 Firme em '+pos+'º, '+nome+'! Mais uma missão e você sobe!',
+    '😎 '+pos+'º lugar, '+nome+'. O pódio tá logo ali!',
+    '🌟 '+nome+', você segue em '+pos+'º. A turma tá de olho!',
+    '🧭 Posição '+pos+'º, '+nome+'! Cada acerto te leva mais alto!']);
 }
 
 /* ---- ranking ---- */
@@ -3361,8 +3446,12 @@ function telaRanking(){
 let introAudio=null;
 function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} }catch(e){} }
 function tocarIntroMateria(id){
-  var p=PERSONAS[id]; if(!p||!p.intro) return;
-  try{ introAudio=new Audio(URL_NARR+'_elenco/'+p.intro+'.mp3'); introAudio.play().catch(function(){}); }catch(e){}
+  var nm=slugNome(estado.perfil?estado.perfil.nome:'');
+  try{
+    introAudio=new Audio(URL_NARR+'_saud/'+id+'-'+nm+'.mp3');
+    introAudio.onerror=function(){ var p=PERSONAS[id]; if(p&&p.intro){ introAudio=new Audio(URL_NARR+'_elenco/'+p.intro+'.mp3'); introAudio.play().catch(function(){}); } };
+    introAudio.play().catch(function(){});
+  }catch(e){}
 }
 function introMateriaTexto(t){
   var p=PERSONAS[t.id]||{}; var nome=estado.perfil?estado.perfil.nome:'exploradora';
