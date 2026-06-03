@@ -583,6 +583,82 @@ const CONTEUDO = {
             "explica": "Homônimos batem certinho na forma. Parônimos só PARECEM iguais."
           }
         ]
+      },
+      {
+        "id": "pt-prefixo-sufixo",
+        "emoji": "🧩",
+        "titulo": "Prefixo e Sufixo (formar palavras)",
+        "cronos": "Vem cá, meu bem... olha que mágica da Dona Letra: pego a palavra 'útil' e ponho um 'in' na frente — vira INútil! E se eu colo um 'dade' no fim, vira utiliDADE! Esses pedacinhos têm nome, {nome}: PREfixo vem na frente, SUfixo vem no fim. Bora aprender devagarinho?",
+        "resumo": "FORMAÇÃO DE PALAVRAS por AFIXOS = criar palavras novas a partir de outras.<br>O AFIXO é um pedacinho que se junta ao RADICAL.<br>• PREFIXO: vem ANTES do radical e muda o SENTIDO. Ex.: in + útil = inútil.<br>• SUFIXO: vem DEPOIS do radical e muda a CLASSE GRAMATICAL (e o sentido). Ex.: útil + dade = utilidade.<br>Dá pra ter os DOIS: des + mata + mento = desmatamento (prefixo + radical + sufixo).<br>Prefixos comuns: in-, im-, des-, re-, pré-.<br>Sufixos comuns: -eiro (profissão), -mento, -dade, -zal, -ada.",
+        "conversa": "Senta aqui pertinho da Dona Letra, meu bem...<br>Hoje a gente vai brincar de FORMAR PALAVRAS, juntando pedacinhos.<br>Toda palavra tem um pedaço principal, que a gente chama de RADICAL — tipo o 'útil'.<br>Agora presta atenção na mágica...<br>Se eu coloco um pedacinho ANTES do radical, isso se chama PREFIXO — e ele muda o SENTIDO da palavra. Olha: in + útil... vira inútil! Era útil, agora é o contrário.<br>E se eu coloco um pedacinho DEPOIS do radical, isso se chama SUFIXO — e ele muda a CLASSE da palavra. Olha: útil + dade... vira utilidade!<br>E o mais legal, {nome}: dá pra usar os dois juntinhos! Em des + mata + mento, o 'des' é prefixo, o 'mata' é o radical e o 'mento' é sufixo. Junta tudo: desmatamento.<br>Uns prefixos que aparecem bastante: in, im, des, re, pré.<br>E uns sufixos queridinhos: -eiro de profissão, como em padeiro... e também -mento, -dade, -zal, -ada.<br>Guardou no coraçãozinho? Então bora pro desafio, {nome}!",
+        "quiz": [
+          {
+            "p": "A Dona Letra ensinou: o que é um PREFIXO?",
+            "op": [
+              "um pedacinho que vem ANTES do radical e muda o sentido da palavra",
+              "um pedacinho que vem DEPOIS do radical",
+              "o meio da palavra",
+              "um sinal de pontuação"
+            ],
+            "correta": 0,
+            "explica": "Prefixo vem na FRENTE do radical. Ex.: in + útil = inútil — mudou o sentido!"
+          },
+          {
+            "p": "Em UTILIDADE (útil + dade), o 'dade' entrou DEPOIS do radical. Esse sufixo serve pra:",
+            "op": [
+              "mudar a classe da palavra (de 'útil' para 'utilidade')",
+              "mudar a cor da palavra",
+              "tirar todo o sentido da palavra",
+              "transformar a palavra em número"
+            ],
+            "correta": 0,
+            "explica": "Sufixo vem depois do radical e muda a CLASSE: útil (adjetivo) → utilidade (substantivo)."
+          },
+          {
+            "p": "A Betina quer escrever 'que NÃO é possível'. Qual prefixo ela usa em ___possível?",
+            "op": [
+              "im → impossível",
+              "re → repossível",
+              "eiro → possíveleiro",
+              "mento → possívelmento"
+            ],
+            "correta": 0,
+            "explica": "Com o prefixo 'im-' vira impossível. Lembra dos prefixos: im, in, des, re, pré."
+          },
+          {
+            "p": "Qual grupo tem SÓ palavras formadas com SUFIXO?",
+            "op": [
+              "casarão, cafezal, boiada",
+              "infeliz, desligar, refazer",
+              "impossível, prever, desfazer",
+              "rever, antever, expor"
+            ],
+            "correta": 0,
+            "explica": "casaRÃO, cafeZAL, boiADA têm sufixo no FIM. Os outros grupos têm PREFIXO na frente (in-, des-, re-, im-)."
+          },
+          {
+            "p": "O Luca leu: 'o PADEIRO faz pão'. A palavra padeiro é formada com o sufixo:",
+            "op": [
+              "-eiro, que indica profissão (como padeiro, pedreiro, sapateiro)",
+              "pad-, que é um prefixo",
+              "-eiro, que é um prefixo",
+              "ela não tem afixo nenhum"
+            ],
+            "correta": 0,
+            "explica": "O sufixo -eiro forma nomes de profissão e vem no FIM: pad + eiro = padeiro."
+          },
+          {
+            "p": "Em DESMATAMENTO (des + mata + mento), a Giulia identificou:",
+            "op": [
+              "um prefixo (des) + o radical (mata) + um sufixo (mento)",
+              "só um prefixo",
+              "só um sufixo",
+              "dois radicais e nenhum afixo"
+            ],
+            "correta": 0,
+            "explica": "Dá pra ter os DOIS! 'des' é prefixo (frente) e 'mento' é sufixo (fim): des + mata + mento."
+          }
+        ]
       }
     ]
   },
@@ -3208,6 +3284,10 @@ function telaMapa(){
     </div>
     <div class="titulo">🗺️ Mapa da Expedição</div>
     <div class="lead">Toque num território para estudar. Cada prova é o desafio final dele!</div>
+    <div style="background:linear-gradient(135deg,#E91E63,#9C27B0);color:#fff;border-radius:14px;padding:13px 16px;margin:10px 0;box-shadow:0 3px 10px rgba(0,0,0,.15)">
+      <div style="font-weight:700;font-size:1.05em;margin-bottom:4px">🆕 Novidade pra prova!</div>
+      <div style="font-size:.92em;line-height:1.4">A Dona Letra trouxe uma missão nova de Português: <strong>🧩 Prefixo e Sufixo</strong>. Entrou no conteúdo da 2ª avaliação — bora treinar lá no território de Português! 💜</div>
+    </div>
     <button class="btn" style="width:100%;margin:8px 0 4px" onclick="irRanking()">🏆 Ver o Placar da Turma</button>
     ${hoje}
     <div class="terrs">${cards}</div>
