@@ -157,6 +157,35 @@
   .feed{ font-size:13.5px; border-radius:10px; padding:10px; margin-top:6px; }
   .feed.bom{ background:#e7f6ec; color:#1d6b3a; }
   .feed.ruim{ background:#fbe9e8; color:#9a2a26; }
+  .seqfogo{ background:linear-gradient(90deg,#fff3c4,#ffe0b3); color:#9a5b00;
+    font-weight:800; font-size:13px; border-radius:10px; padding:8px 10px;
+    margin-top:6px; text-align:center; animation:pop .4s ease; }
+
+  /* ---- vida/movimento (transições de tela e micro-interações) ---- */
+  @keyframes telain{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:none;} }
+  @keyframes cardin{ from{ opacity:0; transform:translateY(18px) scale(.96);} to{ opacity:1; transform:none;} }
+  @keyframes facein{ from{ transform:scale(0) rotate(-12deg);} to{ transform:scale(1) rotate(0);} }
+  @keyframes balaoin{ from{ opacity:0; transform:translateX(-8px);} to{ opacity:1; transform:none;} }
+  @keyframes encher{ from{ width:0; } }
+  @keyframes pulsar{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.04);} }
+  #app.telain{ animation: telain .3s ease both; }
+  #app.telain .terr{ animation: cardin .42s ease both; }
+  #app.telain .terr:nth-child(1){ animation-delay:.03s } #app.telain .terr:nth-child(2){ animation-delay:.08s }
+  #app.telain .terr:nth-child(3){ animation-delay:.13s } #app.telain .terr:nth-child(4){ animation-delay:.18s }
+  #app.telain .terr:nth-child(5){ animation-delay:.23s } #app.telain .terr:nth-child(6){ animation-delay:.28s }
+  #app.telain .terr:nth-child(7){ animation-delay:.33s } #app.telain .terr:nth-child(8){ animation-delay:.38s }
+  #app.telain .aluno{ animation: cardin .3s ease both; }
+  #app.telain .progress i{ animation: encher .8s ease both; }
+  .cronos .face{ animation: facein .45s cubic-bezier(.34,1.56,.64,1) both; }
+  .cronos .balao{ animation: balaoin .32s ease .1s both; }
+  .feed.bom{ animation: pop .35s ease; }
+  .feed.ruim{ animation: shake .4s ease; }
+  .hoje button{ animation: pulsar 1.9s ease-in-out infinite; }
+  .terr .med{ animation: pop .5s ease both; }
+  .btn:active, .terr:active, .aluno:active, .opt:active{ transform:scale(.96); transition:transform .08s; }
+  .confete{ position:fixed; inset:0; pointer-events:none; z-index:99; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none!important; transition:none!important; } }
 
   /* ---- resultado ---- */
   .res{ text-align:center; }
@@ -176,7 +205,6 @@
     background:linear-gradient(180deg,#fffdf5,#fff4d6); color:#6a5410; font-weight:700;
     font-size:14px; box-shadow:0 3px 8px rgba(150,110,0,.1); }
   .aluno:active{ background:#fff; border-color:#ffb84d; }
-  .aluno.outro{ border-style:dashed; border-color:#cfc8e8; background:#f6f5fb; color:#7d76a8; }
 
   /* ---- welcome ---- */
   .welcome{ text-align:center; padding:16px; background:linear-gradient(135deg,#ffffff,#f3efff); }
@@ -225,16 +253,16 @@
    Para adicionar uma matéria, basta preencher CONTEUDO[id].
    ============================================================ */
 
-/* ---------- datas das provas (2ª Avaliação — 08 a 12/jun/2026) ---------- */
+/* ---------- datas das provas (3º Simulado — 08 a 11/set/2026) ---------- */
 const PROVAS = {
-  "portugues": "2026-06-08",
-  "matematica": "2026-06-09",
-  "historia": "2026-06-10",
-  "geografia": "2026-06-10",
-  "artes": "2026-06-10",
-  "ciencias": "2026-06-11",
-  "edfisica": "2026-06-12",
-  "ingles": "2026-06-08"
+  "portugues": "2026-09-09",
+  "matematica": "2026-09-08",
+  "historia": "2026-09-10",
+  "geografia": "2026-09-11",
+  "artes": null,
+  "ciencias": "2026-09-08",
+  "edfisica": null,
+  "ingles": "2026-09-08"
 };
 
 /* ---------- territórios (matérias) ---------- */
@@ -2982,9 +3010,32 @@ const CHAVE = 'stepquest_jun';
 const SUPA_URL = 'https://ruhjrtlhccwkphqhqsdz.supabase.co';
 const SUPA_KEY = 'sb_publishable_tSbMZtCAg2087za2jXyaiQ_MANb49nU';
 const URL_NARR = 'https://heitorbbastos.github.io/StepApp/narracao/';
-const AUDV='?v=jun2';            // cache-bust: força o navegador a baixar os mp3 regerados
+const AUDV='?v=jun11';           // cache-bust: força o navegador a baixar os mp3 regerados
 const NVAR={ok:6,no:6,res:8};    // nº de variações por tipo (bate com os geradores)
 function rvar(n){ return 1+(Math.random()*n|0); }
+/* pools de interjeição com TEXTO (injetados pelo gerador; o áudio _int segue o
+   mesmo índice — o balão mostra exatamente o que o professor fala) */
+/* INTERJ_TXT — injetado por scripts/injetar_interj.py, não editar à mão */
+const INTERJ_TXT = {"historia": {"ok": ["Detetive de primeira, você desvendou! Olha só por quê.", "A linha do tempo brilhou inteira! Vem ver o porquê.", "Mandou bem, e a máquina nem deu pane! Presta atenção nisso.", "Sabe o que aconteceu? Bzzzt, acerto em cheio! Escuta essa pista.", "Você ligou os pontos da história! Vê só o motivo.", "Que orgulho dessa viagem certeira! Olha aqui o porquê.", "Acertou na mosca do tempo! Vem ver essa pista.", "Até os primeiros agricultores aplaudiriam essa resposta! Olha o porquê.", "O relógio da história girou certinho! Escuta o motivo.", "Nem precisei ligar a máquina: acerto puro! Vê só.", "Essa resposta atravessou os séculos inteirinha! Presta atenção nisso.", "Viajou direto pra resposta certa! Vem conferir a pista.", "Uau, essa caravela chegou ao porto certo! Escuta o motivo.", "Direto das rotas antigas pra sua resposta! Olha só por quê.", "Comerciante nenhum negociaria melhor que isso! Vem ver o motivo.", "Zarpou e acertou o destino de primeira! Presta atenção nisso.", "Fantástico, as especiarias valeram a viagem! Escuta o porquê.", "Tremeu a máquina de tanto acerto! Olha aqui o motivo.", "Puxa, você mapeou o passado sem errar! Vem conferir.", "Navegou pelos séculos e ancorou certinho! Vê só o porquê.", "Isso é conhecimento de mercador experiente! Olha comigo.", "Genial, ligou o comércio antigo ao de hoje! Escuta essa.", "Firmou o pé em terra e acertou! Presta atenção no porquê.", "Bravo, a rota da resposta estava limpinha! Vem ver."], "no": ["Calma, todo mistério tem pista escondida! Vem comigo ver.", "Quase! Essa viagem deu um nó no tempo. Escuta o porquê.", "Pousamos na era errada, e daí? Não desanima, olha aqui.", "Bzzzt, errei a época também! Presta atenção nisso.", "Sabia que errar faz parte do tempo? Olha só comigo.", "Ainda não foi, mas a história ensina. Vem ver a pista.", "O túnel do tempo entortou um pouquinho! Vem ver onde.", "Essa pista era das difíceis, viu? Escuta comigo.", "Nem todo detetive acha o tesouro de primeira! Olha aqui.", "Demos uma voltinha na era errada! Vê só o caminho certo.", "O passado prega peças, acontece! Presta atenção nessa parte.", "Errou a parada do tempo, mas a máquina volta! Vem comigo.", "Opa, a caravela pegou o vento contrário! Vem ver o porquê.", "Puxa, essa rota tinha um desvio escondido! Escuta comigo.", "Perdemos a especiaria no caminho, acontece! Olha aqui.", "Ancoramos no porto errado dessa vez! Presta atenção nisso.", "Ih, a engrenagem da máquina rangeu feio! Vem ver o certo.", "Faltou um trecho da rota, dá pra refazer! Olha comigo.", "Todo navegador já se perdeu no mar! Escuta o motivo.", "Zarpamos antes de conferir o mapa! Vê só o porquê.", "Hum, essa data escorregou uns séculos! Presta atenção.", "Voltamos um pouquinho pra corrigir a rota! Vem comigo.", "Comércio nenhum fecha na primeira tentativa! Olha aqui.", "Deu ruído na viagem, mas a gente ajeita! Vê só."]}, "ciencias": {"ok": ["A experiência deu certíssimo! Olha só por quê.", "Chega pertinho, choquinho de alegria! Vem ver o motivo.", "Reação perfeita, sem borbulhar errado! Presta atenção no porquê.", "Sabe por que acertou? Faíscas de pura ciência! Vê só.", "Você pensou como cientista de verdade! Olha o porquê.", "Bzzzt, explosão de acerto no laboratório! Chega mais e escuta.", "Hipótese confirmada no laboratório! Vem ver o porquê.", "Os tubos de ensaio dançaram de alegria! Olha só.", "Cérebro ligado na tomada certa! Escuta o motivo.", "Que descoberta, digna de prêmio! Presta atenção nisso.", "A fórmula deu certinho dessa vez! Vê só por quê.", "Acertou antes mesmo do jaleco amassar! Vem conferir.", "Uau, essa observação do céu foi certeira! Olha só por quê.", "Girou como a Terra, direitinho no eixo! Escuta o motivo.", "Telescópio apontado na resposta certa! Vem ver o porquê.", "Puxa, você leu a sombra como os antigos! Presta atenção nisso.", "Brilhou mais que o sol do meio-dia! Olha aqui.", "Marcou a hora certa no relógio de sol! Vê só o porquê.", "Cronômetro parou no acerto exato! Escuta comigo.", "Isso é olhar de astrônomo de verdade! Vem conferir o motivo.", "Genial, o ciclo fechou perfeito! Olha o porquê.", "Bravo, hipótese testada e aprovada! Presta atenção.", "Deu certo como estrela em noite limpa! Vê só.", "Anotou no caderno de bordo e acertou! Vem ver."], "no": ["Calma, errar é experimentar de novo! Vem ver comigo.", "Quase! A reação não pegou dessa vez. Escuta o porquê.", "Borbulhou pro lado errado, e daí? Não desanima, olha aqui.", "Sabe o que faltou? Um detalhe pequeno! Presta atenção nisso.", "Faíscas, esse choque foi de surpresa! Vem ver de novo.", "Ainda não reagiu, mas todo cientista erra. Olha só.", "A experiência espumou demais, recomeça! Vem ver comigo.", "Quase, faltou uma gotinha de atenção! Olha o porquê.", "Esse experimento pede mais um teste! Escuta aqui.", "Misturou os frascos errados, acontece! Presta atenção.", "Até grandes cientistas repetem o teste! Vê só o motivo.", "O resultado saiu torto, mas a ciência conserta! Vem ver.", "Opa, a sombra apontou pro lado errado! Vem ver o porquê.", "Ih, o telescópio desfocou dessa vez! Escuta comigo.", "Nublou bem na hora da observação! Olha aqui o certo.", "Puxa, faltou anotar um detalhe do ciclo! Presta atenção nisso.", "Girou pro lado contrário, acontece! Vê só o motivo.", "Todo astrônomo erra a primeira medição! Olha comigo.", "Deu ruído no experimento, sem drama! Escuta o porquê.", "Hum, essa hipótese precisa de outro teste! Vem ver.", "Marcou a hora errada no relógio de sol! Presta atenção.", "Não desanima, ciência é tentar de novo! Olha aqui.", "Escapou um passo da observação! Vê só onde.", "Voltamos ao laboratório pra conferir! Vem comigo."]}, "matematica": {"ok": ["Acertou com precisão, e os números não mentem! Olha só.", "Conta impecável, devo admitir. Vê só por que está certa.", "Papel, lápis e exatidão te levaram lá! Presta atenção nisso.", "Sabe por quê? Cada passo bateu certinho! Escuta com calma.", "Hmpf, não tenho do que reclamar dessa vez! Vem ver como funciona.", "Os números confirmam o seu acerto! Agora olha o porquê.", "Exato, sem sobra nem falta! Vê o porquê.", "Essa conta fechou redondinha! Olha aqui o motivo.", "Até o meu ábaco balançou de surpresa, acertou! Escuta.", "Resultado limpo, do jeito que eu gosto! Presta atenção.", "Vou anotar: resposta correta, sem reclamação! Vê só.", "Calculou direito, admito sem resmungar! Olha o porquê.", "Vírgula no lugar certo, sem discussão! Olha só por quê.", "Contou os quadradinhos direitinho! Escuta o motivo.", "Fração inteirinha, nada faltando! Vem ver o porquê.", "Hum, dessa vez não tenho o que corrigir! Presta atenção nisso.", "Décimo por décimo, tudo conferido! Olha aqui.", "A área bateu certinha na malha! Vê só o porquê.", "Nenhum resto sobrando, do meu agrado! Escuta comigo.", "Somou os decimais sem escorregar! Olha o motivo.", "Anota aí: resposta exata! Vem conferir.", "Bem alinhado, vírgula debaixo de vírgula! Presta atenção.", "Isso sim é conta caprichada! Vê só.", "Dividiu o inteiro sem perder pedaço! Olha comigo."], "no": ["Calma, refaz devagar com papel! A conta explica. Vê só.", "Quase! Faltou só um tico de exatidão. Escuta onde foi.", "A conta escorregou, talvez no sinal! Devagar, vem ver comigo.", "Sabe o que falhou? Conta de cabeça trai a gente! Presta atenção.", "Hmpf, não foi dessa vez. Mas tem jeito certo. Olha aqui.", "Refazendo com calma, os números se ajeitam! Presta atenção nisso.", "Essa conta entortou no caminho! Vem ver onde.", "Faltou conferir antes de responder! Olha aqui devagar.", "Resmungo, mas explico: tem um deslize aí! Escuta.", "Número apressado cai do ábaco! Vê com calma.", "Errou por pouco, e pouco também conta! Presta atenção.", "A pressa atrapalhou a conta, acontece! Vem ver comigo.", "Opa, a vírgula fugiu de lugar! Vem ver onde.", "Contou um quadradinho a mais na malha! Escuta o porquê.", "Hum, essa fração ficou pela metade! Olha aqui devagar.", "Desalinhou as casas decimais, acontece! Presta atenção nisso.", "Ih, faltou somar um pedacinho! Vê só o motivo.", "Grande matemático também apaga e refaz! Olha comigo.", "Perdeu um resto no caminho! Escuta com calma.", "Não foi por muito, mas conta é conta! Vem ver.", "Deslizou no décimo, sem drama! Presta atenção.", "Volta um passo e confere comigo! Olha aqui.", "Trocou o numerador pelo denominador! Vê o porquê.", "Soma devagar que a resposta aparece! Escuta comigo."]}, "portugues": {"ok": ["Acertou de coração, meu bem! Olha só por quê.", "Que delícia, ficou tão lindo! Vem ver o porquê.", "Devagarinho você foi e chegou lá! Escuta essa palavrinha.", "Sabe por que deu certo? Você ouviu a palavra! Presta atenção nisso.", "As palavras agradecem essa resposta esperta! Olha só, meu amor.", "Ai, entendeu com todo o carinho! Vem cá ver o motivo.", "Que capricho de resposta! Olha só o porquê.", "Acertou bonito, do jeitinho certo! Vem ver.", "Essa palavra sorriu pra você! Escuta o motivo.", "Leu com atenção e brilhou! Presta atenção nisso.", "Resposta doce como mel! Vem cá ver o porquê.", "As letrinhas dançaram de alegria! Olha comigo.", "Ah, escolheu a palavrinha certa, meu bem! Olha só por quê.", "Bonito demais esse cuidado com a escrita! Vem ver o motivo.", "Com todo o carinho, você acertou! Escuta essa palavrinha.", "Deu gosto de ler essa resposta! Presta atenção nisso.", "Escreveu com capricho, meu amor! Olha aqui o porquê.", "Foi bem devagarinho e chegou! Vê só comigo.", "Guardou a regrinha no coração! Vem cá ver o motivo.", "Herói nenhum de biografia acertaria melhor! Escuta só.", "Isso mesmo, querida, bem observado! Olha comigo.", "Juntou as letrinhas certinho! Presta atenção no porquê.", "Linda resposta, do jeitinho que ensinei! Vem ver.", "Percebeu a diferença entre as palavras! Vê só o motivo."], "no": ["Calma, meu bem, não desanima! Presta atenção nessa palavra.", "Quase, quase passou! Escuta essa palavrinha com carinho.", "Não foi dessa vez, meu amor! Devagarinho, olha comigo.", "Sabe que errar ensina, querida? Vem cá que eu mostro.", "Ai, passou pertinho do certo! Vem ver comigo, meu bem.", "Ainda não, mas é facinho! Escuta só essa palavra.", "Essa palavrinha é danada de esperta! Vem ver comigo.", "Foi quase, faltou um fiapinho! Escuta com calma.", "Tem letra que gosta de pregar peça! Olha o porquê.", "Respira e lê de novo devagarinho! Presta atenção.", "Não foi essa, mas você chega lá! Vem cá comigo.", "Essa pegadinha engana muita gente! Vê só o motivo.", "Ah, essa palavrinha é traiçoeira, meu bem! Olha comigo.", "Bem pertinho, faltou um detalhe! Escuta com carinho.", "Chegou quase lá, meu amor! Vem cá que eu mostro.", "De novo com calma que você acerta! Presta atenção nisso.", "Escapou a regrinha dessa vez! Olha aqui devagar.", "Fica tranquila, querida, todo mundo erra! Vê só o porquê.", "Guarda essa dica no coração! Escuta comigo.", "Ih, trocou uma letrinha só! Vem ver o motivo.", "Juntinha comigo a gente descobre! Olha o porquê.", "Leia mais uma vez, sem pressa! Presta atenção.", "Olha que essa engana até gente grande! Vê comigo.", "Passou raspando, meu bem! Vem cá ver a palavrinha."]}, "geografia": {"ok": ["Que exploradora, desbravou essa trilha! Olha só por quê.", "Pra aventura, o mapa agora é seu! Vem ver o porquê.", "Olho no horizonte e acerto em cheio! Presta atenção nisso.", "Sabe por que venceu? Leu o caminho certinho! Vê só.", "Bota a bota, chegamos ao topo! Olha aqui o motivo.", "Segura o chapéu, que precisão na trilha! Vem ver.", "Rota traçada e destino alcançado! Olha o porquê.", "A bússola apontou direto pro acerto! Vem ver.", "Içar velas, resposta certeira! Escuta o motivo.", "Você leu o terreno como gente grande! Presta atenção.", "Essa trilha foi vencida com estilo! Vê só.", "Acerto digno de bandeira no topo! Olha aqui.", "Mapa aberto e destino certo! Olha só por quê.", "Cravou a bandeirinha no município certo! Escuta o motivo.", "Do bairro ao país, você não se perdeu! Vem ver o porquê.", "Ei, que leitura de mapa impecável! Presta atenção nisso.", "Firmou o rumo e chegou! Olha aqui.", "Grande navegadora, achou o caminho! Vê só o motivo.", "Isso é conhecimento de quem explora! Escuta comigo.", "Já sabe quem manda em cada lugar! Olha o porquê.", "Léguas percorridas e nenhuma errada! Vem conferir.", "Norte certinho, sem desviar! Presta atenção.", "Pisou firme no terreno certo! Vê só.", "Traçou a rota como capitã de verdade! Olha comigo."], "no": ["Calma, todo explorador se perde um pouco! Vem comigo ver.", "Quase! Esse caminho enganou a gente. Olha o mapa comigo.", "Viramos pro lado errado, e daí? Não desanima, presta atenção.", "Sabe o que faltou? Olhar a bússola! Vem comigo ver.", "Rumo ao desconhecido sem medo de errar! Olha aqui no mapa.", "Segura o chapéu, ainda não chegamos! Vê só por quê.", "O mapa dobrou na parte errada! Vem ver comigo.", "Essa trilha tinha atalho escondido! Olha o porquê.", "Até capitã já se perdeu no caminho! Escuta aqui.", "Faltou conferir a rota antes de seguir! Presta atenção.", "O vento empurrou pro lado errado! Vê só o certo.", "Recalculando a rota, sem desanimar! Vem comigo.", "Ah, confundimos a cidade com o município! Vem ver o porquê.", "Baixou a névoa bem na hora! Escuta comigo.", "Desviamos umas léguas, acontece! Olha aqui no mapa.", "Ei, esse cargo é de outra pessoa! Presta atenção nisso.", "Faltou olhar a legenda do mapa! Vê só o motivo.", "Grande expedição nenhuma acerta de primeira! Olha comigo.", "Ih, a trilha bifurcou e a gente errou! Escuta o porquê.", "Juntos a gente reencontra o caminho! Vem comigo.", "Léguas a mais não fazem mal! Vê só o certo.", "Não desanima, exploradora se perde e volta! Olha aqui.", "Perdemos o norte por um instante! Presta atenção.", "Tempestade desviou o barco, sem drama! Escuta comigo."]}, "artes": {"ok": ["Que resposta bela, acertou de alma! Olha só por quê.", "Feche os olhos e sinta: você acertou! Vem contemplar o porquê.", "A cor está sorrindo pra você! Imagine comigo o motivo.", "Sabe por que deu certo? Você sentiu a arte! Vê só.", "Ahhh, que acerto delicado e cheio de emoção! Respira fundo e olha.", "Você enxergou a beleza certinha! Presta atenção nesse detalhe.", "Pincelada certeira, que beleza! Olha o porquê.", "Sua resposta merecia moldura! Vem contemplar.", "A tela inteira aplaudiu baixinho! Escuta o motivo.", "Acertou com olhos de artista! Presta atenção nisso.", "Essa resposta tem cor de acerto! Vê só.", "Pousou bem no lugar certo, que inspiração! Olha comigo.", "Ah, sentiu a luz e a sombra na medida! Olha só por quê.", "Barroco puro, dramático e certeiro! Vem contemplar o motivo.", "Como um altar dourado, sua resposta brilha! Escuta o porquê.", "Dourado no ponto, nem demais nem de menos! Presta atenção nisso.", "Enxergou o detalhe que quase ninguém vê! Olha aqui.", "Foi delicado e certeiro ao mesmo tempo! Vê só o motivo.", "Grandes mestres assinariam essa resposta! Contempla comigo.", "Isso tem alma de artista! Olha o porquê.", "Luz e sombra dançaram junto com você! Escuta comigo.", "Moldura merecida pra essa resposta! Vem ver.", "Sentiu a beleza antes de responder! Olha só o motivo.", "Talhou a resposta como o Aleijadinho! Presta atenção."], "no": ["Respira fundo, errar também é arte! Presta atenção comigo.", "Quase! Feche os olhos um instante e olha comigo.", "Não foi essa cor, e tudo bem! Contempla isso comigo.", "Sabe o que faltou? Sentir mais devagar! Vem cá que eu mostro.", "Ahhh, passou raspando da obra! Vem ver de novo.", "Ainda não, mas sinta outra vez! Olha só essa beleza.", "O pincel escorregou da tela, acontece! Vem ver.", "Essa tinta ainda não secou, olha de novo! Vem cá.", "A obra pede um segundo olhar! Escuta o porquê.", "Toda obra-prima começa com rascunho! Presta atenção.", "Faltou um tom na mistura das cores! Vê comigo.", "A arte perdoa, refaz com calma! Vem contemplar o motivo.", "Ah, faltou um tom de sombra aí! Vem contemplar o porquê.", "Borrou um cantinho da tela, e tudo bem! Escuta comigo.", "Contempla de novo, com calma! Olha o motivo.", "Devagar, a arte pede tempo! Presta atenção nisso.", "Escureceu demais onde era pra clarear! Vê só.", "Fecha os olhos e sente outra vez! Olha comigo.", "Grande mestre nenhum acertou de primeira! Escuta o porquê.", "Ih, esse dourado ficou fora do lugar! Vem ver.", "Justo essa passou despercebida! Presta atenção.", "Luz e sombra confundem mesmo, viu? Olha aqui.", "Mais um olhar e você enxerga! Vê só o motivo.", "Rascunhou por cima do certo! Vem contemplar comigo."]}, "edfisica": {"ok": ["Mira perfeita, acertou em cheio! Olha só por quê.", "Bem no centro do alvo, sem tremer! Presta atenção nisso.", "Foco total te levou lá! Vê só o porquê.", "Sabe por que voou? Aqueceu, mirou e acertou! Olha aqui.", "Esse acerto valeu ouro, sem moleza! Escuta só o porquê.", "Bora, que precisão de campeã! Presta atenção no motivo.", "Na mosca, jogada de craque! Olha o porquê.", "Treinou, focou e converteu! Vem ver o motivo.", "Pontaria afiada, que jogada! Escuta aqui.", "Golaço de conhecimento! Presta atenção nisso.", "Acertou com categoria de final de campeonato! Vê só.", "O time todo vibrou com essa! Olha aqui o porquê.", "Aê, cravou o arremesso! Olha só por quê.", "Certeira do começo ao fim da jogada! Escuta o motivo.", "Direto pra rede, sem defesa! Vem ver o porquê.", "Explodiu de energia nessa resposta! Presta atenção nisso.", "Firmou o pé e mandou bem! Olha aqui.", "Grande jogada, digna de pódio! Vê só o motivo.", "Isso é preparo de atleta! Escuta comigo.", "Levantou o troféu com essa! Olha o porquê.", "Marcou ponto com folga! Vem conferir.", "Que reflexo rápido, hein! Presta atenção.", "Sem tremer na hora do lance! Vê só.", "Voou pra cima da resposta certa! Olha comigo."], "no": ["Respira, todo atleta erra treinando! Olha aqui comigo.", "Quase! Faltou um tiquinho de mira. Escuta o porquê.", "A bola saiu do alvo, sem drama! Presta atenção nisso.", "Sabe o que faltou? Foco no centro! Vem ver o porquê.", "Bora, não entrou dessa vez! Olha aqui comigo.", "Ainda não, mas a próxima é tua! Presta atenção no lance.", "Passou raspando na trave! Vem ver o replay.", "Errou o lance, mas o jogo continua! Olha aqui.", "Respira fundo e ajusta a mira! Escuta o porquê.", "Até campeão treina o mesmo lance mil vezes! Presta atenção.", "Essa rodada escapou, a próxima é sua! Vê só.", "Faltou aquecer antes do arremesso! Vem ver comigo.", "Aê, essa saiu pela linha de fundo! Vem ver o porquê.", "Bateu na trave, quase entrou! Escuta comigo.", "Cabeça erguida, o jogo continua! Olha aqui.", "Desequilibrou na hora do arremesso! Presta atenção nisso.", "Escapou o tempo da jogada! Vê só o motivo.", "Foi por pouco, treina mais um pouquinho! Olha comigo.", "Grande craque também erra pênalti! Escuta o porquê.", "Ih, mirou um pouquinho ao lado! Vem ver.", "Levanta e volta pro treino! Presta atenção.", "Mais um aquecimento e sai! Vê só.", "Perdeu o passe dessa vez, sem drama! Olha aqui.", "Segura o ritmo que a próxima é sua! Escuta comigo."]}, "ingles": {"ok": ["You got it, acertou direitinho! Olha só por quê.", "Smile, that's correct and perfect! Vem ver o porquê.", "Great job, você arrasou de novo! Presta atenção nisso.", "Sabe por quê? Cada acerto te deixa fluente! Vê só o motivo.", "High five, amazing work, champ! Olha aqui o porquê.", "Wonderful, you nailed it! Escuta só por quê.", "Excellent, resposta de craque! Olha o porquê.", "Yes, acertou lindamente! Vem ver o motivo.", "Perfect answer, que orgulho! Escuta aqui.", "Very good, seu inglês tá voando! Presta atenção.", "Amazing, acertou sem medo! Vê só por quê.", "Well done, isso foi nota dez! Olha comigo.", "Awesome, mandou muito bem! Olha só por quê.", "Beautiful answer, que capricho! Escuta o motivo.", "Congratulations, você está voando! Vem ver o porquê.", "Exactly, era essa mesmo! Presta atenção nisso.", "Fantastic, seu inglês cresceu! Olha aqui o porquê.", "Good one, acertou com estilo! Vê só.", "Incredible, nem hesitou! Escuta comigo.", "Nice work, resposta afiada! Olha o motivo.", "Outstanding, isso é fluência chegando! Vem conferir.", "Right on, sem nenhum errinho! Presta atenção.", "Super, você entendeu de primeira! Vê só o porquê.", "That's it, exatamente isso! Olha comigo."], "no": ["Don't worry, errar ensina muito! Calma e presta atenção nisso.", "Almost! Não foi essa, mas tudo bem. Escuta só.", "Smile, passou pertinho do certo! Vem ver o porquê.", "Sabe o que faltou? Um detalhe só! You can do it, olha aqui.", "Oops, not yet, champ! Let's see por quê, olha só.", "Quase lá, keep going! Vem comigo ver o porquê.", "No problem, vamos de novo! Escuta o porquê.", "Try again, essa era sorrateira! Olha aqui.", "Take it easy, respira e olha comigo! Vem ver.", "Not this one, mas você tá pertinho! Presta atenção.", "Tudo bem errar, faz parte do learning! Vê só.", "One more time, agora vai! Vem ver o porquê.", "Alright, respira e vamos de novo! Olha só o porquê.", "Close one, faltou pouquinho! Escuta comigo.", "Easy does it, sem correria! Vem ver o motivo.", "Hey, essa era pegadinha! Presta atenção nisso.", "It happens, todo mundo erra! Olha aqui.", "Keep calm, você chega lá! Vê só o porquê.", "Let's try, olha comigo essa parte.", "Mistakes help, é assim que aprende! Escuta o motivo.", "Nope, mas quase! Vem ver o porquê.", "Relax, o inglês vem com o tempo! Presta atenção.", "Small mistake, nada demais! Olha comigo.", "Well, essa escapou! Vê só onde foi."]}};
+const INTERJ_AUDIO = {"historia": {"ok": 6, "no": 6}, "ciencias": {"ok": 6, "no": 6}, "matematica": {"ok": 6, "no": 6}, "portugues": {"ok": 6, "no": 6}, "geografia": {"ok": 6, "no": 6}, "artes": {"ok": 6, "no": 6}, "edfisica": {"ok": 6, "no": 6}, "ingles": {"ok": 6, "no": 6}};
+/* fim INTERJ_TXT */
+function nInterj(mat,k){
+  /* Sorteia só entre os índices que TÊM MP3. Texto e áudio andam casados (quiz.fbv
+     trava os dois no mesmo sorteio, pro balão mostrar o que o professor fala), então
+     prometer 24 frases tendo 6 áudios deixaria o professor mudo em 3 de cada 4
+     reações — pior que a repetição que a turma reclamou. INTERJ_AUDIO é injetado por
+     scripts/injetar_interj.py contando os arquivos que existem de verdade em
+     narracao/_quiz/_int; quando os MP3 novos forem gerados, basta rodar o injetor de
+     novo e o pool cresce sozinho. */
+  var a=(typeof INTERJ_AUDIO!=='undefined')&&INTERJ_AUDIO;
+  if(a&&a[mat]&&a[mat][k]) return a[mat][k];
+  var t=(typeof INTERJ_TXT!=='undefined')&&INTERJ_TXT;
+  return (t&&t[mat]&&t[mat][k])?t[mat][k].length:NVAR[k];
+}
+function interjTexto(mat,k,v){
+  var t=(typeof INTERJ_TXT!=='undefined')&&INTERJ_TXT;
+  return (t&&t[mat]&&t[mat][k])?t[mat][k][v-1]:null;
+}
 let narrAudio=null, narrTimes=null;
 const OBRAS = {
   'ar-munch-vida':[{img:'vampiro',cap:'Vampiro (1894) — Edvard Munch'}],
@@ -3089,18 +3140,32 @@ function carregar(){
 }
 function salvar(){ try{ localStorage.setItem(CHAVE, JSON.stringify(estado)); }catch(e){} }
 
-/* ---- ranking da turma (Supabase) — falha em silêncio se estiver offline ---- */
+/* ---- ranking da turma (Supabase) — nunca perde ponto: marca pendência e re-tenta ---- */
 async function enviarRanking(){
-  if(!estado.perfil || !estado.id) return;
+  if(!estado.perfil || !estado.id) return false;
+  var linha = { id:estado.id, nome:estado.perfil.nome,
+                pontos:totalXP(), atualizado:new Date().toISOString() };
+  var cab = { 'apikey':SUPA_KEY, 'Authorization':'Bearer '+SUPA_KEY,
+              'Content-Type':'application/json' };
+  var ok = false;
   try{
-    await fetch(SUPA_URL+'/rest/v1/ranking', {
+    var r = await fetch(SUPA_URL+'/rest/v1/ranking?on_conflict=id', {
       method:'POST',
-      headers:{ 'apikey':SUPA_KEY, 'Authorization':'Bearer '+SUPA_KEY,
-                'Content-Type':'application/json', 'Prefer':'resolution=merge-duplicates' },
-      body: JSON.stringify([{ id:estado.id, nome:estado.perfil.nome,
-                pontos:totalXP(), atualizado:new Date().toISOString() }])
+      headers:Object.assign({ 'Prefer':'resolution=merge-duplicates' }, cab),
+      body: JSON.stringify([linha])
     });
-  }catch(e){}
+    ok = r.ok;
+    if(!ok){
+      // upsert recusado (ex.: política de UPDATE) — tenta atualizar a linha direto
+      var p = await fetch(SUPA_URL+'/rest/v1/ranking?id=eq.'+encodeURIComponent(estado.id), {
+        method:'PATCH', headers:cab,
+        body: JSON.stringify({ nome:linha.nome, pontos:linha.pontos, atualizado:linha.atualizado })
+      });
+      ok = p.ok;
+    }
+  }catch(e){ ok = false; }
+  if(estado.syncPend !== !ok){ estado.syncPend = !ok; salvar(); }
+  return ok;
 }
 async function carregarRanking(){
   try{
@@ -3111,6 +3176,38 @@ async function carregarRanking(){
 }
 
 /* ---- progressão ---- */
+/* limpa chaves órfãs (conteúdo que mudou) e teta cada nota no máximo da
+   missão atual — garante que o XP nunca passa do possível */
+function sanearMelhores(){
+  var lim = {};
+  for(var tid in CONTEUDO){
+    CONTEUDO[tid].missoes.forEach(function(ms){ lim[ms.id]=(ms.quiz||[]).length; });
+  }
+  /* Os bônus existem para MAIS matérias do que os deveres: CONTEUDO tem 5
+     (português, matemática, história, geografia, ciências), mas PROVAFINAL e JOGOS
+     têm 8 — as 5 mais artes, ed. física e inglês — e há podcast para as 8.
+     Montar `lim` dentro do laço de CONTEUDO deixava prova-/jogo-/pod- dessas três
+     matérias FORA da lista de chaves válidas, e o passo seguinte as apagava como
+     órfãs. Como sanearMelhores() roda a cada abertura do app e salva, eram 675 XP
+     (3 x 225) que a criança ganhava e o app apagava — refazer não adiantava, o
+     máximo era inalcançável. Por isso o universo de matérias é a UNIÃO das três
+     fontes, nunca só a dos deveres. */
+  var materias = {};
+  for(var a in CONTEUDO) materias[a]=1;
+  if(typeof PROVAFINAL!=='undefined') for(var b in PROVAFINAL) materias[b]=1;
+  if(typeof JOGOS!=='undefined')      for(var c in JOGOS)      materias[c]=1;
+  for(var mid in materias){
+    if(typeof PROVAFINAL!=='undefined' && PROVAFINAL[mid]) lim['prova-'+mid]=4;
+    if(typeof JOGOS!=='undefined' && JOGOS[mid]) lim['jogo-'+mid]=3;
+    lim['pod-'+mid]=2;
+  }
+  var mudou=false;
+  for(var k in estado.melhores){
+    if(lim[k]==null){ delete estado.melhores[k]; mudou=true; }
+    else if(estado.melhores[k]>lim[k]){ estado.melhores[k]=lim[k]; mudou=true; }
+  }
+  if(mudou) salvar();
+}
 function totalXP(){ let x=0; for(const k in estado.melhores) x += estado.melhores[k]*25; return x; }
 function nivel(){ return Math.floor(totalXP()/100)+1; }
 function xpNoNivel(){ return totalXP()%100; }
@@ -3141,6 +3238,10 @@ function diasAte(iso){
   return Math.round((b-a)/86400000);
 }
 function textoContagem(id){
+  /* Nem toda matéria cai no simulado — no 3º (08 a 11/09) Artes e Ed. Física ficam de
+     fora. Antes o gerador dava uma data a todas e o card anunciava "prova em X dias"
+     para matéria que não tem prova. PROVAS[id] nulo = território de exploração. */
+  if(!PROVAS[id]) return '✨ não cai no simulado';
   const d = diasAte(PROVAS[id]);
   if(d<0) return 'prova já passou';
   if(d===0) return '📣 prova é HOJE!';
@@ -3166,9 +3267,17 @@ function missaoDoDia(){
    RENDER
    ============================================================ */
 const app = document.getElementById('app');
+let _ultimaTela=null;
 function render(){
-  if(!estado.perfil){ telaAbertura(); return; }
-  if(view.tela==='mapa') telaMapa();
+  const telaAtual = !estado.perfil ? 'abertura' : view.tela;
+  const trocou = telaAtual!==_ultimaTela; _ultimaTela=telaAtual;
+  /* Nome fora da lista da turma = perfil criado pelo antigo "Outro" (ou editado à mão
+     no localStorage). Volta para a identificação em vez de seguir jogando: sem isto,
+     quem já burlou continuaria no ranking com nome inventado para sempre. O progresso
+     em estado.melhores não é apagado — só a identidade é refeita. */
+  if(estado.perfil && !nomeDaTurma(estado.perfil.nome)){ estado.perfil = null; salvar(); }
+  if(!estado.perfil){ telaAbertura(); }
+  else if(view.tela==='mapa') telaMapa();
   else if(view.tela==='territorio') telaTerritorio();
   else if(view.tela==='missao') telaMissao();
   else if(view.tela==='quiz') telaQuiz();
@@ -3176,7 +3285,43 @@ function render(){
   else if(view.tela==='ranking') telaRanking();
   else if(view.tela==='jogo') telaJogo();
   else if(view.tela==='prova') telaProva();
+  // anima só na TROCA de tela (não a cada clique dentro da mesma tela)
+  if(trocou){ app.classList.remove('telain'); void app.offsetWidth; app.classList.add('telain'); }
   window.scrollTo(0,0);
+}
+
+/* ---- festa: confete leve em canvas (recorde, 100%, prova, joguinho) ---- */
+function confete(qtd){
+  try{
+    var cv=document.createElement('canvas'); cv.className='confete';
+    cv.width=window.innerWidth; cv.height=window.innerHeight;
+    document.body.appendChild(cv);
+    var cx=cv.getContext('2d');
+    var cores=['#FFC857','#FF6B6B','#4ECDC4','#9B5DE5','#43AA8B','#F94892','#3A86FF'];
+    var pcs=[]; for(var i=0;i<(qtd||90);i++) pcs.push({
+      x:Math.random()*cv.width, y:-20-Math.random()*cv.height*.4,
+      r:4+Math.random()*5, c:cores[(Math.random()*cores.length)|0],
+      v:2.2+Math.random()*3, a:Math.random()*Math.PI, va:(Math.random()-.5)*.25 });
+    var t0=null;
+    (function passo(ts){
+      if(t0===null && ts!==undefined) t0=ts;
+      cx.clearRect(0,0,cv.width,cv.height);
+      pcs.forEach(function(p){ p.y+=p.v; p.x+=Math.sin((p.y+p.a*60)/28)*1.6; p.a+=p.va;
+        cx.save(); cx.translate(p.x,p.y); cx.rotate(p.a);
+        cx.fillStyle=p.c; cx.fillRect(-p.r,-p.r/2,p.r*2,p.r); cx.restore(); });
+      if(ts===undefined || ts-t0<2400) requestAnimationFrame(passo); else cv.remove();
+    })();
+  }catch(e){}
+}
+/* número que sobe rolando (XP no resultado) */
+function animarNumero(id, alvo, ms){
+  var el=document.getElementById(id); if(!el) return;
+  var t0=null;
+  (function p(ts){ if(t0===null && ts!==undefined) t0=ts;
+    var k = ts===undefined ? 0 : Math.min(1,(ts-t0)/(ms||700));
+    el.textContent = Math.round(alvo*(1-Math.pow(1-k,3)));
+    if(k<1) requestAnimationFrame(p);
+  })();
 }
 
 /* ---- abertura: identificação por lista da turma ---- */
@@ -3198,10 +3343,11 @@ function entrar(nome){
     audioNome.play().catch(function(){}); }catch(e){}
   render();
 }
-function entrarOutro(){
-  var n = prompt('Digite o seu nome:');
-  if(n && n.trim()) entrar(n.trim().slice(0,18));
-}
+/* O botão "✏️ Outro" abria um prompt de texto livre: bastava trocar o nome para
+   nascer uma linha nova no ranking, e a turma descobriu isso — viravam vários
+   jogadores. Removido em 30/08/2026 a pedido do Heitor. A identificação agora é
+   fechada na lista da turma. */
+function nomeDaTurma(n){ return ALUNOS.indexOf(n) >= 0; }
 function telaAbertura(){
   var botoes = ALUNOS.map(function(a){
     return '<button class="aluno" onclick="entrar(\''+a+'\')">'+a+'</button>';
@@ -3219,7 +3365,6 @@ function telaAbertura(){
       </div>
       <div class="alunos">
         ${botoes}
-        <button class="aluno outro" onclick="entrarOutro()">✏️ Outro</button>
       </div>
     </div>
     <div class="rodape">StepQuest • feito com carinho para a turma</div>`;
@@ -3284,14 +3429,10 @@ function telaMapa(){
     </div>
     <div class="titulo">🗺️ Mapa da Expedição</div>
     <div class="lead">Toque num território para estudar. Cada prova é o desafio final dele!</div>
-    <div style="background:linear-gradient(135deg,#E91E63,#9C27B0);color:#fff;border-radius:14px;padding:13px 16px;margin:10px 0;box-shadow:0 3px 10px rgba(0,0,0,.15)">
-      <div style="font-weight:700;font-size:1.05em;margin-bottom:4px">🆕 Novidade pra prova!</div>
-      <div style="font-size:.92em;line-height:1.4">A Dona Letra trouxe uma missão nova de Português: <strong>🧩 Prefixo e Sufixo</strong>. Entrou no conteúdo da 2ª avaliação — bora treinar lá no território de Português! 💜</div>
-    </div>
     <button class="btn" style="width:100%;margin:8px 0 4px" onclick="irRanking()">🏆 Ver o Placar da Turma</button>
     ${hoje}
     <div class="terrs">${cards}</div>
-    <div class="rodape">StepQuest • 2ª Avaliação • <a onclick="zerar()">recomeçar do zero</a></div>`;
+    <div class="rodape">StepQuest • 3º Simulado • <a onclick="zerar()">recomeçar do zero</a></div>`;
 }
 function sombra(hex){
   // escurece a cor para o gradiente
@@ -3362,10 +3503,10 @@ function lerJunto(mid){
   var btn=document.getElementById('btnLer');
   if(narrAudio){ pararNarracao(); return; }
   btn.textContent='⏳ carregando a voz do Cronos...';
-  fetch(URL_NARR+mid+'.json').then(function(r){ return r.ok?r.json():null; }).then(function(d){
+  fetch(URL_NARR+mid+'.json'+AUDV).then(function(r){ return r.ok?r.json():null; }).then(function(d){
     if(!d){ btn.textContent='🔇 narração em breve'; return; }
     narrTimes=d.linhas;
-    narrAudio=new Audio(URL_NARR+mid+'.mp3');
+    narrAudio=new Audio(URL_NARR+mid+'.mp3'+AUDV);
     narrAudio.ontimeupdate=function(){
       if(!narrAudio) return;
       var ct=narrAudio.currentTime, idx=0, i;
@@ -3451,9 +3592,10 @@ function provaMatch(bidx){
       var k='prova-'+provaEstado.mat; provaEstado.bonus=!estado.melhores[k];
       if(provaEstado.bonus){ estado.melhores[k]=4; salvar(); enviarRanking(); }
       provaEstado.completo=true; render();
+      setTimeout(function(){ confete(provaEstado.bonus?130:60); }, 200);
       tocarSeq([URL_NARR+'_res/'+provaEstado.mat+'-'+rvar(NVAR.res)+'.mp3']);
-    } else { render(); tocarSeq([URL_NARR+'_quiz/_int/'+provaEstado.mat+'-ok-'+rvar(NVAR.ok)+'.mp3']); }
-  } else { provaEstado.erro=bidx; provaEstado.selA=null; render(); tocarSeq([URL_NARR+'_quiz/_int/'+provaEstado.mat+'-no-'+rvar(NVAR.no)+'.mp3']); }
+    } else { render(); tocarSeq([URL_NARR+'_quiz/_int/'+provaEstado.mat+'-ok-'+rvar(nInterj(provaEstado.mat,'ok'))+'.mp3'+AUDV]); }
+  } else { provaEstado.erro=bidx; provaEstado.selA=null; render(); tocarSeq([URL_NARR+'_quiz/_int/'+provaEstado.mat+'-no-'+rvar(nInterj(provaEstado.mat,'no'))+'.mp3'+AUDV]); }
 }
 function telaProva(){
   var g=PROVAFINAL[provaEstado.mat], t=TERRITORIOS.find(function(x){return x.id===provaEstado.mat;});
@@ -3511,8 +3653,11 @@ function telaQuiz(){
   let feed='', botoes='';
   if(quiz.enviado){
     const acertou = ordem[escolhida]===questao.correta;
+    const fbTxt = interjTexto(quiz.tid, acertou?'ok':'no', quiz.fbv||1);
+    const seqExtra = (acertou && quiz.seq>=3)
+      ? `<div class="seqfogo">${pick(['🔥','⚡','🌟'])} ${quiz.seq} seguidas! ${pick(['Tá pegando fogo!','Imparável!','Que sequência!','Continua assim!'])}</div>` : '';
     feed = `<div class="feed ${acertou?'bom':'ruim'}">
-      ${acertou?'✅ Isso aí! ':'❌ Quase! '}${questao.explica}</div>`;
+      ${acertou?'✅ ':'❌ '}${fbTxt?fbTxt+'<br>':(acertou?'Isso aí! ':'Quase! ')}${questao.explica}</div>${seqExtra}`;
     botoes = i < qs.length-1
       ? `<button class="btn lg" onclick="proxima()">Próxima →</button>`
       : `<button class="btn lg" onclick="finalizarQuiz()">Ver resultado 🏁</button>`;
@@ -3548,6 +3693,10 @@ function marcar(pos){
 }
 function confirmar(){
   if(quiz.resp[quiz.q]==null) return;
+  var q=qzQs()[quiz.q];
+  var ok = quiz.ordem[quiz.q][quiz.resp[quiz.q]]===q.correta;
+  quiz.seq = ok ? (quiz.seq||0)+1 : 0;          // acertos seguidos na missão
+  quiz.fbv = rvar(nInterj(quiz.tid, ok?'ok':'no'));  // trava texto+áudio no mesmo sorteio
   quiz.enviado=true; render();
 }
 function proxima(){ quiz.q++; quiz.enviado=false; render(); }
@@ -3570,13 +3719,24 @@ function finalizarQuiz(){
 /* ---- conectores personalizados (parabéns + progresso + próxima, no tom do guia) ---- */
 function pick(a){ return (a&&a.length)? a[(Math.random()*a.length)|0] : ''; }
 function fraseMapa(){
-  var nome = estado.perfil.nome, d = Math.max(0, diasAte('2026-06-08'));
-  var saud = pick(['Olá de novo, '+nome+'! 👋','Que bom te ver, '+nome+'! ✨',
-    'Bora pra mais uma, '+nome+'? 💪','E aí, '+nome+'! Pronta pra explorar? 🧭',
-    'De volta à expedição, '+nome+'! 🚀','Salve, '+nome+'! O tempo não para! ⏳']);
-  var cont = d<=0 ? 'A prova é HOJE — você se preparou, arrasa lá! 🎯'
-    : d===1 ? 'É <b>AMANHÃ</b>! Última revisão e bora! 🔥'
-    : 'Faltam <b>'+d+' dias</b> pra prova (8/jun). Cada missão te deixa mais forte! 🌟';
+  var nome = estado.perfil.nome, d = Math.max(0, diasAte(PRIMEIRA_PROVA));
+  /* A turma reclamou de ouvir sempre a mesma coisa, então a saudação sorteia entre
+     muitas — e fala do momento do ano: o 2º semestre começou e o 3º simulado vem aí.
+     Sem "pronta"/"exploradora": a lista ALUNOS tem meninos e meninas. */
+  var saud = pick([
+    'Olá de novo, '+nome+'! 👋','Que bom te ver por aqui, '+nome+'! ✨',
+    'Bora pra mais uma, '+nome+'? 💪','E aí, '+nome+'! Vamos explorar? 🧭',
+    'De volta à expedição, '+nome+'! 🚀','Salve, '+nome+'! O tempo não para! ⏳',
+    'Segundo semestre na área, '+nome+'! 📚','Chegou quem faltava, '+nome+'! 🌟',
+    'A máquina do tempo te esperava, '+nome+'! 🌀','Mais um dia de treino, '+nome+'! 🎯',
+    'Que energia boa, '+nome+'! 🔆','Preparado pra avançar, '+nome+'? 🗺️',
+    'O mapa está aberto, '+nome+'! 🧭','Vamos com tudo, '+nome+'! ⚡',
+    'Time reunido, '+nome+'! 🤝','Cada dia um passo, '+nome+'! 🐾']);
+  var cont = d<=0 ? 'Começa <b>hoje</b> o simulado — você se preparou, arrasa lá! 🎯'
+    : d===1 ? 'É <b>amanhã</b>! Matemática e Ciências abrem. Última revisão e bora! 🔥'
+    : d<=7 ? 'Falta <b>'+d+' dia'+(d>1?'s':'')+'</b> pro 3º simulado (8 a 11/9). Reta final — capricha! 🔥'
+    : 'O segundo semestre começou e o <b>3º simulado</b> vem aí: <b>8 a 11 de setembro</b>. '
+      +'Faltam <b>'+d+' dias</b> — cada missão te deixa mais forte! 🌟';
   return saud+'<br>'+cont;
 }
 function conectorTexto(t, pi){
@@ -3602,11 +3762,11 @@ function telaResultado(){
   const r = view._ult;
   const pct = Math.round(r.acertos/r.total*100);
   let emoji,msg;
-  if(pct===100){ emoji='🏆'; msg=r.prova?pick(['PERFEITO! Você DOMINOU a matéria!','PERFEITO! Matéria na ponta da língua!','UAU! Gabaritou a matéria inteira!'])
-    :pick(['PERFEITO! Você é fera nessa missão!','PERFEITO! Acertou tudinho!','Nota máxima! Você mandou ver!']); }
-  else if(pct>=75){ emoji='🌟'; msg=pick(['Muito bem! Quase tudo certo!','Mandou super bem! Faltou pouquinho!','Boa! Tá quase craque nisso!']); }
-  else if(pct>=50){ emoji='💪'; msg=pick(['Bom começo! Revise e tente de novo.','Tá no caminho! Bora revisar e voltar.','Metade já foi! Mais uma olhada e você acerta.']); }
-  else { emoji='🌱'; msg=pick(['Calma! Reler o resumo ajuda muito. Bora de novo!','Sem pressa! Dá uma relida e tenta de novo.','Tá começando! Revisar agora vai te ajudar muito.']); }
+  if(pct===100){ emoji='🏆'; msg=r.prova?pick(['PERFEITO! Você DOMINOU a matéria!','PERFEITO! Matéria na ponta da língua!','UAU! Gabaritou a matéria inteira!','Espetacular! Nenhum erro na matéria toda!','Domínio total! A prova que te aguarde!'])
+    :pick(['PERFEITO! Você é fera nessa missão!','PERFEITO! Acertou tudinho!','Nota máxima! Você mandou ver!','Gabaritou! Essa missão virou moleza pra você!','Impecável! Nem uma escorregada!','Show de bola! Tudo certo do começo ao fim!']); }
+  else if(pct>=75){ emoji='🌟'; msg=pick(['Muito bem! Quase tudo certo!','Mandou super bem! Faltou pouquinho!','Boa! Tá quase craque nisso!','Quase perfeito! Um empurrãozinho e fecha tudo!','Mandou bem demais! O 100% tá logo ali!','Excelente! Só um detalhe escapou!']); }
+  else if(pct>=50){ emoji='💪'; msg=pick(['Bom começo! Revise e tente de novo.','Tá no caminho! Bora revisar e voltar.','Metade já foi! Mais uma olhada e você acerta.','Já entendeu bastante! Uma revisada e você fecha.','Tá indo! Relê o resumo e volta mais forte.','Boa base! Agora é lapidar o resto.']); }
+  else { emoji='🌱'; msg=pick(['Calma! Reler o resumo ajuda muito. Bora de novo!','Sem pressa! Dá uma relida e tenta de novo.','Tá começando! Revisar agora vai te ajudar muito.','Primeiro contato é assim mesmo! Bora reler juntos.','Sem estresse! O resumo te dá as pistas que faltaram.','Toda expedição começa com um passo! Revisa e volta.']); }
 
   // escolhe QUAL "parabens" vai no balão; o áudio de resultado lê esse mesmo
   var _cc = CONECTORES[t.id], _ms = missoesDe(t.id);
@@ -3619,7 +3779,7 @@ function telaResultado(){
       <div class="big pop">${emoji}</div>
       <div class="nota">${r.acertos} de ${r.total} acertos</div>
       <div>${msg}</div>
-      ${r.novoRecorde?`<div class="xp">+${r.acertos*25} XP de recorde! ⚡</div>`
+      ${r.novoRecorde?`<div class="xp">+<span id="xpnum">0</span> XP de recorde! ⚡</div>`
                      :`<div class="xp" style="background:#eee;color:#777">sem novo recorde desta vez</div>`}
       <div class="cronos" style="margin-top:14px;text-align:left">
         <div class="face">${(PERSONAS[view.terr]||{}).emoji||'👨‍🔬'}</div>
@@ -3632,7 +3792,9 @@ function telaResultado(){
   enviarRanking().then(rankingFeedback).then(function(msg){
     var el=document.getElementById('rkfb'); if(el && msg){ el.textContent=msg; el.style.display='block'; }
   });
-  tocarSeq([URL_NARR+'_res/'+view.terr+'-'+(_pi!=null?_pi+1:rvar(NVAR.res))+'.mp3']);
+  if(r.novoRecorde) animarNumero('xpnum', r.acertos*25, 750);
+  if(pct===100 || r.novoRecorde) setTimeout(function(){ confete(pct===100?130:70); }, 200);
+  tocarSeq([URL_NARR+'_res/'+view.terr+'-'+(_pi!=null?_pi+1:rvar(NVAR.res))+'.mp3'+AUDV]);
 }
 
 /* ---- feedback de ranking (subiu posições / pódio) — bem variado ---- */
@@ -3684,6 +3846,7 @@ function jogoBin(cat){
       var k='jogo-'+jogoEstado.mat; jogoEstado.bonus=!estado.melhores[k];
       if(jogoEstado.bonus){ estado.melhores[k]=3; salvar(); enviarRanking(); }
       jogoEstado.completo=true;
+      setTimeout(function(){ confete(jogoEstado.bonus?110:50); }, 200);
     }
     render();
   } else { jogoEstado.erro=jogoEstado.sel; jogoEstado.sel=null; render(); }
@@ -3728,7 +3891,9 @@ function telaRanking(){
       <button class="voltar" onclick="irMapa()">← Mapa</button>
       <div class="titulo" style="margin:0">🏆 Placar da Turma</div>
     </div>
-    <div class="lead">Quem mais explorou o tempo! O placar soma o XP de toda a turma.</div>
+    <div class="lead">Quem mais explorou o tempo! O placar soma TODO o XP: missões,
+      prova final (+100), joguinho (+75) e podcast (+50) de cada matéria.</div>
+    ${estado.syncPend?'<div class="card" style="background:#fff8e6;border:1px solid #f0d48a;font-size:13.5px">⏳ Seus pontos mais novos ainda não subiram pro placar (sem internet na hora). Eles sobem sozinhos assim que conectar!</div>':''}
     <div id="rklist" class="card">Carregando o placar…</div>
     <div class="rodape">Dica: faça missões e bata seus recordes pra subir! 🌟</div>`;
   enviarRanking().then(carregarRanking).then(function(lista){
@@ -3763,7 +3928,7 @@ function ouvirFala(fc){ try{ if(falaAudio) falaAudio.pause(); falaAudio=new Audi
 function pararQuizAudio(){ if(quizAudio){ quizAudio.onended=null; quizAudio.pause(); quizAudio=null; } }
 function tocarSeq(urls){ pararQuizAudio(); var k=0; (function next(){ if(k>=urls.length) return; quizAudio=new Audio(urls[k++]); quizAudio.onended=next; quizAudio.onerror=next; var p=quizAudio.play(); if(p&&p.catch) p.catch(function(){}); })(); }
 function vozQuizEnunciado(){ var q=qzQs()[quiz.q]; var base=q.vc||(quiz.mid+'-'+quiz.q); var u=[URL_NARR+'_quiz/'+base+'-p.mp3'+AUDV]; if(q.af&&q.fc) u.push(URL_NARR+'_fala/'+q.fc+'.mp3'+AUDV); tocarSeq(u); }
-function vozQuizFeedback(ok){ var q=qzQs()[quiz.q]; var base=q.vc||(quiz.mid+'-'+quiz.q); var k=ok?'ok':'no'; tocarSeq([URL_NARR+'_quiz/_int/'+quiz.tid+'-'+k+'-'+rvar(NVAR[k])+'.mp3', URL_NARR+'_quiz/'+base+'-x.mp3'+AUDV]); }
+function vozQuizFeedback(ok){ var q=qzQs()[quiz.q]; var base=q.vc||(quiz.mid+'-'+quiz.q); var k=ok?'ok':'no'; var v=quiz.fbv||rvar(nInterj(quiz.tid,k)); tocarSeq([URL_NARR+'_quiz/_int/'+quiz.tid+'-'+k+'-'+v+'.mp3'+AUDV, URL_NARR+'_quiz/'+base+'-x.mp3'+AUDV]); }
 function pararSolto(){ try{ if(introAudio){introAudio.pause();introAudio=null;} if(audioNome){audioNome.pause();} if(falaAudio){falaAudio.pause();} pararQuizAudio(); if(podAudio){podAudio.pause();} }catch(e){} }
 function tocarIntroMateria(id){
   var nm=slugNome(estado.perfil?estado.perfil.nome:'');
@@ -3777,14 +3942,16 @@ function introMateriaTexto(t){
   var p=PERSONAS[t.id]||{}; var nome=estado.perfil?estado.perfil.nome:'exploradora';
   return 'Olá, '+nome+'! Eu sou <b>'+(p.nome||'seu guia')+'</b>. Bora estudar <b>'+t.nome+'</b>? Escolha uma missão aqui embaixo — a prova tá chegando! 🚀';
 }
-function irMapa(){ pararSolto(); pararNarracao(); view={tela:'mapa'}; render(); }
+function irMapa(){ pararSolto(); pararNarracao(); view={tela:'mapa'}; render(); if(estado.syncPend) enviarRanking(); }
 function irRanking(){ pararSolto(); view={tela:'ranking'}; render(); }
 function irTerritorio(id){ pararSolto(); view={tela:'territorio',terr:id}; render(); }
 function irMateria(id){ pararSolto(); view={tela:'territorio',terr:id}; render(); tocarIntroMateria(id); }
 function irMissao(tid,mid){ pararSolto(); view={tela:'missao',terr:tid,miss:mid}; render(); }
 function zerar(){
   if(confirm('Recomeçar a expedição do zero? Todo o progresso será apagado.')){
-    localStorage.removeItem(CHAVE); estado=novoEstado(); view={tela:'mapa'}; render();
+    var idAparelho = estado.id;          // mantém a MESMA linha no placar da turma
+    localStorage.removeItem(CHAVE); estado=novoEstado(); estado.id=idAparelho;
+    salvar(); view={tela:'mapa'}; render();
   }
 }
 
@@ -3800,7 +3967,8 @@ function mostrarErro(txt){
     + '<code style="word-break:break-word">' + txt + '</code></div>';
 }
 window.onerror = function(msg,src,linha){ mostrarErro(msg + ' (linha ' + linha + ')'); };
-try{ render(); }
+window.addEventListener('online', function(){ if(estado.syncPend) enviarRanking(); });
+try{ sanearMelhores(); if(estado.syncPend) enviarRanking(); render(); }
 catch(e){ mostrarErro((e && e.message) ? e.message : String(e)); }
 </script>
 </body>
