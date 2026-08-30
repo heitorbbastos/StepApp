@@ -693,6 +693,168 @@ const CONTEUDO = {
   "matematica": {
     "missoes": [
       {
+        "id": "mat-area-malha",
+        "emoji": "🔲",
+        "titulo": "Área na malha quadriculada",
+        "cronos": "Hmpf. Uma barra de chocolate, {nome}? Pois olhe bem pra ela: todos aqueles quadradinhos iguais são uma MALHA QUADRICULADA. E é assim que a gente mede área sem fórmula nenhuma — contando. Vem cá que eu mostro, e não me venha com pressa.",
+        "resumo": "MALHA QUADRICULADA = folha cheia de quadradinhos iguais, boa pra desenhar figuras e medir.<br>ÁREA = o tamanho da superfície da figura. Quanto maior a superfície, maior a área.<br>• Na malha, a área sai <b>contando os quadradinhos</b> de dentro da figura.<br>• Se cada quadradinho vale 1 um², uma figura com 16 quadradinhos tem <b>16 um²</b>.<br>• Se cada quadradinho valer 2 um², a MESMA figura passa a ter <b>32 um²</b> — o valor do quadradinho muda tudo.<br>• Em retângulos dá pra calcular também por <b>comprimento × largura</b>.<br>UNIDADES: km², hm², m², cm². O <b>2</b> pequenininho quer dizer <i>quadrado</i>, e é o que marca uma unidade de ÁREA.",
+        "conversa": "Senta aí, {nome}, e presta atenção que isso é mais simples do que parece.<br><br>Uma barra de chocolate é dividida em quadradinhos iguais, certo? Pois é exatamente essa a ideia da malha quadriculada: uma folha cheia de quadrados do mesmo tamanho.<br><br>Área é o tamanho da superfície de uma figura. Numa malha, você não precisa de fórmula: <b>conta os quadradinhos</b> que estão dentro da figura. Se deu 12 quadradinhos e cada um vale 1 cm², a área é 12 cm². Simples assim.<br><br>Agora o detalhe que derruba muita gente: se cada quadradinho valer 2 unidades em vez de 1, a figura de 16 quadradinhos passa a ter 32. A figura não mudou — mudou o valor do quadradinho. Sempre olhe quanto vale um quadradinho antes de responder.<br><br>E aquele 2 pequenininho lá em cima, no cm², não é enfeite: ele avisa que a unidade é de área, não de comprimento.",
+        "quiz": [
+          {
+            "p": "Numa malha quadriculada cada quadradinho tem área de 1 cm². Uma figura cobre 12 quadradinhos. Qual é a área dela?",
+            "op": [
+              "12 cm²",
+              "24 cm²",
+              "6 cm²",
+              "12 cm"
+            ],
+            "correta": 0,
+            "explica": "Na malha, basta contar: 12 quadradinhos × 1 cm² cada = 12 cm². Repare que a resposta é em cm² (área), não cm (comprimento)."
+          },
+          {
+            "p": "A mesma figura tem 16 quadradinhos, mas agora cada quadradinho vale 2 um². Qual é a área?",
+            "op": [
+              "32 um²",
+              "16 um²",
+              "8 um²",
+              "18 um²"
+            ],
+            "correta": 0,
+            "explica": "16 quadradinhos × 2 um² = 32 um². A figura é a mesma; o que mudou foi quanto vale cada quadradinho — por isso sempre confira isso antes."
+          },
+          {
+            "p": "Como se calcula a área de um retângulo usando as suas dimensões?",
+            "op": [
+              "comprimento × largura",
+              "comprimento + largura",
+              "comprimento − largura",
+              "comprimento ÷ largura"
+            ],
+            "correta": 0,
+            "explica": "A área vem do produto entre duas dimensões do plano: comprimento × largura. Por isso a unidade fica 'ao quadrado'."
+          },
+          {
+            "p": "O que quer dizer o 2 pequenininho em cm²?",
+            "op": [
+              "quadrado — é unidade de área",
+              "cúbico — é unidade de volume",
+              "que são 2 centímetros",
+              "centímetro por segundo"
+            ],
+            "correta": 0,
+            "explica": "cm² lê-se centímetro QUADRADO. O 2 pequenininho marca que a unidade mede área. Sem ele, cm mede só comprimento."
+          }
+        ]
+      },
+      {
+        "id": "mat-fracoes",
+        "emoji": "🍕",
+        "titulo": "Frações e frações unitárias",
+        "cronos": "Hmpf, chocolate de novo, {nome}? Está bem — mas hoje a gente PARTE. Fração é isso: um inteiro dividido em partes iguais. E tem uma pegadinha que engana até gente grande na hora de dizer qual fração é maior. Vem ver, devagar.",
+        "resumo": "FRAÇÃO = um jeito de representar parte (ou partes) iguais de algo que foi dividido.<br>Ex.: a pizza foi dividida em 6 fatias e você comeu 1 → <b>1/6</b> (um sexto).<br>• <b>Numerador</b> (de cima) = quantas partes você pegou.<br>• <b>Denominador</b> (de baixo) = em quantas partes o inteiro foi dividido.<br>FRAÇÕES UNITÁRIAS = as que têm <b>numerador igual a 1</b>: 1/2, 1/3, 1/8, 1/10.<br>⚠️ COMPARANDO frações de mesmo numerador: quem tem o <b>MENOR denominador</b> é a MAIOR fração.<br>Por quê? Dividir um bolo em 2 dá pedaços grandes; dividir em 10 dá pedaços pequenos. Logo <b>1/2 &gt; 1/4</b>.<br>Na reta numérica de 0 a 1, quanto maior o denominador, mais perto do ZERO a fração fica.",
+        "conversa": "Fração, {nome}, é o jeito de falar de pedaço.<br><br>A pizza foi dividida em seis fatias iguais e você comeu uma. Uma das seis. Isso é um sexto, e a gente escreve 1/6. O número de baixo conta em quantas partes o inteiro foi dividido; o de cima conta quantas partes você pegou.<br><br>Quando o número de cima é 1, a fração se chama unitária: 1/2, 1/3, 1/8. É a fração de um pedaço só.<br><br>Agora vem a parte que engana. Qual é maior: 1/2 ou 1/4? Muita gente responde 1/4 porque o 4 é maior que o 2. Mas pense no bolo: se você divide em 2, cada pedaço é enorme; se divide em 4, cada pedaço fica menor. Então 1/2 é maior que 1/4.<br><br>Guarde a regra: com o mesmo número em cima, <b>quanto menor o número de baixo, maior a fração</b>. E na reta de 0 até 1, quanto maior o denominador, mais coladinha no zero ela fica.",
+        "quiz": [
+          {
+            "p": "A pizza foi dividida em 6 fatias iguais e a Ana comeu 1. Que fração ela comeu?",
+            "op": [
+              "1/6",
+              "6/1",
+              "1/5",
+              "5/6"
+            ],
+            "correta": 0,
+            "explica": "Uma das seis = um sexto = 1/6. O número de baixo (6) diz em quantas partes a pizza foi dividida; o de cima (1) diz quantas ela comeu."
+          },
+          {
+            "p": "Qual destas é uma fração unitária?",
+            "op": [
+              "1/8",
+              "3/8",
+              "8/1",
+              "2/3"
+            ],
+            "correta": 0,
+            "explica": "Fração unitária é a que tem numerador igual a 1. Em 1/8 o numerador é 1, então ela é unitária."
+          },
+          {
+            "p": "Qual é MAIOR: 1/2 ou 1/4?",
+            "op": [
+              "1/2",
+              "1/4",
+              "são iguais",
+              "não dá para saber"
+            ],
+            "correta": 0,
+            "explica": "Com o mesmo numerador, quem tem o MENOR denominador é maior. Dividir em 2 dá pedaços maiores do que dividir em 4 — por isso 1/2 > 1/4."
+          },
+          {
+            "p": "Na reta numérica entre 0 e 1, qual destas frações fica MAIS PERTO do zero?",
+            "op": [
+              "1/10",
+              "1/8",
+              "1/3",
+              "1/2"
+            ],
+            "correta": 0,
+            "explica": "Quanto maior o denominador, menor o pedaço. Entre 1/2, 1/3, 1/8 e 1/10, a menor é 1/10 — então é ela que fica mais perto do zero."
+          }
+        ]
+      },
+      {
+        "id": "mat-decimais",
+        "emoji": "🔢",
+        "titulo": "Números decimais",
+        "cronos": "Viu a vírgula naquele preço, {nome}? Pois ela não está ali de enfeite. Número com vírgula é NÚMERO DECIMAL, e ele é primo da fração. Vou te mostrar a tabela das ordens — e você vai anotar, porque errar casa decimal é o meu maior desgosto.",
+        "resumo": "NÚMERO DECIMAL = número escrito com <b>vírgula</b>. Tem uma parte inteira (antes da vírgula) e uma parte decimal (depois).<br>Eles nascem das FRAÇÕES DECIMAIS:<br>• 1/10 = <b>0,1</b> (um décimo)<br>• 3/10 = <b>0,3</b> (três décimos)<br>• 6/100 = <b>0,06</b> (seis centésimos)<br>• 12/1000 = <b>0,012</b> (doze milésimos)<br>ORDENS depois da vírgula: <b>décimos</b> (1 casa) · <b>centésimos</b> (2 casas) · <b>milésimos</b> (3 casas).<br>LEITURA: lê-se a parte inteira, depois a parte decimal com o nome da última ordem. Ex.: 2,45 = dois inteiros e quarenta e cinco centésimos.<br>Decimais e frações pertencem ao mesmo conjunto: os <b>racionais</b>. Os dois falam de parte de um inteiro.",
+        "conversa": "Repare no preço do chocolate, {nome}: tem uma vírgula ali no meio. Todo número com vírgula é um número decimal.<br><br>Ele tem duas partes. Antes da vírgula fica a parte inteira; depois da vírgula, a parte decimal. Em 2,45 a parte inteira é 2 e a decimal é 45.<br><br>E de onde vem esse número? Da fração. Um décimo, que é 1/10, vira 0,1. Três décimos, 3/10, viram 0,3. Seis centésimos, 6/100, viram 0,06. Doze milésimos, 12/1000, viram 0,012.<br><br>Conte as casinhas depois da vírgula e você sabe a ordem: uma casa é décimos, duas casas é centésimos, três casas é milésimos. Sempre nessa sequência.<br><br>Para ler, diga a parte inteira e depois a parte decimal com o nome da última ordem. 2,45 se lê dois inteiros e quarenta e cinco centésimos. E alinhe vírgula debaixo de vírgula quando for somar — é aí que mora o erro.",
+        "quiz": [
+          {
+            "p": "Como se escreve a fração 3/10 na forma decimal?",
+            "op": [
+              "0,3",
+              "3,0",
+              "0,03",
+              "30"
+            ],
+            "correta": 0,
+            "explica": "3/10 = três décimos = 0,3. Uma casa depois da vírgula é a ordem dos décimos."
+          },
+          {
+            "p": "O número 0,06 se lê:",
+            "op": [
+              "seis centésimos",
+              "seis décimos",
+              "seis milésimos",
+              "sessenta"
+            ],
+            "correta": 0,
+            "explica": "Duas casas depois da vírgula = centésimos. Então 0,06 = 6/100 = seis centésimos."
+          },
+          {
+            "p": "No número 2,45, qual é a parte INTEIRA?",
+            "op": [
+              "2",
+              "45",
+              "2,45",
+              "0"
+            ],
+            "correta": 0,
+            "explica": "A parte inteira é o que vem ANTES da vírgula: 2. O 45 é a parte decimal, que se lê quarenta e cinco centésimos."
+          },
+          {
+            "p": "Quantas casas depois da vírgula tem um número na ordem dos MILÉSIMOS?",
+            "op": [
+              "3",
+              "1",
+              "2",
+              "4"
+            ],
+            "correta": 0,
+            "explica": "Décimos = 1 casa, centésimos = 2 casas, milésimos = 3 casas. Por isso 12/1000 se escreve 0,012."
+          }
+        ]
+      },
+      {
         "id": "mt-grandezas",
         "emoji": "🔢",
         "titulo": "Grandezas e Medidas",
