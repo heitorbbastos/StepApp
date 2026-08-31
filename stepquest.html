@@ -2420,6 +2420,21 @@ async function pedirAjuda() {
       faltou: (r && r.faltou || []).map(function (x) { return x.nome; })
     }
   };
+  /* Dois caminhos, nesta ordem:
+     1. Edge Function -- resposta na hora (~2 s). Precisa de ANTHROPIC_API_KEY nos
+        secrets do Supabase; enquanto nao houver, ela responde 404 ou 502.
+     2. Tabela + Claudinho -- ~13 s, usa a subscription e sempre funciona.
+     Assim o instantaneo entra sozinho no dia do deploy, sem mexer no app. */
+  try {
+    var rapida = await fetch(SUPA_URL + '/functions/v1/tutor', {
+      method: 'POST', headers: cabTutor(), body: JSON.stringify(corpo)
+    });
+    if (rapida.ok) {
+      var jr = await rapida.json();
+      if (jr && jr.feedback) { tutorEstado = { fase: 'pronto', texto: jr.feedback }; render(); return; }
+    }
+  } catch (e) { /* sem Edge Function publicada: segue pelo Claudinho */ }
+
   try {
     var resp = await fetch(SUPA_URL + '/rest/v1/tutor', {
       method: 'POST', headers: cabTutor({ 'Prefer': 'return=representation' }),
