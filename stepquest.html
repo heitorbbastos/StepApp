@@ -200,6 +200,8 @@
   .rodape a{ color:#9a90d6; cursor:pointer; }
 
   /* ---- identificação (lista da turma) ---- */
+  .pulsa{ animation:pulsa 1.1s ease-in-out infinite }
+  @keyframes pulsa{ 0%,100%{opacity:.45;transform:scale(.9)} 50%{opacity:1;transform:scale(1.1)} }
   .alunos{ display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:9px; margin-top:12px; }
   .aluno{ padding:12px 6px; border:2px solid #ffe08a; border-radius:14px;
     background:linear-gradient(180deg,#fffdf5,#fff4d6); color:#6a5410; font-weight:700;
@@ -2065,6 +2067,7 @@ var ativ = null;
 function chaveAtiv(mat) { return 'ativ-' + mat; }
 
 function iniciarAtividade(mat) {
+  tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer);
   var a = (typeof ATIVIDADES !== 'undefined') && ATIVIDADES[mat];
   if (!a) return;
   ativ = { mat: mat, tipo: a.tipo, i: 0, acertos: 0, resp: {}, conferido: false,
@@ -2157,6 +2160,7 @@ function conferirEscrita() {
 function tentarDeNovo() { ativ.conferido = false; ativ.ultimo = null; render(); }
 
 function proximaEscrita() {
+  tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer);
   var a = ATIVIDADES[ativ.mat];
   if (ativ.i + 1 >= a.itens.length) return fecharAtividade();
   ativ.i++; ativ.conferido = false; ativ.ultimo = null; ativ.jaContou = false;
@@ -2327,8 +2331,13 @@ function telaEscrita(a) {
     ? '<button class="btn lg" onclick="conferirEscrita()">Conferir ✓</button>'
     : (r && r.ok
         ? '<button class="btn lg" onclick="proximaEscrita()">' + (ativ.i + 1 >= a.itens.length ? 'Ver resultado 🏁' : 'Próxima →') + '</button>'
-        : '<button class="btn lg" onclick="tentarDeNovo()">Reescrever ✏️</button>' +
-          '<button class="btn sec" style="margin-top:8px" onclick="proximaEscrita()">Pular por agora</button>');
+        /* Faltou algo: o professor entra. O botão de reescrever some enquanto o tutor
+           fala, para a criança ler antes de sair digitando de novo. */
+        : (tutorEstado && tutorEstado.fase === 'pronto'
+            ? ''
+            : '<button class="btn lg" onclick="tentarDeNovo()">Reescrever ✏️</button>') +
+          blocoTutor(a) +
+          (tutorEstado ? '' : '<button class="btn sec" style="margin-top:8px" onclick="proximaEscrita()">Pular por agora</button>'));
   return '<div class="card">' +
     '<div class="qprog">Pergunta ' + (ativ.i + 1) + ' de ' + a.itens.length + '</div>' +
     '<div class="qn">' + item.p + '</div>' + audio +
@@ -2375,6 +2384,102 @@ function telaMemoria(a) {
     Object.keys(d.achados).length + ' de ' + a.pares.length + ' pares' +
     (d.erros ? ' · ' + d.erros + ' tentativa' + (d.erros > 1 ? 's' : '') + ' errada' + (d.erros > 1 ? 's' : '') : '') +
     '</div></div>';
+}
+
+/* ---------- 8. Tutor ----------
+   A criança escreve, o app confere sozinho (instantâneo) e, quando faltou alguma
+   ideia, oferece pedir ajuda ao professor. Aí a resposta vai para a tabela `tutor`
+   do Supabase, o Claudinho responde com o Claude em ~20 s e o app busca de volta.
+
+   O que vai: pergunta, o que ela escreveu e o diagnóstico (quais ideias apareceram
+   e quais faltaram). NUNCA o nome — só o id do aparelho, que é um uuid local. São
+   25 crianças de outras famílias.
+
+   O feedback nunca é bloqueante: se a rede cair ou demorar, ela segue jogando. */
+var tutorEstado = null;   // {id, fase:'enviando'|'lendo'|'pronto'|'erro', texto}
+var tutorTimer = null;
+
+function cabTutor(extra) {
+  var c = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
+            'Content-Type': 'application/json', 'x-aparelho': estado.id };
+  if (extra) for (var k in extra) c[k] = extra[k];
+  return c;
+}
+
+async function pedirAjuda() {
+  var a = ATIVIDADES[ativ.mat], item = a.itens[ativ.i], r = ativ.ultimo;
+  var texto = ativ.resp[ativ.i] || '';
+  if (!texto.trim()) return;
+  tutorEstado = { fase: 'enviando' }; render();
+  var corpo = {
+    aparelho: estado.id, materia: ativ.mat, item: item.id || (ativ.mat + '-' + ativ.i),
+    pergunta: String(item.p).replace(/<[^>]+>/g, ''),
+    resposta: texto.slice(0, 2000),
+    diagnostico: {
+      acertou: (r && r.acertou || []).map(function (x) { return x.nome; }),
+      faltou: (r && r.faltou || []).map(function (x) { return x.nome; })
+    }
+  };
+  try {
+    var resp = await fetch(SUPA_URL + '/rest/v1/tutor', {
+      method: 'POST', headers: cabTutor({ 'Prefer': 'return=representation' }),
+      body: JSON.stringify([corpo])
+    });
+    if (!resp.ok) throw new Error('http ' + resp.status);
+    var linha = (await resp.json())[0];
+    tutorEstado = { id: linha.id, fase: 'lendo', desde: Date.now() };
+    render();
+    buscarFeedback();
+  } catch (e) {
+    tutorEstado = { fase: 'erro' }; render();
+  }
+}
+
+function buscarFeedback() {
+  if (tutorTimer) clearTimeout(tutorTimer);
+  if (!tutorEstado || tutorEstado.fase !== 'lendo') return;
+  // desiste depois de 90 s: melhor dizer que não deu do que deixar girando pra sempre
+  if (Date.now() - tutorEstado.desde > 90000) {
+    tutorEstado = { fase: 'erro' }; render(); return;
+  }
+  tutorTimer = setTimeout(async function () {
+    try {
+      var r = await fetch(SUPA_URL + '/rest/v1/tutor?id=eq.' + tutorEstado.id +
+                          '&select=estado,feedback', { headers: cabTutor() });
+      var d = r.ok ? await r.json() : null;
+      if (d && d[0] && d[0].estado === 'pronto' && d[0].feedback) {
+        tutorEstado = { fase: 'pronto', texto: d[0].feedback }; render(); return;
+      }
+      if (d && d[0] && d[0].estado === 'erro') { tutorEstado = { fase: 'erro' }; render(); return; }
+    } catch (e) { /* rede oscilou: tenta de novo */ }
+    buscarFeedback();
+  }, 2500);
+}
+
+function fecharTutor() { tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer); tentarDeNovo(); }
+
+function blocoTutor(a) {
+  var pnome = (PERSONAS[ativ.mat] && PERSONAS[ativ.mat].nome) || 'o professor';
+  if (!tutorEstado) {
+    return '<button class="btn sec" style="margin-top:8px" onclick="pedirAjuda()">' +
+           '🧑‍🏫 Pedir ajuda ' + (a.tipo === 'escrita' ? 'ao professor' : '') + '</button>';
+  }
+  if (tutorEstado.fase === 'enviando' || tutorEstado.fase === 'lendo') {
+    return '<div class="box dica" style="display:flex;gap:10px;align-items:center">' +
+      '<div class="pulsa" style="font-size:22px">👀</div>' +
+      '<div>O professor está lendo o que você escreveu...<br>' +
+      '<span style="font-size:12.5px;color:#7d76a8">pode levar uns segundinhos</span></div></div>';
+  }
+  if (tutorEstado.fase === 'erro') {
+    return '<div class="box dica">Não consegui falar com o professor agora. ' +
+      'Segue com a dica de cima que você chega lá!' +
+      '<br><button class="btn sec" style="margin-top:8px" onclick="tutorEstado=null;render()">ok</button></div>';
+  }
+  return '<div class="card" style="background:linear-gradient(135deg,#fff,#eef6ff);border:2px solid #b9d6f2;margin-top:10px">' +
+    '<div style="display:flex;gap:10px"><div style="font-size:26px">🧑‍🏫</div>' +
+    '<div style="flex:1"><div style="font-weight:800;color:#2a5d8f;margin-bottom:4px">' + pnome + '</div>' +
+    '<div style="line-height:1.5">' + tutorEstado.texto + '</div></div></div>' +
+    '<button class="btn lg" style="margin-top:10px" onclick="fecharTutor()">Reescrever ✏️</button></div>';
 }
 
 /* === fim ATIVIDADES === */
