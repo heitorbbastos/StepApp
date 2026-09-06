@@ -2115,7 +2115,14 @@ async function fundirComServidor(){
   if(!linha) return false;
   var antes = JSON.stringify(estado.melhores) + '|' + (estado.piso||0);
   estado.melhores = fundirMelhores(estado.melhores, linha.progresso || {});
-  var herdado = Math.max(linha.piso||0, linha.pontos||0);
+  /* O piso é o XP HERDADO das linhas por aparelho, e tem de ficar parado nesse
+     valor: ele só existe para o placar não despencar na migração, e some sozinho
+     quando o progresso real o supera. Isto aqui era `max(linha.piso, linha.pontos)`
+     e fazia o piso subir junto com a pontuação — virava marca histórica permanente,
+     e na próxima virada de prova seguraria XP de missão que nem existe mais (o
+     mesmo XP inalcançável de 30/08). `linha.pontos` só entra quando a linha vem
+     SEM a coluna piso, que é a leitura degradada do banco antigo. */
+  var herdado = (typeof linha.piso === 'number') ? linha.piso : (linha.pontos||0);
   if(herdado > (estado.piso||0)) estado.piso = herdado;
   sanearMelhores();
   var depois = JSON.stringify(estado.melhores) + '|' + (estado.piso||0);
