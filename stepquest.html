@@ -2568,7 +2568,13 @@ function chaveAtiv(mat, at) { return (at && at.chave) || ('ativ-' + mat); }
 function ativAtual() { return ativsDe(ativ.mat)[ativ.idx] || ativsDe(ativ.mat)[0]; }
 
 function iniciarAtividade(mat, idx) {
-  tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer);
+  resetTutor();
+  /* Zera o contador de entradas automáticas do professor. Ele é por PERGUNTA, mas
+     vivia enquanto a página estivesse aberta: quem refizesse a atividade — que é o
+     que o app pede, para bater o recorde — chegava na terceira rodada sem tutor
+     nenhum, e sem nada na tela explicando. O cache de respostas fica, porque
+     reaproveitar o que já foi dito não custa chamada. */
+  tutorChamadas = {};
   var lista = ativsDe(mat), a = lista[idx || 0];
   if (!a) return;
   ativ = { mat: mat, idx: idx || 0, tipo: a.tipo, i: 0, acertos: 0, resp: {},
@@ -2831,12 +2837,28 @@ function conferirEscrita() {
   // continua valendo — o objetivo é aprender, não pegar de primeira.
   if (r.ok && !ativ.jaContou) { ativ.acertos++; ativ.jaContou = true; }
   render();
+  /* O professor entra SOZINHO (06/09/2026, pedido do Heitor: "não quero que a
+     criança tenha que ir lá e clicar"). Antes era um botão, e criança de 9 anos
+     não clica em "pedir ajuda" — ela reescreve no chute ou pula.
+
+     Só quando ERROU e escreveu alguma coisa: com a resposta certa o app já
+     responde na hora ("Isso mesmo!" + a explicação), e chamar o LLM para dizer
+     parabéns custaria dinheiro e 20 segundos sem ensinar nada.
+
+     O determinístico continua aparecendo ANTES e independe disto — o render()
+     acima já pintou a dica. O professor chega por cima, quando chegar. */
+  if (!r.ok && !r.vazio) pedirAjuda(true);
 }
 
-function tentarDeNovo() { ativ.conferido = false; ativ.ultimo = null; render(); }
+function tentarDeNovo() {
+  /* Descarta o pedido em voo: a partir daqui o texto na tela é outro, e o
+     feedback que estava vindo já não se refere ao que ela escreveu. */
+  resetTutor();
+  ativ.conferido = false; ativ.ultimo = null; render();
+}
 
 function proximaEscrita() {
-  tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer);
+  resetTutor();
   var a = ativAtual();
   if (ativ.i + 1 >= a.itens.length) return fecharAtividade();
   ativ.i++; ativ.conferido = false; ativ.ultimo = null; ativ.jaContou = false;
@@ -3019,13 +3041,20 @@ function telaEscrita(a) {
     ? '<button class="btn lg" onclick="conferirEscrita()">Conferir ✓</button>'
     : (r && r.ok
         ? '<button class="btn lg" onclick="proximaEscrita()">' + (ativ.i + 1 >= a.itens.length ? 'Ver resultado 🏁' : 'Próxima →') + '</button>'
-        /* Faltou algo: o professor entra. O botão de reescrever some enquanto o tutor
-           fala, para a criança ler antes de sair digitando de novo. */
+        /* Faltou algo: o professor entra SOZINHO (ver conferirEscrita). O botão de
+           reescrever some só quando ele termina de falar, para ela ler antes de
+           sair digitando de novo.
+           "Pular por agora" fica de pé enquanto o professor está lendo: com a via
+           rápida fora do ar a resposta leva ~20 s, e sumir com a saída deixaria a
+           criança esperando um pedido que ela nem fez. Ela só perde o botão quando
+           há de fato um texto do professor na tela para ler. */
         : (tutorEstado && tutorEstado.fase === 'pronto'
             ? ''
             : '<button class="btn lg" onclick="tentarDeNovo()">Reescrever ✏️</button>') +
           blocoTutor(a) +
-          (tutorEstado ? '' : '<button class="btn sec" style="margin-top:8px" onclick="proximaEscrita()">Pular por agora</button>'));
+          (tutorEstado && tutorEstado.fase === 'pronto'
+            ? ''
+            : '<button class="btn sec" style="margin-top:8px" onclick="proximaEscrita()">Pular por agora</button>'));
   return '<div class="card">' +
     '<div class="qprog">Pergunta ' + (ativ.i + 1) + ' de ' + a.itens.length + '</div>' +
     '<div class="qn">' + item.p + '</div>' + audio +
@@ -3086,6 +3115,22 @@ function telaMemoria(a) {
    O feedback nunca é bloqueante: se a rede cair ou demorar, ela segue jogando. */
 var tutorEstado = null;   // {id, fase:'enviando'|'lendo'|'pronto'|'erro', texto}
 var tutorTimer = null;
+/* Contador de pedidos. Toda resposta que chega carrega o número do pedido que a
+   originou; se a criança já reescreveu ou passou de pergunta nesse meio-tempo, o
+   número mudou e a resposta velha é descartada em vez de aparecer por cima do
+   texto novo. Com o tutor automático isso deixou de ser detalhe: antes ela só
+   pedia ajuda e esperava parada, agora o pedido sai sozinho e ela continua
+   mexendo enquanto ele viaja. */
+var tutorSeq = 0;
+var tutorCache = {};      // pergunta+resposta já respondida -> texto (não repete a chamada)
+var tutorChamadas = {};   // quantas vezes o professor já entrou sozinho em cada item
+var TUTOR_AUTO_MAX = 4;   // depois disso ela ainda pode chamar no botão, mas não sai sozinho
+
+/* Um só lugar para largar o pedido em voo: zera o estado, mata o polling e
+   invalida a resposta que ainda está vindo (tutorSeq). Estava copiado em quatro
+   pontos, e o que esquecia de invalidar deixava o feedback velho aparecer sobre
+   a pergunta seguinte. */
+function resetTutor() { tutorSeq++; tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer); }
 
 function cabTutor(extra) {
   var c = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY,
@@ -3094,11 +3139,30 @@ function cabTutor(extra) {
   return c;
 }
 
-async function pedirAjuda() {
+async function pedirAjuda(auto) {
   var a = ativAtual(), item = a.itens[ativ.i], r = ativ.ultimo;
   var texto = ativ.resp[ativ.i] || '';
   if (!texto.trim()) return;
-  tutorEstado = { fase: 'enviando' }; render();
+  var chaveItem = ativ.mat + '#' + ativ.i;
+  var chaveTexto = chaveItem + '|' + normTxt(texto);
+
+  /* Já respondeu exatamente a esta resposta: reaproveita. Sem isto, conferir duas
+     vezes o mesmo texto gastaria duas chamadas para dizer a mesma coisa — e no
+     automático isso deixa de ser hipótese, porque o pedido sai a cada "Conferir". */
+  if (tutorCache[chaveTexto]) {
+    tutorEstado = { fase: 'pronto', texto: tutorCache[chaveTexto] }; render(); return;
+  }
+  if (auto) {
+    /* Teto por pergunta. O professor entrar sozinho é o pedido; entrar sem fim numa
+       criança que insiste na mesma pergunta viraria conta e espera à toa. Depois do
+       teto ela continua podendo chamar no botão. */
+    tutorChamadas[chaveItem] = (tutorChamadas[chaveItem] || 0) + 1;
+    if (tutorChamadas[chaveItem] > TUTOR_AUTO_MAX) { tutorChamadas[chaveItem]--; return; }
+  }
+
+  var meu = ++tutorSeq;
+  var atual = function () { return meu === tutorSeq; };
+  tutorEstado = { fase: 'enviando', auto: !!auto, seq: meu }; render();
   var corpo = {
     aparelho: estado.id, materia: ativ.mat, item: item.id || (ativ.mat + '-' + ativ.i),
     pergunta: String(item.p).replace(/<[^>]+>/g, ''),
@@ -3119,7 +3183,11 @@ async function pedirAjuda() {
     });
     if (rapida.ok) {
       var jr = await rapida.json();
-      if (jr && jr.feedback) { tutorEstado = { fase: 'pronto', texto: jr.feedback }; render(); return; }
+      if (jr && jr.feedback) {
+        tutorCache[chaveTexto] = jr.feedback;
+        if (!atual()) return;                 // ela já reescreveu: resposta velha não entra
+        tutorEstado = { fase: 'pronto', texto: jr.feedback, seq: meu }; render(); return;
+      }
     }
   } catch (e) { /* sem Edge Function publicada: segue pelo Claudinho */ }
 
@@ -3130,11 +3198,19 @@ async function pedirAjuda() {
     });
     if (!resp.ok) throw new Error('http ' + resp.status);
     var linha = (await resp.json())[0];
-    tutorEstado = { id: linha.id, fase: 'lendo', desde: Date.now() };
+    if (!atual()) return;
+    tutorEstado = { id: linha.id, fase: 'lendo', desde: Date.now(), seq: meu,
+                    auto: !!auto, chaveTexto: chaveTexto };
     render();
     buscarFeedback();
   } catch (e) {
-    tutorEstado = { fase: 'erro' }; render();
+    if (!atual()) return;
+    /* Erro no pedido AUTOMÁTICO não vira tela de erro: a criança não pediu nada,
+       e um "não consegui falar com o professor" a cada resposta errada (sem
+       internet, por exemplo) seria só ruído por cima da dica que já está lá. No
+       pedido manual ela está esperando, então o aviso continua aparecendo. */
+    tutorEstado = auto ? null : { fase: 'erro' };
+    render();
   }
 }
 
@@ -3143,23 +3219,29 @@ function buscarFeedback() {
   if (!tutorEstado || tutorEstado.fase !== 'lendo') return;
   // desiste depois de 90 s: melhor dizer que não deu do que deixar girando pra sempre
   if (Date.now() - tutorEstado.desde > 90000) {
-    tutorEstado = { fase: 'erro' }; render(); return;
+    tutorEstado = tutorEstado.auto ? null : { fase: 'erro' }; render(); return;
   }
+  var meu = tutorEstado.seq, auto = tutorEstado.auto, chaveTexto = tutorEstado.chaveTexto;
   tutorTimer = setTimeout(async function () {
     try {
       var r = await fetch(SUPA_URL + '/rest/v1/tutor?id=eq.' + tutorEstado.id +
                           '&select=estado,feedback', { headers: cabTutor() });
       var d = r.ok ? await r.json() : null;
       if (d && d[0] && d[0].estado === 'pronto' && d[0].feedback) {
-        tutorEstado = { fase: 'pronto', texto: d[0].feedback }; render(); return;
+        if (chaveTexto) tutorCache[chaveTexto] = d[0].feedback;
+        if (meu !== tutorSeq) return;         // já não é a pergunta da tela
+        tutorEstado = { fase: 'pronto', texto: d[0].feedback, seq: meu }; render(); return;
       }
-      if (d && d[0] && d[0].estado === 'erro') { tutorEstado = { fase: 'erro' }; render(); return; }
+      if (d && d[0] && d[0].estado === 'erro') {
+        if (meu !== tutorSeq) return;
+        tutorEstado = auto ? null : { fase: 'erro' }; render(); return;
+      }
     } catch (e) { /* rede oscilou: tenta de novo */ }
     buscarFeedback();
   }, 2500);
 }
 
-function fecharTutor() { tutorEstado = null; if (tutorTimer) clearTimeout(tutorTimer); tentarDeNovo(); }
+function fecharTutor() { resetTutor(); tentarDeNovo(); }
 
 function blocoTutor(a) {
   var pnome = (PERSONAS[ativ.mat] && PERSONAS[ativ.mat].nome) || 'o professor';
