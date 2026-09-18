@@ -2576,14 +2576,55 @@ const PRIMEIRA_PROVA = Object.values(PROVAS).filter(Boolean).sort()[0];
    apostila entrar: tirar a matéria da lista é o que apaga o selo. Fica FORA do bloco que
    o aplicar_conteudo.py substitui, pela mesma razão do PRIMEIRA_PROVA acima. */
 const AVISO_CONTEUDO = {
-  texto: 'A escola ainda não liberou as apostilas da última semana (31/08 a 04/09). '
-       + 'Assim que saírem, entram aqui — então ainda vem missão nova antes da prova.',
-  parciais: ['ingles', 'geografia']
+  "atualizado": "18/09",
+  "texto": "Tudo aqui sai das apostilas que a escola posta no AgendaEdu. A apostila da semana de <b>14 a 18/09</b> ainda não foi postada, e alguns assuntos da prova só estão nela. Assim que sair, entram aqui.",
+  "parciais": [
+    "portugues"
+  ],
+  "lacunas": [
+    {
+      "materia": "Português",
+      "prova": "21/09",
+      "faltam": [
+        "Gênero textual: Conto",
+        "Ortografia: sob e sobre"
+      ],
+      "obs": "Verbos e tempos verbais já estão completos."
+    },
+    {
+      "materia": "História",
+      "prova": "23/09",
+      "faltam": [
+        "A formação do Brasil (os povos indígenas)",
+        "A diáspora forçada africana"
+      ],
+      "obs": "Por isso História ainda não aparece no mapa."
+    }
+  ],
+  "fora": "Música (flauta doce) e a prova prática de Ed. Física são práticas, e as provas de Speaking e Listening medem habilidade — não têm conteúdo para estudar aqui."
 };
 function avisoConteudo(){
   if(!AVISO_CONTEUDO || !AVISO_CONTEUDO.texto) return '';
-  return '<div class="aviso-cont">📥 <b>Ainda vem mais conteúdo</b><br>'
-       + AVISO_CONTEUDO.texto + '</div>';
+  /* 18/09/2026, pedido do Heitor: "deixe registrado o que ainda não está na apostila, só
+     pra os pais saberem das lacunas". A lista vem de AVISO_CONTEUDO.lacunas (arquivo de
+     estruturas da prova): quando a apostila chega e o item sai de lá, ele some daqui. */
+  var l = (AVISO_CONTEUDO.lacunas||[]).map(function(x){
+    return '<div style="margin-top:8px"><b>'+x.materia+'</b>'+(x.prova?' <span style="opacity:.75">(prova '+x.prova+')</span>':'')
+         + '<ul style="margin:3px 0 0 18px;padding:0">'+(x.faltam||[]).map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul>'
+         + (x.obs?'<div style="font-size:12px;opacity:.8;margin-top:2px">'+x.obs+'</div>':'')+'</div>';
+  }).join('');
+  return '<div class="aviso-cont">📥 <b>Para os pais: o que ainda falta aqui</b>'
+       + (AVISO_CONTEUDO.atualizado?' <span style="opacity:.7;font-size:12px">— atualizado em '+AVISO_CONTEUDO.atualizado+'</span>':'')
+       + '<br>' + AVISO_CONTEUDO.texto + l
+       + (AVISO_CONTEUDO.fora?'<div style="font-size:12px;opacity:.8;margin-top:8px">'+AVISO_CONTEUDO.fora+'</div>':'')
+       + '</div>';
+}
+/* a mesma lacuna, dentro da matéria */
+function avisoMateria(nome){
+  var x = ((AVISO_CONTEUDO && AVISO_CONTEUDO.lacunas)||[]).filter(function(k){ return k.materia===nome; })[0];
+  if(!x) return '';
+  return '<div class="aviso-cont">📥 <b>Ainda falta nesta matéria</b> (a escola ainda não postou a apostila):'
+       + '<ul style="margin:4px 0 0 18px;padding:0">'+(x.faltam||[]).map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul></div>';
 }
 function parcial(id){
   return !!(AVISO_CONTEUDO && (AVISO_CONTEUDO.parciais||[]).indexOf(id) >= 0);
@@ -3715,6 +3756,7 @@ function telaTerritorio(){
       </div>
     </div>
     <div class="lead">${textoContagem(t.id)}</div>
+    ${avisoMateria(t.nome)}
     ${lista}
     <div class="card" onclick="iniciarProva('${t.id}')" style="cursor:pointer;background:linear-gradient(135deg,#ffffff,#fff1d6)">
       <div style="display:flex;align-items:center;gap:12px">
