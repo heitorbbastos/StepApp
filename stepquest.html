@@ -268,7 +268,7 @@ const PROVAS = {
   "historia": "2026-11-11",
   "geografia": "2026-11-12",
   "ciencias": "2026-11-13",
-  "ingles": "2026-11-11"
+  "ingles": "2026-11-09/2026-11-13"
 };
 
 /* ---------- territórios (matérias) ---------- */
@@ -3343,7 +3343,7 @@ function registrarDia(){
    quebrou no iPhone com "Can't find variable: PRIMEIRA_PROVA" assim que o fraseMapa()
    rodava. Derivar em vez de repetir faz o valor existir nos dois arquivos sempre — e
    acompanha sozinho qualquer mudança no cronograma. */
-const PRIMEIRA_PROVA = Object.values(PROVAS).filter(Boolean).sort()[0];
+const PRIMEIRA_PROVA = Object.values(PROVAS).filter(Boolean).map(function(v){return v.slice(0,10);}).sort()[0];
 /* ---- conteúdo que ainda não chegou ---- */
 /* A escola libera apostila por semana, e a última costuma sair em cima da prova. Sem
    dizer isso, o app se apresenta como se cobrisse tudo — e uma criança que estudou só
@@ -3392,6 +3392,15 @@ function textoContagem(id){
      fora. Antes o gerador dava uma data a todas e o card anunciava "prova em X dias"
      para matéria que não tem prova. PROVAS[id] nulo = território de exploração. */
   if(!PROVAS[id]) return '✨ não cai no simulado';
+  /* 02/11/2026: matéria com prova em VÁRIOS dias (Inglês: Speaking, Writing, Listening e
+     Reading de 09 a 13/11) vem como "inicio/fim". O Heitor não quer data única para ela. */
+  if(PROVAS[id].indexOf('/')>0){
+    const [ini, fim] = PROVAS[id].split('/');
+    const di = diasAte(ini), df = diasAte(fim);
+    if(df<0) return 'provas já passaram';
+    if(di<=0) return '📣 semana de provas — vários dias!';
+    return '🗓️ provas em vários dias (começam em '+di+' dia'+(di>1?'s':'')+')';
+  }
   const d = diasAte(PROVAS[id]);
   if(d<0) return 'prova já passou';
   if(d===0) return '📣 prova é HOJE!';
@@ -4779,7 +4788,7 @@ function fraseMapa(){
   /* 18/09/2026: com `Math.max(0, d)` a frase travava em "começa hoje" a semana inteira
      de prova. Agora, depois que a primeira prova chega, ela olha a PRÓXIMA data de
      PROVAS e diz quais matérias são — hoje, amanhã ou em N dias. */
-  var datas = Object.keys(PROVAS).filter(function(k){ return PROVAS[k] && diasAte(PROVAS[k])>=0; })
+  var datas = Object.keys(PROVAS).filter(function(k){ return PROVAS[k] && PROVAS[k].indexOf('/')<0 && diasAte(PROVAS[k])>=0; })
                     .sort(function(a,b){ return PROVAS[a]<PROVAS[b]?-1:PROVAS[a]>PROVAS[b]?1:0; });
   var cont;
   if(!datas.length){
