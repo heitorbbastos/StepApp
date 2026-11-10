@@ -2114,7 +2114,10 @@ const CONTEUDO = {
               "o governador do Pará"
             ],
             "correta": 0,
-            "explica": "O órgão responsável pela divisão regional do Brasil é o <span data-fala='í bê gê é'>IBGE</span>, o Instituto Brasileiro de Geografia e Estatística."
+            "explica": "O órgão responsável pela divisão regional do Brasil é o <span data-fala='í bê gê é'>IBGE</span>, o Instituto Brasileiro de Geografia e Estatística.",
+            "ver": {
+              "uf": null
+            }
           },
           {
             "p": "Quais são as cinco regiões do Brasil?",
@@ -2125,7 +2128,10 @@ const CONTEUDO = {
               "Pará, Amazonas, Bahia, São Paulo e Paraná"
             ],
             "correta": 0,
-            "explica": "A regionalização atual divide o Brasil em cinco regiões: Norte, Nordeste, Centro-Oeste, Sudeste e Sul."
+            "explica": "A regionalização atual divide o Brasil em cinco regiões: Norte, Nordeste, Centro-Oeste, Sudeste e Sul.",
+            "ver": {
+              "regiao": "N"
+            }
           },
           {
             "p": "Por que as unidades federativas foram agrupadas em cada região?",
@@ -2136,7 +2142,10 @@ const CONTEUDO = {
               "pelo tamanho da capital"
             ],
             "correta": 0,
-            "explica": "Cada região é formada por unidades federativas agrupadas segundo as suas semelhanças, que podem ser físicas, econômicas, sociais e culturais."
+            "explica": "Cada região é formada por unidades federativas agrupadas segundo as suas semelhanças, que podem ser físicas, econômicas, sociais e culturais.",
+            "ver": {
+              "regiao": "SE"
+            }
           },
           {
             "p": "Quantas unidades federativas tem o Brasil?",
@@ -2147,7 +2156,52 @@ const CONTEUDO = {
               "30"
             ],
             "correta": 0,
-            "explica": "Norte 7, Nordeste 9, Centro-Oeste 4, Sudeste 4 e Sul 3: são 27 unidades federativas, 26 estados mais o Distrito Federal."
+            "explica": "Norte 7, Nordeste 9, Centro-Oeste 4, Sudeste 4 e Sul 3: são 27 unidades federativas, 26 estados mais o Distrito Federal.",
+            "ver": {
+              "uf": null
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "semSelecao": "Toque num estado do mapa, ou numa das cinco regiões aqui embaixo, e veja o Brasil se organizar."
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "uf": null
+            }
+          },
+          {
+            "linha": 3,
+            "pede": {
+              "texto": "Toque em qualquer estado do <b>Nordeste</b>: a ponta do mapa que avança para a direita, para o mar.",
+              "alvo": {
+                "regiao": "NE"
+              },
+              "dica": "É a região com a maior faixa de litoral, virada para o oceano."
+            },
+            "retorno": "Nordeste! São 9 unidades federativas: a região com mais estados.",
+            "cena": {
+              "regiao": "NE"
+            }
+          },
+          {
+            "linha": 4,
+            "pede": {
+              "texto": "Agora toque num estado do <b>Sul</b>, lá embaixo no mapa.",
+              "alvo": {
+                "regiao": "S"
+              },
+              "dica": "São só três: Paraná, Santa Catarina e Rio Grande do Sul."
+            },
+            "retorno": "Sul: 3 unidades federativas, a menor região.",
+            "cena": {
+              "regiao": "S"
+            }
           }
         ]
       },
@@ -2168,7 +2222,10 @@ const CONTEUDO = {
               "a Região Sul"
             ],
             "correta": 0,
-            "explica": "Com 7 unidades federativas, a Região Norte é a maior do Brasil em extensão territorial."
+            "explica": "Com 7 unidades federativas, a Região Norte é a maior do Brasil em extensão territorial.",
+            "ver": {
+              "regiao": "N"
+            }
           },
           {
             "p": "Qual clima predomina na Região Norte, e que floresta cobre quase toda a região?",
@@ -2179,7 +2236,10 @@ const CONTEUDO = {
               "clima tropical de altitude, e a Mata Atlântica"
             ],
             "correta": 0,
-            "explica": "Na Região Norte predomina o clima equatorial, com florestas tropicais úmidas: no Brasil, a Floresta Amazônica."
+            "explica": "Na Região Norte predomina o clima equatorial, com florestas tropicais úmidas: no Brasil, a Floresta Amazônica.",
+            "ver": {
+              "uf": "AM"
+            }
           },
           {
             "p": "Qual é a capital do AMAPÁ?",
@@ -2190,7 +2250,10 @@ const CONTEUDO = {
               "Palmas"
             ],
             "correta": 0,
-            "explica": "Amapá, sigla <span data-fala='á, pê'>AP</span>, capital Macapá. Manaus é a capital do Amazonas."
+            "explica": "Amapá, sigla <span data-fala='á, pê'>AP</span>, capital Macapá. Manaus é a capital do Amazonas.",
+            "ver": {
+              "uf": "AP"
+            }
           },
           {
             "p": "Rio Branco é a capital de qual estado?",
@@ -2201,7 +2264,69 @@ const CONTEUDO = {
               "Tocantins"
             ],
             "correta": 0,
-            "explica": "Acre, sigla <span data-fala='á, cê'>AC</span>, capital Rio Branco. Rondônia é Porto Velho; Roraima, Boa Vista; Tocantins, Palmas."
+            "explica": "Acre, sigla <span data-fala='á, cê'>AC</span>, capital Rio Branco. Rondônia é Porto Velho; Roraima, Boa Vista; Tocantins, Palmas.",
+            "ver": {
+              "uf": "AC"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "foco": "N",
+            "icones": [
+              {
+                "uf": "AM",
+                "emoji": "🌳",
+                "rotulo": "Floresta Amazônica"
+              },
+              {
+                "uf": "PA",
+                "emoji": "🏞️",
+                "rotulo": "Bacia do Rio Amazonas"
+              },
+              {
+                "uf": "RO",
+                "emoji": "🌿",
+                "rotulo": "extrativismo mineral e vegetal"
+              }
+            ]
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "regiao": "N"
+            }
+          },
+          {
+            "linha": 6,
+            "pede": {
+              "texto": "Toque no <b>Amapá</b>, bem em cima do Pará.",
+              "alvo": {
+                "uf": "AP"
+              },
+              "dica": "É o estado pequeno em cima do Pará."
+            },
+            "retorno": "AP: Amapá, capital Macapá.",
+            "cena": {
+              "uf": "AP"
+            }
+          },
+          {
+            "linha": 8,
+            "pede": {
+              "texto": "Agora toque no <b>Amazonas</b>, o grandão lá na esquerda.",
+              "alvo": {
+                "uf": "AM"
+              },
+              "dica": "É o maior estado do mapa, na esquerda."
+            },
+            "retorno": "AM: Amazonas, capital Manaus. E o Amapá é AP, Macapá.",
+            "cena": {
+              "uf": "AM"
+            }
           }
         ]
       },
@@ -2222,7 +2347,10 @@ const CONTEUDO = {
               "Sul, com 3"
             ],
             "correta": 0,
-            "explica": "O Nordeste é formado por 9 unidades federativas: é a região com o maior número delas e com os menores estados em extensão."
+            "explica": "O Nordeste é formado por 9 unidades federativas: é a região com o maior número delas e com os menores estados em extensão.",
+            "ver": {
+              "regiao": "NE"
+            }
           },
           {
             "p": "O que todos os estados do Nordeste têm em comum?",
@@ -2233,7 +2361,10 @@ const CONTEUDO = {
               "todos estão na Floresta Amazônica"
             ],
             "correta": 0,
-            "explica": "Todos os estados do Nordeste fazem fronteira com o Oceano Atlântico. Por isso a região é tão conhecida por suas praias."
+            "explica": "Todos os estados do Nordeste fazem fronteira com o Oceano Atlântico. Por isso a região é tão conhecida por suas praias.",
+            "ver": {
+              "regiao": "NE"
+            }
           },
           {
             "p": "As cartas para o Willy Wonka vieram com as siglas <span data-fala='cê, é'>CE</span>, <span data-fala='érre, êne'>RN</span>, <span data-fala='pê, é'>PE</span> e <span data-fala='bê, á'>BA</span>. De que estados são?",
@@ -2244,7 +2375,10 @@ const CONTEUDO = {
               "Ceará, Rondônia, Piauí e Bahia"
             ],
             "correta": 0,
-            "explica": "<span data-fala='cê, é'>CE</span> é Ceará, <span data-fala='érre, êne'>RN</span> é Rio Grande do Norte, <span data-fala='pê, é'>PE</span> é Pernambuco e <span data-fala='bê, á'>BA</span> é Bahia. Todos da Região Nordeste."
+            "explica": "<span data-fala='cê, é'>CE</span> é Ceará, <span data-fala='érre, êne'>RN</span> é Rio Grande do Norte, <span data-fala='pê, é'>PE</span> é Pernambuco e <span data-fala='bê, á'>BA</span> é Bahia. Todos da Região Nordeste.",
+            "ver": {
+              "uf": "CE"
+            }
           },
           {
             "p": "Qual é a capital de PERNAMBUCO?",
@@ -2255,7 +2389,61 @@ const CONTEUDO = {
               "Natal"
             ],
             "correta": 0,
-            "explica": "Pernambuco, sigla <span data-fala='pê, é'>PE</span>, capital Recife. Salvador é da Bahia; Fortaleza, do Ceará; Natal, do Rio Grande do Norte."
+            "explica": "Pernambuco, sigla <span data-fala='pê, é'>PE</span>, capital Recife. Salvador é da Bahia; Fortaleza, do Ceará; Natal, do Rio Grande do Norte.",
+            "ver": {
+              "uf": "PE"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "foco": "NE",
+            "icones": [
+              {
+                "uf": "CE",
+                "emoji": "🏖️",
+                "rotulo": "praias e turismo"
+              },
+              {
+                "uf": "PI",
+                "emoji": "🌵",
+                "rotulo": "caatinga, semiárido"
+              },
+              {
+                "uf": "BA",
+                "emoji": "☀️",
+                "rotulo": "seca no interior"
+              }
+            ]
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "regiao": "NE"
+            }
+          },
+          {
+            "linha": 5,
+            "pede": {
+              "texto": "Toque em <b>Pernambuco</b>, no litoral do Nordeste.",
+              "alvo": {
+                "uf": "PE"
+              },
+              "dica": "Fica logo abaixo da pontinha do Nordeste, entre a Paraíba e Alagoas."
+            },
+            "retorno": "PE: Pernambuco, capital Recife.",
+            "cena": {
+              "uf": "PE"
+            }
+          },
+          {
+            "linha": 6,
+            "cena": {
+              "uf": "BA"
+            }
           }
         ]
       },
@@ -2276,7 +2464,10 @@ const CONTEUDO = {
               "Sudeste"
             ],
             "correta": 0,
-            "explica": "A Região Centro-Oeste é a única do Brasil que não faz fronteira com o Oceano Atlântico."
+            "explica": "A Região Centro-Oeste é a única do Brasil que não faz fronteira com o Oceano Atlântico.",
+            "ver": {
+              "regiao": "CO"
+            }
           },
           {
             "p": "O que o Distrito Federal tem de diferente?",
@@ -2287,7 +2478,10 @@ const CONTEUDO = {
               "tem neve todo inverno"
             ],
             "correta": 0,
-            "explica": "O Distrito Federal é a menor unidade federativa e a única que não possui municípios, mas regiões administrativas. Nele fica a capital federal, Brasília."
+            "explica": "O Distrito Federal é a menor unidade federativa e a única que não possui municípios, mas regiões administrativas. Nele fica a capital federal, Brasília.",
+            "ver": {
+              "uf": "DF"
+            }
           },
           {
             "p": "As cartas chegaram com as capitais Campo Grande, Cuiabá e Goiânia. De quais estados elas são, nessa ordem?",
@@ -2298,7 +2492,10 @@ const CONTEUDO = {
               "Paraná, Santa Catarina e Rio Grande do Sul"
             ],
             "correta": 0,
-            "explica": "Campo Grande é a capital do Mato Grosso do Sul; Cuiabá, do Mato Grosso; Goiânia, de Goiás. Os três ficam no Centro-Oeste."
+            "explica": "Campo Grande é a capital do Mato Grosso do Sul; Cuiabá, do Mato Grosso; Goiânia, de Goiás. Os três ficam no Centro-Oeste.",
+            "ver": {
+              "uf": "MS"
+            }
           },
           {
             "p": "Quais são as vegetações características do Centro-Oeste?",
@@ -2309,7 +2506,72 @@ const CONTEUDO = {
               "Floresta Amazônica e Mata dos Pinhais"
             ],
             "correta": 0,
-            "explica": "No Centro-Oeste as vegetações características são o cerrado e o pantanal."
+            "explica": "No Centro-Oeste as vegetações características são o cerrado e o pantanal.",
+            "ver": {
+              "regiao": "CO"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "foco": "CO",
+            "icones": [
+              {
+                "uf": "DF",
+                "emoji": "🏛️",
+                "rotulo": "Brasília"
+              },
+              {
+                "uf": "MT",
+                "emoji": "🌾",
+                "rotulo": "soja"
+              },
+              {
+                "uf": "MS",
+                "emoji": "🐊",
+                "rotulo": "Pantanal"
+              },
+              {
+                "uf": "GO",
+                "emoji": "🪨",
+                "rotulo": "Chapada dos Veadeiros"
+              }
+            ]
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "regiao": "CO"
+            }
+          },
+          {
+            "linha": 1,
+            "cena": {
+              "uf": "DF"
+            }
+          },
+          {
+            "linha": 7,
+            "pede": {
+              "texto": "Toque no <b>Mato Grosso do Sul</b>: dos dois Mato Grosso, é o que fica mais ao sul.",
+              "alvo": {
+                "uf": "MS"
+              },
+              "dica": "Dos dois Mato Grosso, é o que fica mais ao sul."
+            },
+            "retorno": "MS: Mato Grosso do Sul, capital Campo Grande. O Mato Grosso, MT, fica logo acima, capital Cuiabá.",
+            "cena": {
+              "uf": "MS"
+            }
+          },
+          {
+            "linha": 8,
+            "cena": {
+              "uf": "GO"
+            }
           }
         ]
       },
@@ -2330,7 +2592,10 @@ const CONTEUDO = {
               "Sul"
             ],
             "correta": 0,
-            "explica": "O Sudeste é a região mais populosa do Brasil, e 90% das pessoas que vivem nela moram em cidades."
+            "explica": "O Sudeste é a região mais populosa do Brasil, e 90% das pessoas que vivem nela moram em cidades.",
+            "ver": {
+              "regiao": "SE"
+            }
           },
           {
             "p": "No Sudeste, 90% das pessoas moram onde?",
@@ -2341,7 +2606,10 @@ const CONTEUDO = {
               "no litoral do Nordeste"
             ],
             "correta": 0,
-            "explica": "Na Região Sudeste, 90% das pessoas moram em cidades, e não no campo."
+            "explica": "Na Região Sudeste, 90% das pessoas moram em cidades, e não no campo.",
+            "ver": {
+              "uf": "SP"
+            }
           },
           {
             "p": "Qual é a capital de MINAS GERAIS?",
@@ -2352,7 +2620,10 @@ const CONTEUDO = {
               "Curitiba"
             ],
             "correta": 0,
-            "explica": "Minas Gerais, sigla <span data-fala='ême, gê'>MG</span>, capital Belo Horizonte. Vitória é a capital do Espírito Santo."
+            "explica": "Minas Gerais, sigla <span data-fala='ême, gê'>MG</span>, capital Belo Horizonte. Vitória é a capital do Espírito Santo.",
+            "ver": {
+              "uf": "MG"
+            }
           },
           {
             "p": "O que aconteceu com a vegetação do litoral do Sudeste?",
@@ -2363,7 +2634,67 @@ const CONTEUDO = {
               "virou caatinga"
             ],
             "correta": 0,
-            "explica": "Na Região Sudeste existe uma enorme área desmatada, e praticamente toda a vegetação litorânea desapareceu."
+            "explica": "Na Região Sudeste existe uma enorme área desmatada, e praticamente toda a vegetação litorânea desapareceu.",
+            "ver": {
+              "regiao": "SE"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "foco": "SE",
+            "icones": [
+              {
+                "uf": "SP",
+                "emoji": "🏭",
+                "rotulo": "indústria"
+              },
+              {
+                "uf": "RJ",
+                "emoji": "🏖️",
+                "rotulo": "turismo"
+              },
+              {
+                "uf": "MG",
+                "emoji": "⛰️",
+                "rotulo": "planaltos"
+              }
+            ]
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "regiao": "SE"
+            }
+          },
+          {
+            "linha": 1,
+            "cena": {
+              "uf": "SP"
+            }
+          },
+          {
+            "linha": 6,
+            "pede": {
+              "texto": "Toque em <b>Minas Gerais</b>.",
+              "alvo": {
+                "uf": "MG"
+              },
+              "dica": "É o estado grande do Sudeste, acima de São Paulo e do Rio."
+            },
+            "retorno": "MG: Minas Gerais, capital Belo Horizonte.",
+            "cena": {
+              "uf": "MG"
+            }
+          },
+          {
+            "linha": 7,
+            "cena": {
+              "uf": "SP"
+            }
           }
         ]
       },
@@ -2384,7 +2715,10 @@ const CONTEUDO = {
               "a Região Centro-Oeste, com clima polar"
             ],
             "correta": 0,
-            "explica": "Na Região Sul predomina o clima subtropical. Ela é formada pelo Paraná, por Santa Catarina e pelo Rio Grande do Sul."
+            "explica": "Na Região Sul predomina o clima subtropical. Ela é formada pelo Paraná, por Santa Catarina e pelo Rio Grande do Sul.",
+            "ver": {
+              "regiao": "S"
+            }
           },
           {
             "p": "Qual é a MENOR região do Brasil?",
@@ -2395,7 +2729,10 @@ const CONTEUDO = {
               "Nordeste"
             ],
             "correta": 0,
-            "explica": "A Região Sul é a menor do Brasil e a que contém menos unidades federativas: apenas 3."
+            "explica": "A Região Sul é a menor do Brasil e a que contém menos unidades federativas: apenas 3.",
+            "ver": {
+              "regiao": "S"
+            }
           },
           {
             "p": "Qual é a capital de SANTA CATARINA?",
@@ -2406,7 +2743,10 @@ const CONTEUDO = {
               "Blumenau"
             ],
             "correta": 0,
-            "explica": "Santa Catarina, sigla <span data-fala='ésse, cê'>SC</span>, capital Florianópolis. Curitiba é a do Paraná, e Porto Alegre, a do Rio Grande do Sul."
+            "explica": "Santa Catarina, sigla <span data-fala='ésse, cê'>SC</span>, capital Florianópolis. Curitiba é a do Paraná, e Porto Alegre, a do Rio Grande do Sul.",
+            "ver": {
+              "uf": "SC"
+            }
           },
           {
             "p": "Que vegetação é característica da Região Sul?",
@@ -2417,7 +2757,67 @@ const CONTEUDO = {
               "o pantanal"
             ],
             "correta": 0,
-            "explica": "Na Região Sul, o clima subtropical vem com a Mata das Araucárias e campos com vastas planícies."
+            "explica": "Na Região Sul, o clima subtropical vem com a Mata das Araucárias e campos com vastas planícies.",
+            "ver": {
+              "regiao": "S"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "foco": "S",
+            "icones": [
+              {
+                "uf": "PR",
+                "emoji": "🌲",
+                "rotulo": "Mata das Araucárias"
+              },
+              {
+                "uf": "SC",
+                "emoji": "❄️",
+                "rotulo": "frio e neve"
+              },
+              {
+                "uf": "RS",
+                "emoji": "🍇",
+                "rotulo": "uva"
+              }
+            ]
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "regiao": "S"
+            }
+          },
+          {
+            "linha": 5,
+            "pede": {
+              "texto": "Toque em <b>Santa Catarina</b>, o estado do meio do Sul.",
+              "alvo": {
+                "uf": "SC"
+              },
+              "dica": "Fica entre o Paraná e o Rio Grande do Sul."
+            },
+            "retorno": "SC: Santa Catarina, capital Florianópolis.",
+            "cena": {
+              "uf": "SC"
+            }
+          },
+          {
+            "linha": 6,
+            "cena": {
+              "regiao": "S"
+            }
+          },
+          {
+            "linha": 7,
+            "cena": {
+              "regiao": "S"
+            }
           }
         ]
       },
@@ -2438,7 +2838,10 @@ const CONTEUDO = {
               "Norte"
             ],
             "correta": 0,
-            "explica": "O Nordeste é a região com a maior faixa litorânea do país: todos os seus nove estados ficam de frente para o Oceano Atlântico."
+            "explica": "O Nordeste é a região com a maior faixa litorânea do país: todos os seus nove estados ficam de frente para o Oceano Atlântico.",
+            "ver": {
+              "regiao": "NE"
+            }
           },
           {
             "p": "Qual é a região MAIS FRIA do Brasil?",
@@ -2449,7 +2852,10 @@ const CONTEUDO = {
               "Norte"
             ],
             "correta": 0,
-            "explica": "A Região Sul fica abaixo da zona tropical: é a mais fria do Brasil, com invernos de baixas temperaturas e geadas."
+            "explica": "A Região Sul fica abaixo da zona tropical: é a mais fria do Brasil, com invernos de baixas temperaturas e geadas.",
+            "ver": {
+              "regiao": "S"
+            }
           },
           {
             "p": "Qual região é a mais industrializada e tem o maior PIB do Brasil — a que a apostila chama de 'mais desenvolvida'?",
@@ -2460,7 +2866,10 @@ const CONTEUDO = {
               "Centro-Oeste"
             ],
             "correta": 0,
-            "explica": "O Sudeste é a região mais industrializada do país e tem o maior PIB, o Produto Interno Bruto. Por isso a apostila a chama de mais desenvolvida."
+            "explica": "O Sudeste é a região mais industrializada do país e tem o maior PIB, o Produto Interno Bruto. Por isso a apostila a chama de mais desenvolvida.",
+            "ver": {
+              "regiao": "SE"
+            }
           },
           {
             "p": "Qual região tem MENOS estados?",
@@ -2471,7 +2880,62 @@ const CONTEUDO = {
               "Norte, com 7"
             ],
             "correta": 0,
-            "explica": "O Sul tem só três unidades federativas: Paraná, Santa Catarina e Rio Grande do Sul. É a menor região e a que tem menos estados."
+            "explica": "O Sul tem só três unidades federativas: Paraná, Santa Catarina e Rio Grande do Sul. É a menor região e a que tem menos estados.",
+            "ver": {
+              "regiao": "S"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "semSelecao": "Cada pergunta da trivia acende uma região. Toque numa região para conferir."
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 1,
+            "cena": {
+              "regiao": "N"
+            }
+          },
+          {
+            "linha": 2,
+            "cena": {
+              "regiao": "NE"
+            }
+          },
+          {
+            "linha": 3,
+            "cena": {
+              "regiao": "SE"
+            }
+          },
+          {
+            "linha": 4,
+            "pede": {
+              "texto": "Toque na única região que <b>não encosta no mar</b>.",
+              "alvo": {
+                "regiao": "CO"
+              },
+              "dica": "É a região do meio do mapa."
+            },
+            "retorno": "Centro-Oeste: a única região sem litoral. E a de maior litoral é o Nordeste.",
+            "cena": {
+              "regiao": "CO"
+            }
+          },
+          {
+            "linha": 5,
+            "cena": {
+              "regiao": "S"
+            }
+          },
+          {
+            "linha": 6,
+            "cena": {
+              "uf": null
+            }
           }
         ]
       },
@@ -2492,7 +2956,10 @@ const CONTEUDO = {
               "Pernambuco, capital Recife"
             ],
             "correta": 0,
-            "explica": "<span data-fala='pê, érre'>PR</span> é o Paraná, na Região Sul, capital Curitiba. O Pará é <span data-fala='pê, á'>PA</span> e a Paraíba é <span data-fala='pê, bê'>PB</span>."
+            "explica": "<span data-fala='pê, érre'>PR</span> é o Paraná, na Região Sul, capital Curitiba. O Pará é <span data-fala='pê, á'>PA</span> e a Paraíba é <span data-fala='pê, bê'>PB</span>.",
+            "ver": {
+              "uf": "PR"
+            }
           },
           {
             "p": "Qual é a capital do Rio Grande do NORTE?",
@@ -2503,7 +2970,10 @@ const CONTEUDO = {
               "São Luís"
             ],
             "correta": 0,
-            "explica": "Rio Grande do Norte, <span data-fala='érre, êne'>RN</span>, fica no Nordeste e a capital é Natal. Porto Alegre é a capital do Rio Grande do Sul."
+            "explica": "Rio Grande do Norte, <span data-fala='érre, êne'>RN</span>, fica no Nordeste e a capital é Natal. Porto Alegre é a capital do Rio Grande do Sul.",
+            "ver": {
+              "uf": "RN"
+            }
           },
           {
             "p": "Teresina é a capital de qual estado?",
@@ -2514,7 +2984,10 @@ const CONTEUDO = {
               "Alagoas"
             ],
             "correta": 0,
-            "explica": "Piauí, sigla <span data-fala='pê, i'>PI</span>, capital Teresina. Maranhão é São Luís; Sergipe, Aracaju; Alagoas, Maceió."
+            "explica": "Piauí, sigla <span data-fala='pê, i'>PI</span>, capital Teresina. Maranhão é São Luís; Sergipe, Aracaju; Alagoas, Maceió.",
+            "ver": {
+              "uf": "PI"
+            }
           },
           {
             "p": "Em quais estados a capital tem o MESMO nome do estado?",
@@ -2525,7 +2998,64 @@ const CONTEUDO = {
               "Goiás e Mato Grosso"
             ],
             "correta": 0,
-            "explica": "No Sudeste, o estado do Rio de Janeiro tem como capital o Rio de Janeiro, e o estado de São Paulo, a cidade de São Paulo."
+            "explica": "No Sudeste, o estado do Rio de Janeiro tem como capital o Rio de Janeiro, e o estado de São Paulo, a cidade de São Paulo.",
+            "ver": {
+              "regiao": "SE"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "mapa",
+          "params": {
+            "semSelecao": "Toque num estado: aparecem a sigla, o nome e a capital. Os nomes parecidos são a pegadinha."
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 1,
+            "pede": {
+              "texto": "Toque no <b>Pará</b>, o nosso.",
+              "alvo": {
+                "uf": "PA"
+              },
+              "dica": "É o estado grande no alto do mapa, onde fica Belém."
+            },
+            "retorno": "PA, capital Belém, no Norte. O Paraná, PR, é no Sul; a Paraíba, PB, no Nordeste.",
+            "cena": {
+              "uf": "PA"
+            }
+          },
+          {
+            "linha": 2,
+            "cena": {
+              "uf": "AP"
+            }
+          },
+          {
+            "linha": 3,
+            "pede": {
+              "texto": "Toque no <b>Mato Grosso do Sul</b>.",
+              "alvo": {
+                "uf": "MS"
+              },
+              "dica": "Dos dois Mato Grosso, é o que fica mais ao sul."
+            },
+            "retorno": "MS, capital Campo Grande. O Mato Grosso é MT, capital Cuiabá.",
+            "cena": {
+              "uf": "MS"
+            }
+          },
+          {
+            "linha": 4,
+            "cena": {
+              "uf": "RN"
+            }
+          },
+          {
+            "linha": 5,
+            "cena": {
+              "uf": "RJ"
+            }
           }
         ]
       }
@@ -5034,12 +5564,57 @@ function blocoTutor(a) {
 }
 /* === fim ATIVIDADES === */
 /* === MOTORES — injetado por scripts/injetar_motores.py, não editar aqui === */
-const NOVIDADES = {"versao": "2026-11-10-4", "texto": "História (4 missões)", "missoes": ["hi-imigracao", "hi-portugueses-espanhois", "hi-italianos-alemaes", "hi-japoneses"]};
+const NOVIDADES = {"versao": "2026-11-10-12", "texto": "História (4 missões) · Geografia (8 missões)", "missoes": ["hi-imigracao", "hi-portugueses-espanhois", "hi-italianos-alemaes", "hi-japoneses", "ge-regioes", "ge-norte", "ge-nordeste", "ge-centro-oeste", "ge-sudeste", "ge-sul", "ge-trivia-regioes", "ge-capitais"]};
 /* Mapa do Brasil: 27 estados simplificados a partir da malha IBGE (gerado por scripts/gerar_brasil_svg.py).
    viewBox 0 0 320 319. r = região (N, NE, CO, SE, S); c = centro para rótulo. */
 var BRASIL_H = 319;
 var BRASIL_REGIOES = {N:'Norte', NE:'Nordeste', CO:'Centro-Oeste', SE:'Sudeste', S:'Sul'};
 var BRASIL_UF = {"RO":{"n":"Rondônia","cap":"Porto Velho","r":"N","c":[88.2,130.2],"d":"M94.5,150.2 96.9,150.6 99.4,153.5 106.0,153.4 108.4,154.9 111.0,152.9 114.0,146.1 116.0,143.9 113.4,139.8 113.3,137.7 114.9,135.7 114.4,133.9 111.0,133.7 110.4,132.8 101.5,132.8 102.3,128.2 101.3,122.4 102.1,121.7 100.9,118.7 101.7,118.6 102.2,115.9 100.2,114.0 98.7,115.4 96.9,114.9 94.9,111.6 93.6,111.5 90.8,108.2 84.6,108.2 83.2,111.1 82.0,111.1 82.2,113.0 80.4,114.5 80.4,116.1 74.9,116.4 72.2,120.2 71.2,118.7 69.8,119.1 69.8,120.3 68.6,119.9 67.4,121.2 65.4,119.9 61.9,119.9 61.1,121.7 58.6,123.2 60.1,123.9 66.1,122.7 68.8,123.4 69.7,122.0 70.5,122.4 71.0,126.5 69.9,128.7 71.3,132.8 70.4,134.1 70.9,137.0 71.6,137.2 71.7,139.0 72.6,138.7 73.1,141.0 77.3,142.9 78.2,144.7 81.8,145.4 84.1,144.8 87.3,146.6 89.0,146.3 91.4,149.2z"},"AC":{"n":"Acre","cap":"Rio Branco","r":"N","c":[27.1,119.6],"d":"M55.9,122.1 43.6,117.0 32.1,107.1 11.4,104.7 1.5,101.1 2.3,102.6 0.1,103.2 0.0,104.9 2.4,106.5 1.8,107.3 3.6,111.2 5.3,112.3 5.2,113.3 8.5,117.1 6.3,119.9 10.3,119.9 14.1,121.6 14.7,124.7 21.3,124.7 28.4,120.0 27.5,123.4 27.5,132.9 28.2,132.4 30.1,133.5 33.1,132.3 38.8,132.4 42.8,133.0 43.0,134.1 46.9,132.6 48.8,130.0 51.3,130.4 54.5,127.3 55.6,127.5 60.1,123.9z"},"AM":{"n":"Amazonas","cap":"Manaus","r":"N","c":[77.8,69.7],"d":"M129.3,103.0 127.0,99.5 127.1,97.1 128.4,95.9 143.7,61.7 146.1,59.6 141.3,61.1 140.8,59.5 138.5,58.7 138.0,57.6 130.9,54.5 130.3,52.0 129.3,53.1 128.0,52.4 123.4,45.9 123.2,40.9 113.9,40.9 111.0,47.6 111.7,48.9 109.8,50.2 108.0,50.0 106.6,47.5 104.2,47.1 102.3,48.4 100.9,53.7 102.2,56.0 98.7,54.5 97.7,52.4 93.7,49.3 95.5,48.2 96.3,45.7 93.6,39.4 94.3,35.2 91.3,30.1 92.1,27.3 89.5,26.6 88.6,25.4 86.7,25.0 81.7,26.8 81.0,29.4 78.9,31.3 78.3,31.7 78.3,30.6 75.3,33.0 72.1,33.9 72.0,35.3 70.7,35.4 69.0,37.8 68.6,34.8 62.6,37.0 58.2,33.0 56.3,33.5 56.2,28.9 54.8,27.7 53.9,24.7 49.3,28.1 47.7,26.8 46.9,27.3 47.6,28.9 37.5,28.9 33.8,29.1 33.8,34.3 38.7,34.5 39.8,37.8 37.8,38.0 36.8,37.1 32.2,38.5 32.1,44.6 35.7,47.3 35.6,49.2 37.4,52.4 32.9,77.9 30.9,78.6 30.1,77.0 26.3,77.0 24.9,78.9 16.9,80.1 9.0,85.2 8.3,89.2 6.0,93.2 7.1,95.4 6.3,96.8 2.8,98.3 1.5,101.1 11.4,104.7 32.1,107.1 43.6,117.0 58.6,123.2 61.1,121.7 61.9,119.9 65.4,119.9 67.4,121.2 68.6,119.9 69.8,120.3 69.8,119.1 71.2,118.7 72.2,120.2 74.9,116.4 80.4,116.1 80.4,114.5 82.2,113.0 82.0,111.1 83.2,111.1 84.6,108.2 90.8,108.2 98.0,115.5 100.2,114.0 101.3,114.9 126.9,114.9 127.9,114.2 127.0,114.1 128.2,109.1 127.5,107.0z"},"RR":{"n":"Roraima","cap":"Boa Vista","r":"N","c":[99.2,25.3],"d":"M80.0,14.6 80.6,15.8 79.8,17.8 81.6,21.4 81.0,22.6 86.3,23.0 86.7,25.0 92.1,27.3 91.3,30.1 94.0,34.2 93.6,39.4 96.3,45.7 95.5,48.2 93.7,49.3 97.7,52.4 98.7,54.5 102.2,56.0 100.9,53.7 102.3,48.4 104.2,47.1 106.6,47.5 108.0,50.0 109.8,50.2 111.7,48.9 111.0,47.6 113.9,40.9 123.2,40.9 123.0,32.3 120.3,31.7 116.3,27.9 116.3,24.3 114.3,21.2 115.8,15.7 115.2,13.9 118.1,11.0 116.6,9.1 116.4,6.9 112.9,6.2 114.4,1.6 113.1,0.2 108.5,0.4 109.4,2.6 106.1,6.2 103.8,6.0 101.4,8.3 96.7,9.8 94.7,8.9 91.9,10.1 91.8,13.1 91.3,12.6 89.8,13.6 88.0,11.9 88.0,10.8 86.0,10.8 85.5,11.6 84.2,10.2 83.9,11.2 81.8,11.5 80.1,9.3 77.0,9.6 75.2,8.0 74.9,9.0z"},"PA":{"n":"Pará","cap":"Belém","r":"N","c":[177.6,63.0],"d":"M210.6,83.2 215.4,80.3 223.0,68.3 223.7,66.3 223.1,65.4 226.2,60.7 226.8,58.0 226.0,57.3 227.2,56.3 228.0,52.1 227.8,51.4 227.0,51.9 226.9,50.3 224.7,51.4 224.5,50.2 223.4,51.0 223.4,49.6 222.0,50.2 221.7,49.2 220.8,50.1 219.6,48.6 219.1,49.3 216.5,47.9 216.4,49.1 215.6,47.8 215.2,48.8 215.2,48.0 212.9,47.7 209.8,50.6 208.9,50.5 208.1,49.2 208.7,44.9 200.9,44.6 200.8,42.5 198.3,41.8 200.1,40.3 199.4,39.7 194.5,40.3 195.6,38.7 194.0,37.4 192.5,38.0 190.6,41.4 186.0,44.0 182.1,49.6 182.0,51.7 178.6,53.0 176.1,51.7 175.2,47.7 174.3,47.8 174.0,45.6 171.9,44.2 169.9,39.9 170.5,37.5 168.0,35.5 167.8,33.0 162.5,30.9 160.1,28.7 157.1,28.6 157.0,25.1 155.4,22.0 151.9,23.3 149.2,23.4 147.4,22.4 145.7,24.6 147.7,27.6 143.3,27.1 140.4,27.9 138.0,26.5 136.2,26.7 134.0,29.3 130.6,29.5 130.5,30.8 127.9,30.2 126.4,31.1 126.5,32.7 123.2,33.0 123.4,45.9 127.0,51.5 129.3,53.1 130.3,52.0 130.9,54.5 138.0,57.6 138.5,58.7 140.8,59.5 141.3,61.1 146.1,59.6 143.7,61.7 126.6,98.4 133.5,110.2 133.9,114.6 137.0,115.9 140.7,119.9 194.0,123.4 195.6,118.9 199.2,115.3 202.2,110.1 202.7,106.7 201.0,104.3 202.5,101.8 202.3,99.6 206.8,97.5 207.1,96.0 209.1,94.9 208.7,93.7 209.9,92.9 210.0,89.8 211.1,88.8 209.2,87.2 206.0,86.7z"},"AP":{"n":"Amapá","cap":"Macapá","r":"N","c":[178.3,30.1],"d":"M190.3,25.5 186.8,14.9 187.1,11.3 185.4,8.3 182.5,6.2 182.4,9.9 176.7,17.5 175.0,22.5 172.2,25.2 169.1,25.2 168.7,23.9 167.5,24.6 165.1,23.6 161.7,25.3 159.6,25.0 157.1,22.9 156.1,23.2 157.1,28.6 160.1,28.7 162.2,29.9 162.5,30.9 167.8,33.0 168.0,35.5 170.5,37.5 169.9,39.9 171.9,44.2 174.0,45.6 174.3,47.8 175.2,47.7 176.1,51.7 178.6,53.0 182.0,51.7 182.1,49.6 186.0,44.0 190.6,41.4 192.5,38.0 196.8,34.8 196.5,29.3 192.4,28.3z"},"TO":{"n":"Tocantins","cap":"Palmas","r":"N","c":[212.0,120.9],"d":"M216.9,95.5 215.8,87.7 212.7,85.8 209.2,85.3 206.0,86.7 209.2,87.2 211.1,88.8 210.0,89.8 210.3,91.6 208.7,93.7 209.1,94.9 207.1,96.0 206.8,97.5 202.3,99.6 202.5,101.8 201.0,104.3 202.7,106.7 201.7,111.5 195.6,118.9 191.0,130.1 189.8,137.3 190.8,147.8 191.7,148.1 194.7,144.3 193.3,147.5 201.0,151.5 202.1,148.3 203.1,147.5 204.2,148.9 205.1,147.6 207.5,150.2 207.5,151.8 208.0,150.4 208.5,151.5 211.0,150.5 210.8,151.7 213.9,151.9 214.8,153.1 215.7,150.2 217.2,151.4 222.4,149.0 224.8,149.0 225.1,147.8 225.6,149.2 227.6,148.6 225.9,148.9 226.1,145.8 226.9,145.2 225.5,143.9 225.4,141.5 225.6,138.1 227.9,138.0 225.0,137.2 224.0,135.1 227.5,129.8 231.0,126.8 230.8,126.0 229.3,127.8 228.4,126.2 225.9,126.2 223.3,122.6 224.1,121.1 223.4,119.9 222.4,119.9 220.9,117.1 219.8,117.1 222.2,111.4 224.1,111.0 224.7,109.0 223.6,107.5 220.3,108.9 215.5,103.8 216.5,103.0 214.3,101.6 215.9,100.4z"},"MA":{"n":"Maranhão","cap":"São Luís","r":"NE","c":[234.6,81.4],"d":"M212.0,82.1 206.0,86.7 209.2,85.3 212.7,85.8 215.8,87.7 217.3,94.1 215.9,100.4 214.3,101.6 216.5,103.0 215.5,103.8 220.3,108.9 223.6,107.5 224.5,108.2 224.1,111.0 222.2,111.4 219.8,117.1 220.9,117.1 222.4,119.9 224.1,121.1 223.3,122.6 224.4,123.1 224.9,125.4 229.0,126.8 230.3,120.5 228.6,116.0 231.9,109.7 233.0,105.7 238.2,103.2 239.2,103.5 242.3,101.2 243.9,98.6 246.9,97.8 249.3,99.0 253.7,97.4 254.3,94.3 252.3,91.3 252.3,88.9 254.7,85.4 253.4,81.3 254.3,79.8 253.2,77.5 255.7,74.0 257.2,71.2 259.6,71.1 261.4,69.3 262.9,67.2 262.8,65.4 257.2,65.1 250.5,62.2 247.4,63.6 248.2,61.7 247.2,61.8 243.7,65.7 242.7,65.6 244.6,63.9 244.6,62.7 242.4,63.4 241.4,67.1 239.5,67.7 239.6,66.0 242.0,62.2 241.1,60.6 239.3,61.7 240.9,59.3 240.5,57.9 238.4,57.0 239.7,56.3 237.6,56.2 237.9,54.6 237.1,55.8 235.1,55.2 234.1,56.1 234.2,53.9 232.8,55.1 232.5,53.7 229.8,53.0 229.7,51.7 228.9,52.9 228.6,51.7 227.2,53.5 227.2,56.3 226.0,57.3 226.8,58.0 226.2,60.7 223.1,65.4 223.7,66.3 223.0,68.3 220.8,70.6 219.7,74.6 215.4,80.3z"},"PI":{"n":"Piauí","cap":"Teresina","r":"NE","c":[254.5,100.6],"d":"M271.3,110.4 273.1,108.1 271.7,104.2 273.1,103.4 274.5,98.6 271.8,97.6 270.2,92.4 270.0,85.3 267.3,82.8 268.6,77.2 266.0,70.4 267.3,68.0 266.7,66.9 262.6,65.6 262.9,67.2 261.4,69.3 259.6,71.1 257.2,71.2 253.2,77.5 254.3,79.8 253.4,81.3 254.7,85.4 252.3,88.9 252.6,92.9 254.3,94.3 253.1,98.2 249.3,99.0 246.9,97.8 243.9,98.6 242.3,101.2 239.2,103.5 238.2,103.2 233.0,105.7 231.9,109.7 228.6,116.0 230.3,120.5 229.8,124.2 228.4,126.8 229.3,127.8 231.8,125.6 234.7,131.4 237.2,132.2 240.2,129.8 244.2,129.5 247.4,125.2 247.7,123.5 246.1,121.0 248.6,119.1 253.4,120.1 254.9,121.6 258.6,119.1 262.4,118.5 263.5,116.7z"},"CE":{"n":"Ceará","cap":"Fortaleza","r":"NE","c":[281.3,87.7],"d":"M274.5,66.0 266.7,66.9 267.3,68.0 266.0,70.4 268.6,77.2 267.3,82.8 270.0,85.3 270.2,92.4 271.8,97.6 274.5,98.6 273.3,102.8 279.7,102.9 284.5,106.1 285.0,107.2 286.0,107.1 289.4,103.0 287.6,100.2 288.9,98.5 289.2,94.5 292.6,91.6 296.8,83.3 300.0,82.5 299.4,81.4 297.1,80.8 290.1,73.3 278.0,66.5z"},"RN":{"n":"Rio Grande do Norte","cap":"Natal","r":"NE","c":[300,100],"d":"M306.1,95.2 307.8,94.4 308.4,95.6 310.5,96.0 318.6,96.0 316.3,88.1 314.4,85.2 304.4,84.6 300.0,82.5 296.8,83.3 294.7,88.0 289.3,95.0 292.9,96.3 296.3,93.5 300.6,92.5 298.1,97.9 299.5,97.7 300.1,98.8 303.4,98.0 304.9,99.6 306.0,97.0 306.6,97.2z"},"PB":{"n":"Paraíba","cap":"João Pessoa","r":"NE","c":[305,109],"d":"M297.4,104.2 299.9,102.5 301.9,103.5 300.4,105.4 300.8,106.6 299.2,108.0 300.8,108.6 300.7,109.8 302.4,110.8 305.1,109.3 307.0,106.8 312.8,106.0 316.1,103.4 319.7,104.7 318.6,96.0 310.5,96.0 308.4,95.6 307.9,94.7 306.1,95.2 306.6,97.2 306.0,97.0 304.9,99.6 303.4,98.0 300.1,98.8 299.5,97.7 298.1,97.9 300.6,92.5 296.3,93.5 292.9,96.3 289.3,95.0 288.9,98.5 287.6,99.5 289.4,102.3 288.0,105.3 289.0,106.4 291.0,105.8 292.9,106.9z"},"PE":{"n":"Pernambuco","cap":"Recife","r":"NE","c":[285,120],"d":"M266.5,114.2 268.5,114.1 270.6,116.2 272.1,118.1 271.3,120.2 272.5,120.5 274.6,119.6 275.3,117.2 277.7,117.0 278.4,115.2 282.8,112.9 283.9,114.2 288.9,116.2 289.2,115.2 290.0,115.5 289.7,116.2 291.2,116.5 291.9,119.3 295.9,115.3 302.2,119.5 303.0,118.8 305.1,119.3 309.9,115.8 314.0,115.1 317.1,115.9 319.8,108.1 319.7,104.7 317.1,103.4 314.3,104.2 314.1,105.5 312.8,106.0 307.0,106.8 305.1,109.3 302.4,110.8 300.7,109.8 300.8,108.6 299.2,108.0 302.2,104.1 299.9,102.5 292.9,106.9 291.0,105.8 289.0,106.4 288.0,105.3 285.0,107.2 284.5,106.1 279.7,102.9 273.3,102.8 271.7,104.2 272.1,106.4 273.0,106.9 272.6,109.2z"},"AL":{"n":"Alagoas","cap":"Maceió","r":"NE","c":[304,135],"d":"M293.8,117.8 291.9,119.3 292.2,120.0 301.0,124.0 307.0,128.8 316.0,117.8 317.1,115.9 314.0,115.1 309.9,115.8 307.3,118.3 305.1,119.3 303.0,118.8 302.6,119.6 295.9,115.3z"},"SE":{"n":"Sergipe","cap":"Aracaju","r":"NE","c":[298,146],"d":"M302.7,125.7 301.0,124.0 293.9,120.8 293.9,124.0 295.6,125.0 296.0,127.5 295.1,128.4 295.4,130.4 292.2,130.5 292.4,132.4 295.5,137.2 299.3,136.5 303.3,130.8 307.0,128.8z"},"BA":{"n":"Bahia","cap":"Salvador","r":"NE","c":[262.9,146.0],"d":"M282.8,112.9 278.4,115.2 277.7,117.0 275.3,117.2 274.6,119.6 272.5,120.5 271.3,120.2 272.1,118.1 268.5,114.1 266.3,114.2 262.4,118.5 258.6,119.1 254.9,121.6 253.4,120.1 250.7,120.0 249.5,118.7 246.1,121.0 247.7,123.5 247.4,125.2 243.5,130.0 242.1,129.2 240.2,129.8 237.2,132.2 234.7,131.4 231.8,125.6 230.8,126.0 230.0,128.5 226.4,131.4 224.0,135.9 225.0,137.2 227.9,138.0 225.6,138.1 225.4,141.5 225.5,143.9 226.9,145.2 226.1,145.8 225.9,148.9 227.6,148.6 226.1,149.8 225.9,151.3 228.0,151.6 226.5,152.8 227.2,154.2 226.4,157.0 227.0,158.7 229.3,160.3 228.5,161.0 228.8,165.3 227.9,167.7 242.5,159.5 246.7,160.2 245.8,162.7 248.7,164.1 250.5,162.9 253.5,163.2 259.0,166.6 262.8,166.4 266.4,169.6 266.7,171.6 271.8,171.0 278.2,173.7 278.2,176.1 276.3,178.5 275.3,178.4 275.3,181.1 273.5,181.0 272.6,184.8 275.7,187.9 275.7,189.9 280.3,192.8 281.7,190.1 284.6,187.5 284.0,183.2 286.9,172.5 285.2,163.5 286.4,151.0 291.4,148.5 295.8,143.0 299.3,136.5 295.5,137.2 292.2,132.3 292.2,130.5 295.4,130.4 295.1,128.4 296.0,127.5 295.6,125.0 293.9,124.0 293.9,120.8 292.2,120.0 291.2,116.5 290.6,116.9 289.2,115.2 288.9,116.2 283.9,114.2z"},"MG":{"n":"Minas Gerais","cap":"Belo Horizonte","r":"SE","c":[235.4,198.0],"d":"M214.8,193.0 212.6,194.2 210.0,192.8 204.7,192.6 202.4,193.5 201.0,195.3 200.1,194.4 193.7,195.7 191.5,199.0 189.1,200.8 189.1,202.1 188.2,202.1 187.4,203.9 187.7,207.1 192.2,204.7 202.0,206.2 201.9,208.5 202.5,209.0 204.2,207.8 205.0,210.0 205.5,207.7 210.4,207.4 210.6,206.8 211.6,207.6 212.4,206.7 213.0,207.4 213.4,206.3 216.4,206.2 218.5,208.2 218.0,209.8 219.6,212.0 218.5,213.4 220.3,218.0 222.3,217.5 224.4,218.6 222.9,221.4 223.5,222.7 222.7,223.4 223.7,223.9 222.6,225.2 224.8,227.0 225.7,230.1 229.6,229.9 230.9,229.0 230.1,228.8 231.2,227.4 233.4,228.1 246.8,223.3 250.2,222.8 251.9,223.6 259.0,220.4 258.3,219.4 259.1,218.5 260.6,214.8 260.0,214.4 261.4,214.0 262.2,212.7 263.2,208.1 266.0,208.1 267.9,205.5 268.0,203.7 269.6,202.4 269.7,199.2 267.4,197.0 270.1,196.7 269.0,195.2 269.2,193.8 267.9,193.7 268.1,192.6 269.0,191.4 271.2,190.9 270.2,190.0 272.1,190.2 273.2,189.2 275.7,189.9 275.7,187.9 272.6,184.8 273.5,181.0 275.3,181.1 275.3,178.4 276.3,178.5 278.7,174.7 275.6,172.1 270.9,170.9 266.7,171.6 266.4,169.6 262.8,166.4 259.0,166.6 251.6,162.7 248.7,164.1 245.8,162.7 246.7,160.2 245.1,159.6 240.3,160.2 235.9,163.5 227.9,167.7 228.8,165.3 228.2,164.5 225.9,164.8 224.4,163.1 224.4,166.0 221.0,166.0 221.6,168.6 220.8,170.2 222.0,172.7 217.8,174.0 216.7,177.5 219.3,181.7 216.0,185.6 218.2,186.9 217.3,188.7 218.1,190.4z"},"ES":{"n":"Espírito Santo","cap":"Vitória","r":"SE","c":[283,190],"d":"M267.2,205.9 266.0,208.1 263.2,208.1 262.2,212.7 263.1,212.9 263.5,215.4 269.7,217.0 271.4,213.5 274.5,210.8 277.1,204.9 279.1,203.5 280.1,200.7 280.3,192.8 274.5,189.4 270.2,190.0 271.2,190.9 269.0,191.4 267.9,193.7 269.2,193.8 269.0,195.2 270.1,196.7 267.4,197.0 269.7,199.2 269.6,202.4z"},"RJ":{"n":"Rio de Janeiro","cap":"Rio de Janeiro","r":"SE","c":[270,214],"d":"M239.7,230.2 237.7,232.6 239.0,233.9 240.5,233.3 239.0,232.6 239.4,231.3 242.1,230.3 242.0,231.2 245.9,230.2 248.5,231.3 250.7,231.0 251.7,230.1 250.8,229.4 251.3,228.7 252.7,228.4 252.1,230.5 252.9,230.7 260.9,230.4 261.4,227.3 263.8,225.2 269.4,222.9 269.5,222.0 268.8,218.6 269.7,217.0 264.1,215.7 263.1,212.9 261.8,213.3 260.0,214.4 260.6,214.8 258.3,219.4 259.0,220.4 251.9,223.6 250.2,222.8 246.8,223.3 238.3,226.0 239.6,227.7 243.5,228.2 242.3,229.6zM246.6,231.4 245.1,231.3 246.6,231.4 247.6,231.3z"},"SP":{"n":"São Paulo","cap":"São Paulo","r":"SE","c":[209.0,225.2],"d":"M222.9,221.4 224.4,218.6 222.3,217.5 220.3,218.0 218.5,213.4 219.6,212.0 218.0,209.8 218.5,208.2 216.4,206.2 213.4,206.3 213.0,207.4 212.4,206.7 211.6,207.6 210.6,206.8 210.4,207.4 205.5,207.7 205.0,210.0 204.2,207.8 202.5,209.0 201.9,208.5 202.0,206.2 191.3,204.9 184.9,209.3 176.3,223.7 170.5,227.8 174.7,227.4 178.1,228.1 178.4,227.0 179.3,227.1 185.3,228.2 189.4,230.5 195.4,230.1 198.2,232.1 199.1,237.8 202.0,241.7 201.5,244.5 207.3,244.5 207.7,247.9 210.3,247.2 211.4,249.8 214.4,246.3 222.8,240.2 227.0,239.0 227.5,237.9 229.8,237.1 233.5,237.5 233.4,236.0 237.5,233.6 239.0,233.9 237.7,232.6 238.4,230.8 242.3,229.6 243.5,228.2 239.6,227.7 238.3,226.0 233.4,228.1 231.2,227.4 230.1,228.8 230.9,229.0 229.6,229.9 225.7,230.1 224.8,227.0 222.6,225.2 223.7,223.9 222.7,223.4 223.5,222.7zM234.3,238.0 234.8,237.3 233.9,236.8 233.1,238.5z"},"PR":{"n":"Paraná","cap":"Curitiba","r":"S","c":[183.6,243.6],"d":"M203.0,244.6 201.5,244.5 202.0,241.7 199.1,237.8 198.9,233.2 196.1,230.5 189.4,230.5 185.3,228.2 178.4,227.0 178.1,228.1 172.0,227.4 166.9,230.0 160.4,240.4 161.1,242.1 160.5,244.5 158.4,252.1 159.6,252.7 162.0,251.5 163.3,252.0 164.4,252.9 164.5,255.2 166.2,257.5 183.5,260.2 184.4,261.3 185.8,260.5 185.3,258.8 186.1,257.8 188.5,257.8 191.2,255.4 192.9,256.3 196.4,255.6 199.1,257.3 202.1,255.7 207.4,255.2 211.4,249.8 210.3,247.2 207.7,247.9 207.3,244.5z"},"SC":{"n":"Santa Catarina","cap":"Florianópolis","r":"S","c":[188.0,265.7],"d":"M175.9,259.0 166.2,257.5 165.4,260.3 165.9,263.1 164.5,264.9 168.5,264.5 168.7,265.3 171.2,264.3 171.6,265.4 176.0,265.4 180.9,267.8 182.5,267.6 187.3,270.7 190.9,275.0 198.1,276.0 198.3,276.9 196.4,277.7 196.2,279.5 194.7,282.1 195.5,282.8 194.9,282.0 196.2,281.5 198.2,282.6 206.1,275.9 209.2,267.2 207.4,266.2 208.1,264.5 207.4,264.8 206.6,261.3 208.2,257.2 207.4,255.2 202.1,255.7 199.1,257.3 196.4,255.6 192.9,256.3 191.2,255.4 188.5,257.8 186.1,257.8 185.3,258.8 185.8,260.5 184.4,261.3 183.5,260.2z"},"RS":{"n":"Rio Grande do Sul","cap":"Porto Alegre","r":"S","c":[172.6,287.0],"d":"M163.6,304.0 165.5,305.2 166.1,307.6 169.9,309.8 173.0,308.1 173.7,305.7 174.5,305.6 173.6,311.2 172.7,311.9 170.4,310.9 170.0,312.6 167.5,314.7 167.2,316.9 167.1,318.2 168.4,318.7 173.2,314.9 177.2,307.2 178.8,305.7 177.7,302.7 179.3,301.9 180.2,298.8 182.7,298.4 182.6,297.5 184.1,297.0 184.6,293.3 186.6,291.6 185.0,289.9 185.3,288.5 188.3,291.6 188.4,290.7 190.8,289.7 191.1,292.1 189.9,291.1 190.2,293.8 186.2,297.3 185.8,300.0 184.2,300.3 182.3,302.5 178.7,303.1 179.4,303.8 178.9,305.6 189.0,297.8 193.1,292.2 198.2,282.6 196.2,281.5 194.9,282.0 195.5,282.8 194.7,282.1 196.2,280.5 196.4,277.7 198.3,276.9 197.4,275.6 190.9,275.0 187.3,270.7 182.5,267.6 180.9,267.8 176.0,265.4 171.6,265.4 171.2,264.3 168.7,265.3 168.5,264.5 163.6,264.8 160.9,267.2 156.5,267.9 154.6,270.5 148.7,273.7 149.4,275.1 148.1,274.6 146.7,276.0 134.1,290.1 137.0,290.4 137.8,289.0 139.9,288.8 146.7,294.5 146.8,296.9 150.3,294.9 153.0,298.3 158.4,300.0 159.5,301.6z"},"MS":{"n":"Mato Grosso do Sul","cap":"Campo Grande","r":"CO","c":[157.0,208.5],"d":"M168.1,190.0 163.6,189.4 164.4,187.6 165.6,187.3 165.8,184.0 162.6,186.9 160.7,187.3 159.1,185.8 153.9,187.2 146.5,183.3 143.3,184.6 141.0,184.4 137.7,188.3 135.1,189.1 132.6,186.5 132.8,188.7 135.0,192.0 134.1,192.0 132.4,197.4 132.9,198.5 129.5,204.4 131.7,206.2 129.2,207.8 131.9,214.0 130.6,223.5 140.0,225.2 143.7,223.3 145.2,225.0 148.2,225.1 149.1,227.2 150.0,228.4 149.6,229.7 151.8,238.9 154.5,239.0 157.6,237.7 160.9,239.6 166.9,230.0 176.3,223.7 180.7,217.3 180.5,216.2 182.6,214.1 183.0,211.5 187.7,207.2 187.4,203.9 188.2,202.1 187.0,200.7 178.9,197.8 175.4,195.6 172.4,195.3 171.7,194.6 173.3,193.0 170.6,192.6 170.8,190.3z"},"MT":{"n":"Mato Grosso","cap":"Cuiabá","r":"CO","c":[149.3,152.5],"d":"M144.7,119.8 140.7,119.9 137.0,115.9 133.9,114.6 133.5,110.2 129.4,103.1 127.5,107.0 128.2,109.1 127.0,114.1 127.9,114.2 126.9,114.9 101.3,114.9 102.2,115.9 101.7,118.6 100.9,118.7 102.1,121.7 101.3,122.4 102.3,128.2 101.5,132.8 110.4,132.8 111.0,133.7 114.4,133.9 114.9,135.7 113.3,137.7 113.4,139.8 116.0,143.9 114.0,146.1 111.0,152.9 108.4,154.9 110.3,155.7 111.1,157.3 110.5,160.0 112.0,162.5 112.2,166.4 109.5,166.4 112.2,169.4 112.8,175.9 127.9,175.9 126.6,181.4 127.3,183.4 130.6,186.1 131.5,185.6 135.1,189.1 137.7,188.3 141.0,184.4 143.3,184.6 146.5,183.3 150.1,184.9 153.9,187.2 159.1,185.8 160.7,187.3 162.6,186.9 165.8,184.0 165.6,187.3 164.4,187.6 163.6,189.4 170.8,190.3 169.5,187.7 169.6,184.3 171.3,180.8 174.4,178.0 174.0,176.2 177.5,172.9 180.5,172.3 183.3,166.1 187.0,164.9 189.0,158.3 188.7,155.2 190.9,151.8 191.7,148.1 190.3,146.4 190.7,140.1 189.8,137.3 191.0,130.1 194.0,123.4z"},"GO":{"n":"Goiás","cap":"Goiânia","r":"CO","c":[202.7,173.0],"d":"M210.3,171.0 210.6,169.7 216.4,169.7 217.8,170.4 217.8,174.0 222.0,172.7 220.8,170.2 221.6,168.6 221.0,166.0 224.4,166.0 224.4,163.1 225.9,164.8 228.2,164.5 229.3,160.3 227.0,158.7 226.4,157.0 227.2,154.2 226.5,152.8 228.0,151.6 225.9,151.3 226.1,149.8 227.6,148.6 225.6,149.2 225.1,147.8 224.8,149.0 222.4,149.0 217.2,151.4 215.7,150.2 214.8,153.1 213.9,151.9 210.8,151.7 211.0,150.5 208.5,151.5 208.0,150.4 207.5,151.8 206.9,149.3 205.1,147.6 204.2,148.9 203.1,147.5 201.0,151.5 193.3,147.5 194.7,144.3 192.3,146.4 190.9,151.8 188.7,155.2 189.0,158.3 187.0,164.9 183.3,166.1 182.0,169.5 180.5,172.3 177.5,172.9 174.0,176.2 174.4,178.0 171.3,180.8 169.6,184.3 169.5,187.7 170.8,190.3 170.6,192.6 173.3,193.0 172.0,195.1 175.4,195.6 189.1,202.1 189.1,200.8 191.5,199.0 193.7,195.7 200.1,194.4 201.0,195.3 202.4,193.5 204.7,192.6 210.0,192.8 212.6,194.2 218.1,190.4 217.3,188.7 218.2,186.9 216.0,185.6 219.3,181.7 216.7,177.5 217.9,174.1 209.9,174.1z"},"DF":{"n":"Distrito Federal","cap":"Brasília","r":"CO","c":[222,166],"d":"M212.1,174.1 217.9,174.1 217.8,170.4 211.8,169.7 210.6,169.7 209.9,174.1z"}};
+/* Mapa do Brasil em 3D, compartilhado pelos motores linha-tempo e mapa (10/11/2026).
+   BRASIL3D.construir(THREE, cena3) extruda os 27 estados de BRASIL_UF (IBGE) e devolve
+   { malha:{UF:{m, ed, h, cor}}, mar, PAD, pos(uf) }. BRASIL3D.sprite(THREE, '🇵🇹') faz um emoji
+   virar sprite. Mundo: x = (px-160)/PAD (leste +), z = (py-160)/PAD (sul +), extrusão para +y. */
+var BRASIL3D = {
+  PAD: 10,
+  COR_BASE: '#f3e6c4',
+  construir: function(THREE, cena3){
+    var PAD = this.PAD, base = new THREE.Color(this.COR_BASE), borda = new THREE.LineBasicMaterial({ color:0xb9a67a });
+    var mar = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), new THREE.MeshLambertMaterial({ color:0x8ec9ee }));
+    mar.rotation.x = -Math.PI/2; mar.position.y = -0.3; cena3.add(mar);
+    var malha = {};
+    for(var uf in BRASIL_UF){
+      var shapes = []; BRASIL_UF[uf].d.split('M').forEach(function(sub){ sub=sub.trim(); if(!sub) return;
+        var pts = sub.replace(/z$/,'').split(' ').map(function(p){ var xy=p.split(','); return new THREE.Vector2((+xy[0]-160)/PAD, -(+xy[1]-160)/PAD); });
+        if(pts.length>=3) shapes.push(new THREE.Shape(pts)); });
+      var geo = new THREE.ExtrudeGeometry(shapes, { depth:1, bevelEnabled:false });
+      var m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color:base.clone(), side:THREE.DoubleSide })); m.rotation.x = -Math.PI/2; m.userData.uf = uf;
+      var ed = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), borda); ed.rotation.x = -Math.PI/2; ed.scale.z = 1.001;
+      cena3.add(m); cena3.add(ed); malha[uf] = { m:m, ed:ed, h:1, cor:base.clone() };
+    }
+    return { malha:malha, mar:mar, PAD:PAD, pos:function(uf){ var c=BRASIL_UF[uf].c; return new THREE.Vector3((c[0]-160)/PAD, 0, (c[1]-160)/PAD); } };
+  },
+  sprite: function(THREE, ch, fonte){
+    var c=document.createElement('canvas'); c.width=c.height=128; var x=c.getContext('2d');
+    x.font=(fonte||'92px')+' system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(ch,64,70);
+    var tex=new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    return new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
+  },
+  /* rótulo de texto (sigla) como sprite: fundo branco arredondado, tinta marrom */
+  rotulo: function(THREE, txt, cor){
+    var c=document.createElement('canvas'); c.width=160; c.height=80; var x=c.getContext('2d');
+    x.fillStyle='rgba(255,255,255,.92)'; x.beginPath(); x.roundRect ? x.roundRect(8,10,144,60,18) : x.rect(8,10,144,60); x.fill();
+    x.fillStyle=cor||'#4A3F2E'; x.font='800 44px system-ui,-apple-system,sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(txt,80,42);
+    var tex=new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    var s = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false })); s.scale.set(3.2,1.6,1); return s;
+  },
+  /* 2D: desenha os estados num canvas (ctx já transformado para o viewBox 320×319) */
+  desenhar2D: function(ctx, paths, corDe){
+    for(var uf in BRASIL_UF){
+      var cor = corDe(uf); ctx.fillStyle = cor || this.COR_BASE; ctx.strokeStyle='#c9b98f'; ctx.lineWidth=1.2;
+      if(paths[uf]){ ctx.fill(paths[uf]); ctx.stroke(paths[uf]); }
+    }
+  }
+};
 /* ============================================================================================
    CENAS INTERATIVAS — o runtime (10/11/2026)
    --------------------------------------------------------------------------------------------
@@ -5122,6 +5697,15 @@ function cenaCss(){
     '.lt-trilho .tick{ position:absolute; top:44px; font-size:9.5px; font-weight:700; color:#8C7F66; transform:translateX(-50%); }',
     '.lt-trilho .knob{ position:absolute; top:27px; width:22px; height:22px; margin-left:-11px; border-radius:50%; background:#F2933C; border:3px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,.25); }',
     '.lt-trilho .knob:after{ content:""; position:absolute; left:50%; top:-14px; width:2px; height:14px; margin-left:-1px; background:#F2933C; }',
+    '.mp-chips{ display:flex; gap:6px; padding:4px 10px 10px; flex-wrap:wrap; }',
+    '.mp-chip{ flex:1 1 auto; padding:7px 6px; border-radius:999px; background:#fff; border:2px solid #E8DCC0; font-weight:800; font-size:12.5px; color:#4A3F2E; box-shadow:0 2px 0 #E8DCC0; }',
+    '.mp-chip.on{ background:var(--c); border-color:var(--c); color:#fff; box-shadow:none; }',
+    '.ob-disco{ position:absolute; z-index:2; right:10px; top:10px; width:64px; height:64px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,.25), 0 4px 14px rgba(0,0,0,.4); }',
+    '.ob-disco-leg{ position:absolute; z-index:2; right:6px; top:78px; width:72px; text-align:center; font-size:9.5px; font-weight:700; color:#cfc8f2; }',
+    '.ob-ctrl{ display:flex; gap:8px; align-items:center; padding:0 12px 6px; }',
+    '.ob-slider{ flex:1; accent-color:#9A6BD6; height:30px; }',
+    '.ob-tocar{ flex:0 0 auto; }',
+    '@media (min-width:600px){ .ob-disco{ width:96px; height:96px; } .ob-disco-leg{ top:110px; width:104px; } }',
     '@media (prefers-reduced-motion:reduce){ .lt-trilho .ev{ transition:none; } }'
   ].join('\n');
   document.head.appendChild(st);
@@ -5197,8 +5781,11 @@ function cenaPedir(idx, e){
   }, e.pede.espera!=null ? e.pede.espera : 9000);
   try{ if(cena.api.pedir) cena.api.pedir(e.pede.alvo); }catch(x){}
   try{ p.scrollIntoView({block:'nearest'}); }catch(x){}
+  /* a criança já está no alvo (mexeu antes da narração chegar): não fica num beco — o retorno
+     aparece e a explicação segue. `aoMudar` só dispara em MUDANÇA, então aqui é na mão. */
+  try{ if(cenaBate(cena.api.estado(), e.pede.alvo)) setTimeout(function(){ if(cena.passo) cenaMudou(cena.api.estado()); }, 600); }catch(x){}
 }
-function cenaMeMostra(){ if(cena.passo && cena.api) cena.api.ir(cena.passo.e.pede.alvo, true); }
+function cenaMeMostra(){ if(!cena.passo || !cena.api) return; cena.api.ir(cena.passo.e.pede.alvo, true); try{ cenaMudou(cena.api.estado()); }catch(x){} }
 function cenaBate(est, alvo){
   for(var k in alvo){ if(k==='tol') continue;
     var a=alvo[k], v=est[k];
@@ -5281,7 +5868,7 @@ telaTerritorio = (function(orig){ return function(){
     for(var i=0;i<cards.length && i<ms.length;i++){
       if(pend.indexOf(ms[i].id)<0) continue;
       var t = cards[i].querySelector('.tx .t'); if(t) t.innerHTML += ' <span class="selo-novo cena">✨ NOVO</span>';
-      var s = cards[i].querySelector('.tx .s'); if(s) s.textContent = 'cena nova para mexer — arraste e ouça';
+      var s = cards[i].querySelector('.tx .s'); if(s) s.textContent = 'cena nova para mexer — toque, arraste e ouça';
     }
   }catch(e){}
 }; })(telaTerritorio);
@@ -5442,19 +6029,7 @@ MOTORES['linha-tempo'] = (function(){
       cam = new THREE.PerspectiveCamera(36, 320/190, 0.1, 300);
       cena3.add(new THREE.AmbientLight(0xffffff, 0.85));
       var sol = new THREE.DirectionalLight(0xfff4e0, 1.1); sol.position.set(12, 30, 14); cena3.add(sol);
-      var mar = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), new THREE.MeshLambertMaterial({ color:0x8ec9ee }));
-      mar.rotation.x = -Math.PI/2; mar.position.y = -0.3; cena3.add(mar);
-      var base = new THREE.Color('#f3e6c4'), borda = new THREE.LineBasicMaterial({ color:0xb9a67a });
-      for(var uf in BRASIL_UF){
-        var shapes = []; BRASIL_UF[uf].d.split('M').forEach(function(sub){ sub=sub.trim(); if(!sub) return;
-          var pts = sub.replace(/z$/,'').split(' ').map(function(p){ var xy=p.split(','); return new THREE.Vector2((+xy[0]-160)/PAD, -(+xy[1]-160)/PAD); });
-          if(pts.length>=3) shapes.push(new THREE.Shape(pts)); });
-        var geo = new THREE.ExtrudeGeometry(shapes, { depth:1, bevelEnabled:false });
-        var mat = new THREE.MeshLambertMaterial({ color:base.clone(), side:THREE.DoubleSide });
-        var m = new THREE.Mesh(geo, mat); m.rotation.x = -Math.PI/2;
-        var ed = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), borda); ed.rotation.x = -Math.PI/2; ed.scale.z = 1.001;
-        cena3.add(m); cena3.add(ed); malha3[uf] = { m:m, ed:ed, h:1, cor:base.clone() };
-      }
+      var B = BRASIL3D.construir(THREE, cena3); malha3 = B.malha;
       /* navios e bandeirinhas (sprites de emoji) */
       evs.forEach(function(e){
         var alvoUf = (e.onde||[])[0], cen = alvoUf && BRASIL_UF[alvoUf] ? BRASIL_UF[alvoUf].c : [200,160];
@@ -5467,22 +6042,16 @@ MOTORES['linha-tempo'] = (function(){
           var mastro = new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.07,2.4,6), new THREE.MeshLambertMaterial({ color:0x3b2a16 })); mastro.position.y=1.9; g.add(mastro);
           var vela = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.6), new THREE.MeshLambertMaterial({ color:0xfffdf7, side:THREE.DoubleSide })); vela.position.set(0,2.0,0.08); g.add(vela);
         }
-        var sp = spriteEmoji(THREE, e.emoji||'•'); sp.position.y = e.navio ? 3.9 : 2.6; sp.scale.set(2.6,2.6,1); g.add(sp);
+        var sp = BRASIL3D.sprite(THREE, e.emoji||'•'); sp.position.y = e.navio ? 3.9 : 2.6; sp.scale.set(2.6,2.6,1); g.add(sp);
         g.visible = false; cena3.add(g);
         navios.push({ e:e, g:g, dest:dest, ini:new THREE.Vector3(24, 0, dest.z), sp:sp });
       });
       palco.appendChild(cv3); cv2.style.display='none'; badge.textContent='3D · gire com o dedo'; modo='3d';
       redimensionar();
     }
-    function spriteEmoji(THREE, ch){
-      var c=document.createElement('canvas'); c.width=c.height=128; var x=c.getContext('2d');
-      x.font='92px system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(ch,64,70);
-      var tex=new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
-      return new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
-    }
     function redimensionar(){ if(!R3) return; var w=palco.clientWidth||320, h=palco.clientHeight||190; R3.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); }
     function desenhar3D(THREE){
-      var a = atual(), cor = new THREE.Color(COR), claro = new THREE.Color('#f7c793'), base = new THREE.Color('#f3e6c4');
+      var a = atual(), cor = new THREE.Color(COR), claro = new THREE.Color('#f7c793'), base = new THREE.Color(BRASIL3D.COR_BASE);
       for(var uf in malha3){
         var o = malha3[uf];
         var ligado = evs.some(function(e){ return e.prog>0.5 && (e.onde||[]).indexOf(uf)>=0; });
@@ -5523,6 +6092,137 @@ MOTORES['linha-tempo'] = (function(){
     ir({ano:ano}, false);
     evs.forEach(function(e){ e.prog = e.alvo; });   // o estado inicial já está "chegado": sem navio voando na abertura
     if(temWebGL()){ carregarThree().then(function(mod){ T = mod; try{ montar3D(mod); }catch(e){ modo='2d'; } }, function(){ modo='2d'; }); }
+    try{ laco(); }catch(x){}
+    return { ir:ir, estado:estado, aoMudar:function(f){ ouvintes.push(f); }, destruir:destruir, pedir:pedir, modo:function(){ return modo; } };
+  }
+  return { montar: montar };
+})();
+/* ============================================================================================
+   MOTOR mapa — o Brasil que se toca (10/11/2026)
+   --------------------------------------------------------------------------------------------
+   A criança toca um estado no mapa 3D: ele sobe, a região inteira acende na cor dela, e a leitura
+   mostra sigla · nome · capital · região. Chips das cinco regiões; "quiz no mapa" pelos passos
+   guiados ("toque no Pará"). Não sabe nada de apostila: tudo vem de `params`.
+
+   params = { foco:'N'|null, icones:[ {uf:'AM', emoji:'🌳', rotulo:'Floresta Amazônica'} ],
+              semSelecao:'Toque num estado…' }
+   estado() = { uf:'PA'|null, regiao:'N'|null }   ·   ir({uf:'PA'}) · ir({regiao:'NE'})
+
+   3D em three.js (BRASIL3D, vendorizado, sob demanda); 2D completo em canvas (Path2D + hit-test).
+   Fonte do mapa: malha IBGE (crédito visível). Contagem de UFs por região vem de BRASIL_UF.
+   ============================================================================================ */
+MOTORES['mapa'] = (function(){
+  var CORES = { N:'#5BB85B', NE:'#F2B134', CO:'#C98B5E', SE:'#3FA0E8', S:'#9A6BD6' };
+  var CLARO = { N:'#bfe3bf', NE:'#fbe3ad', CO:'#ecd2bd', SE:'#bfe0f7', S:'#dccdf0' };
+  function el(tag, cls, html){ var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function ufsDe(reg){ return Object.keys(BRASIL_UF).filter(function(u){ return BRASIL_UF[u].r===reg; }); }
+
+  function montar(root, params, opts){
+    var P = params || {}, icones = P.icones || [];
+    var sel = { uf:null, regiao:P.foco||null }, vivo=true, ouvintes=[], ultimoEst='', raf=0, modo='2d', yaw=0, yawAlvo=0, t0=Date.now();
+    var brilho = {};   // uf → 0..1 (quanto está "aceso"), animado por tempo
+
+    root.innerHTML='';
+    var palco = el('div','mp-3d'); palco.style.cssText='position:relative;aspect-ratio:320/230;overflow:hidden;background:linear-gradient(180deg,#dbeeff,#bfe0f7);border-radius:14px 14px 0 0;';
+    var badge = el('div','cena-3d','2D'); palco.appendChild(badge);
+    var dica = el('div','cena-dica','toque num estado 👆'); palco.appendChild(dica);
+    palco.appendChild(el('div','cena-fonte','Mapa: IBGE'));
+    var leitura = el('div','lt-leitura','<div class="ano" id="mpSigla" style="min-width:64px"></div><div class="txt" id="mpTxt"></div>');
+    var chips = el('div','mp-chips');
+    Object.keys(CORES).forEach(function(r){ var b=el('button','mp-chip',BRASIL_REGIOES[r]); b.style.setProperty('--c',CORES[r]); b.setAttribute('data-r',r); b.addEventListener('click',function(){ ir({regiao:r}, true); }); chips.appendChild(b); });
+    root.appendChild(palco); root.appendChild(leitura); root.appendChild(chips);
+
+    /* ---- estado ---- */
+    function estado(){ return { uf:sel.uf, regiao:sel.regiao }; }
+    function notificar(){ var s=JSON.stringify(estado()); if(s===ultimoEst) return; ultimoEst=s; var e=estado(); ouvintes.forEach(function(f){ try{ f(e); }catch(x){} }); }
+    function ir(novo){
+      if(novo && 'uf' in novo){ sel.uf = (novo.uf && BRASIL_UF[novo.uf]) ? novo.uf : null; sel.regiao = sel.uf ? BRASIL_UF[sel.uf].r : (novo.regiao||null); }
+      else if(novo && 'regiao' in novo){ sel.regiao = (novo.regiao && CORES[novo.regiao]) ? novo.regiao : null; sel.uf = null; }
+      atualizar();
+    }
+    function atualizar(){
+      var sg=leitura.querySelector('#mpSigla'), tx=leitura.querySelector('#mpTxt');
+      if(sel.uf){ var u=BRASIL_UF[sel.uf];
+        if(sg){ sg.innerHTML = sel.uf+'<small>'+BRASIL_REGIOES[u.r]+'</small>'; sg.style.color=CORES[u.r]; }
+        var ic = icones.filter(function(i){ return i.uf===sel.uf; });
+        if(tx) tx.innerHTML = '<b style="color:'+CORES[u.r]+'">'+u.n+'</b> · capital <b>'+u.cap+'</b> · Região '+BRASIL_REGIOES[u.r]+'.'
+          + (ic.length ? ' <span style="opacity:.85">'+ic.map(function(i){ return i.emoji+' '+(i.rotulo||''); }).join(' · ')+'</span>' : '');
+      } else if(sel.regiao){ var lista=ufsDe(sel.regiao);
+        if(sg){ sg.innerHTML = lista.length+'<small>UFs</small>'; sg.style.color=CORES[sel.regiao]; }
+        if(tx) tx.innerHTML = '<b style="color:'+CORES[sel.regiao]+'">Região '+BRASIL_REGIOES[sel.regiao]+'</b>: '+lista.join(', ')+'. Toque num estado para ver a capital.';
+      } else { if(sg){ sg.innerHTML='🇧🇷<small>27 UFs</small>'; sg.style.color='#4A3F2E'; } if(tx) tx.innerHTML = P.semSelecao || 'Toque num estado do mapa, ou numa região aqui embaixo.'; }
+      chips.querySelectorAll('.mp-chip').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-r')===sel.regiao); });
+      notificar();
+    }
+    function nivel(uf){ var r=BRASIL_UF[uf].r; return uf===sel.uf ? 2 : (r===sel.regiao ? 1 : 0); }
+
+    /* ---- toque: tap (não arrasto) escolhe o estado; arrasto gira a câmera ---- */
+    var pd=null;
+    palco.addEventListener('pointerdown', function(ev){ pd={x:ev.clientX,y:ev.clientY,y0:yawAlvo,mov:false}; try{ palco.setPointerCapture(ev.pointerId); }catch(x){} });
+    palco.addEventListener('pointermove', function(ev){ if(!pd) return; if(Math.abs(ev.clientX-pd.x)>6||Math.abs(ev.clientY-pd.y)>6) pd.mov=true; if(pd.mov) yawAlvo = clamp(pd.y0 + (ev.clientX-pd.x)/160, -0.6, 0.6); });
+    palco.addEventListener('pointerup', function(ev){ if(!pd) return; var tap=!pd.mov; pd=null; if(!tap) return; dica.classList.add('some'); var uf = modo==='3d' ? pegar3D(ev) : pegar2D(ev); if(uf) ir({uf:uf}, true); });
+    palco.addEventListener('pointercancel', function(){ pd=null; });
+
+    /* ---- 2D ---- */
+    var cv2=document.createElement('canvas'); cv2.className='mp-2d'; cv2.width=640; cv2.height=460; cv2.style.cssText='display:block;width:100%;height:100%;'; palco.appendChild(cv2);
+    var paths2={}; try{ for(var uf in BRASIL_UF) paths2[uf]=new Path2D(BRASIL_UF[uf].d); }catch(x){}
+    function geo2D(){ var W=cv2.width,H=cv2.height,s=H/BRASIL_H*0.92; return { W:W,H:H,s:s,ox:W*0.5-160*s,oy:H*0.5-160*s }; }
+    function desenhar2D(){
+      var c; try{ c=cv2.getContext('2d'); }catch(x){ return; } if(!c||!c.save) return;
+      var g=geo2D(); c.clearRect(0,0,g.W,g.H); c.save(); c.translate(g.ox,g.oy); c.scale(g.s,g.s);
+      BRASIL3D.desenhar2D(c, paths2, function(uf){ var n=nivel(uf), r=BRASIL_UF[uf].r; return n===2?CORES[r]:n===1?CLARO[r]:null; });
+      c.restore();
+      c.textAlign='center'; c.textBaseline='middle';
+      for(var u in BRASIL_UF){ var cc=BRASIL_UF[u].c, n=nivel(u); c.font=(n===2?'800 15px':'700 10px')+' system-ui,sans-serif'; c.fillStyle=n===2?'#fff':'#4A3F2E'; c.fillText(u, g.ox+cc[0]*g.s, g.oy+cc[1]*g.s); }
+      icones.forEach(function(ic){ var cc=(BRASIL_UF[ic.uf]||{}).c; if(!cc) return; c.font='24px system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif'; c.fillText(ic.emoji, g.ox+cc[0]*g.s, g.oy+cc[1]*g.s-18); });
+    }
+    function pegar2D(ev){ try{ var c=cv2.getContext('2d'), r=cv2.getBoundingClientRect(), g=geo2D();
+      var x=((ev.clientX-r.left)/r.width*g.W-g.ox)/g.s, y=((ev.clientY-r.top)/r.height*g.H-g.oy)/g.s;
+      for(var u in paths2) if(c.isPointInPath(paths2[u], x, y)) return u; }catch(e){} return null; }
+
+    /* ---- 3D ---- */
+    var T=null, R3=null, cena3=null, cam=null, cv3=null, B=null, rotulos={}, sprites=[], ray=null, ptr=null;
+    function montar3D(THREE){
+      if(!vivo) return;
+      cv3=document.createElement('canvas'); cv3.style.cssText='display:block;width:100%;height:100%;position:absolute;inset:0;';
+      R3=new THREE.WebGLRenderer({ canvas:cv3, antialias:true, alpha:true }); R3.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+      cena3=new THREE.Scene(); cam=new THREE.PerspectiveCamera(34, 320/230, 0.1, 300);
+      cena3.add(new THREE.AmbientLight(0xffffff, 0.85)); var sol=new THREE.DirectionalLight(0xfff4e0, 1.1); sol.position.set(12,30,14); cena3.add(sol);
+      B = BRASIL3D.construir(THREE, cena3);
+      for(var uf in B.malha){ var s=BRASIL3D.rotulo(THREE, uf, '#4A3F2E'); var p=B.pos(uf); s.position.set(p.x, 2.2, p.z); s.scale.set(2.6,1.3,1); cena3.add(s); rotulos[uf]=s; }
+      icones.forEach(function(ic){ if(!BRASIL_UF[ic.uf]) return; var s=BRASIL3D.sprite(THREE, ic.emoji); var p=B.pos(ic.uf); s.position.set(p.x, 4.2, p.z); s.scale.set(3,3,1); cena3.add(s); sprites.push({s:s, uf:ic.uf}); });
+      ray=new THREE.Raycaster(); ptr=new THREE.Vector2();
+      palco.appendChild(cv3); cv2.style.display='none'; badge.textContent='3D · toque um estado · gire com o dedo'; modo='3d'; redimensionar();
+    }
+    function pegar3D(ev){ try{ var r=cv3.getBoundingClientRect(); ptr.x=((ev.clientX-r.left)/r.width)*2-1; ptr.y=-((ev.clientY-r.top)/r.height)*2+1; ray.setFromCamera(ptr, cam);
+      var hits=ray.intersectObjects(Object.keys(B.malha).map(function(u){ return B.malha[u].m; }), false); return hits.length ? hits[0].object.userData.uf : null; }catch(e){ return null; } }
+    function redimensionar(){ if(!R3) return; var w=palco.clientWidth||320, h=palco.clientHeight||230; R3.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+    function desenhar3D(THREE, dt){
+      var t=(Date.now()-t0)/1000;
+      for(var uf in B.malha){ var o=B.malha[uf], n=nivel(uf), r=BRASIL_UF[uf].r;
+        var hAlvo = n===2 ? 3.4 : n===1 ? 2.0 : 1; o.h += (hAlvo-o.h)*Math.min(1, dt*8); o.m.scale.z=o.h; o.ed.scale.z=o.h*1.001;
+        o.m.material.color.lerp(new THREE.Color(n===2?CORES[r]:n===1?CLARO[r]:BRASIL3D.COR_BASE), Math.min(1, dt*8));
+        var rt=rotulos[uf]; rt.position.y = o.h + 1.2 + (n===2 ? Math.sin(t*3)*0.15 : 0); rt.scale.set(n===2?3.4:2.4, n===2?1.7:1.2, 1); rt.material.opacity = n===0 ? 0.75 : 1;
+      }
+      sprites.forEach(function(sp){ sp.s.position.y = B.malha[sp.uf].h + 3.2 + Math.sin(t*2+sp.s.position.x)*0.15; });
+      yaw += (yawAlvo-yaw)*Math.min(1, dt*6);
+      cam.position.set(Math.sin(yaw)*30, 27, Math.cos(yaw)*30); cam.lookAt(0,0,-1.5); R3.render(cena3, cam);
+    }
+
+    var tAnt=0;
+    function laco(){
+      if(!vivo) return; if(root.isConnected===false){ destruir(); return; }
+      var agora=Date.now(), dt=tAnt?Math.min(0.1,(agora-tAnt)/1000):0.016; tAnt=agora;
+      if(modo==='3d'&&T) desenhar3D(T, dt); else desenhar2D();
+      raf=requestAnimationFrame(laco);
+    }
+    function destruir(){ vivo=false; if(raf && typeof cancelAnimationFrame==='function') cancelAnimationFrame(raf); try{ if(R3) R3.dispose(); }catch(x){} window.removeEventListener('resize', redimensionar); }
+    function pedir(alvo){ dica.textContent = (alvo && alvo.regiao && !alvo.uf) ? 'toque num estado da região 👆' : 'toque no estado certo 👆'; dica.classList.remove('some'); }
+
+    window.addEventListener('resize', redimensionar);
+    ir(P.foco ? {regiao:P.foco} : {uf:null}, false);
+    if(temWebGL()){ carregarThree().then(function(mod){ T=mod; try{ montar3D(mod); }catch(e){ modo='2d'; } }, function(){ modo='2d'; }); }
     try{ laco(); }catch(x){}
     return { ir:ir, estado:estado, aoMudar:function(f){ ouvintes.push(f); }, destruir:destruir, pedir:pedir, modo:function(){ return modo; } };
   }
