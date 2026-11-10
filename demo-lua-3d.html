@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Mostra em 3D das fases da Lua para o StepQuest: Sol, Terra e Lua, o mês lunar de 29 dias e meio e a forma que a Mariana vê do Brasil.">
+<title>Fases da Lua em 3D</title>
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --ci:#9C27B0; --ouro:#FFC107; --ouro2:#ffd84d; --ok:#2e9e5b; --erro:#e0443e;
+    --tinta:#2a2350; --noite:#140f33; --painel:#241f52; --borda:#423a7e; --suave:#c9c2f0;
+  }
+  html,body{ height:100%; }
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:#15123a;
+    background:
+      radial-gradient(900px 500px at 12% -8%, #4a2f86 0%, transparent 55%),
+      radial-gradient(1000px 600px at 88% 0%, #2b6fb0 0%, transparent 50%),
+      linear-gradient(180deg,#1d1748 0%,#140f33 100%);
+    color:#fff; overflow:hidden; -webkit-user-select:none; user-select:none;
+  }
+  button{ font-family:inherit; cursor:pointer; border:none; transition:transform .08s ease, filter .15s; }
+  button:active{ transform:scale(.97); }
+  button:focus-visible, input:focus-visible{ outline:3px solid var(--ouro2); outline-offset:2px; }
+
+  #app{ height:100%; height:100dvh; display:flex; flex-direction:column; gap:8px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom)); max-width:1180px; margin:0 auto; }
+
+  header{ display:flex; align-items:center; gap:10px; flex:0 0 auto; }
+  header h1{ font-size:21px; font-weight:800; line-height:1.15; flex:1; min-width:0; }
+  header h1 small{ display:block; font-size:12.5px; font-weight:600; color:var(--suave); }
+  .tag{ background:var(--ci); color:#fff; font-weight:700; font-size:12.5px; padding:5px 10px;
+    border-radius:999px; white-space:nowrap; }
+
+  /* ---- palco 3D ---- */
+  #palco{ position:relative; flex:1 1 auto; min-height:160px; border-radius:20px; overflow:hidden;
+    background:#0b0824; border:1px solid var(--borda); box-shadow:0 10px 28px rgba(10,5,40,.35); }
+  #palco canvas{ display:block; width:100%; height:100%; touch-action:none; cursor:grab; }
+  #palco canvas:active{ cursor:grabbing; }
+  .rotulo{ position:absolute; transform:translate(-50%,-50%); pointer-events:none;
+    font-size:13px; font-weight:700; color:#fff; text-shadow:0 1px 4px #000, 0 0 10px #000;
+    white-space:nowrap; }
+  .rotulo.lua{ color:var(--ouro2); }
+  .dica{ position:absolute; left:10px; bottom:8px; font-size:12px; color:var(--suave);
+    background:rgba(20,16,50,.62); padding:4px 9px; border-radius:999px; pointer-events:none;
+    transition:opacity .4s; }
+  .dica.some{ opacity:0; }
+  #aviso{ position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    padding:20px; text-align:center; font-size:16px; line-height:1.45; color:#fff;
+    background:linear-gradient(180deg,#1d1748,#0b0824); }
+  #aviso.mostra{ display:flex; }
+
+  /* ---- como a Mariana vê ---- */
+  .quadro{ flex:0 0 auto; display:flex; gap:12px; align-items:center; background:#fff;
+    color:var(--tinta); border-radius:18px; padding:10px 12px; border:1px solid rgba(255,255,255,.5);
+    box-shadow:0 10px 28px rgba(10,5,40,.35); }
+  .disco{ flex:0 0 auto; text-align:center; }
+  .disco canvas{ display:block; width:96px; height:96px; border-radius:50%;
+    background:#0b0824; box-shadow:0 0 0 3px #e9e3ff, 0 0 18px rgba(120,70,255,.25); }
+  .disco small{ display:block; font-size:11px; color:#6b63a0; margin-top:4px; font-weight:600; }
+  .texto{ flex:1; min-width:0; }
+  .texto .como{ font-size:12.5px; color:#6b63a0; font-weight:600; }
+  .texto .fase{ font-size:24px; font-weight:800; line-height:1.1; margin:1px 0 3px; color:#4a2f86; }
+  .texto .fase.meio{ font-size:19px; color:#5a4fae; }
+  .texto .expl{ font-size:13.5px; line-height:1.3; }
+
+  /* ---- controles ---- */
+  .controles{ flex:0 0 auto; display:flex; flex-direction:column; gap:8px; }
+  .dias{ display:flex; align-items:center; gap:10px; background:var(--painel); border:1px solid var(--borda);
+    border-radius:16px; padding:8px 12px; }
+  .dias label{ font-weight:700; font-size:14px; white-space:nowrap; }
+  .dias output{ font-weight:800; font-size:16px; color:var(--ouro2); min-width:84px; text-align:right;
+    font-variant-numeric:tabular-nums; }
+  input[type=range]{ flex:1; -webkit-appearance:none; appearance:none; height:34px; background:transparent; }
+  input[type=range]::-webkit-slider-runnable-track{ height:10px; border-radius:6px;
+    background:linear-gradient(90deg,#3a3370 0%,#3a3370 100%); border:1px solid #514a93; }
+  input[type=range]::-moz-range-track{ height:10px; border-radius:6px; background:#3a3370; border:1px solid #514a93; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:30px; height:30px; border-radius:50%;
+    margin-top:-11px; background:radial-gradient(circle at 35% 30%,#fff5c2,var(--ouro)); border:3px solid #fff;
+    box-shadow:0 3px 10px rgba(0,0,0,.4); }
+  input[type=range]::-moz-range-thumb{ width:26px; height:26px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff5c2,var(--ouro)); border:3px solid #fff; }
+  .botoes{ display:flex; gap:8px; }
+  .btn{ flex:1; padding:13px 10px; border-radius:14px; font-size:16.5px; font-weight:700; color:#fff;
+    background:linear-gradient(90deg,#7b4dff,#b14dff); box-shadow:0 6px 16px rgba(120,70,255,.35); }
+  .btn.sec{ background:#ece9f7; color:#5a4fae; box-shadow:none; }
+  .nota{ font-size:12.5px; color:var(--suave); text-align:center; line-height:1.3; }
+
+  /* ---- perguntas (folha por cima) ---- */
+  #folha{ position:fixed; inset:0; background:rgba(10,5,40,.78); display:none; align-items:flex-end;
+    justify-content:center; z-index:10; padding:0; }
+  #folha.aberta{ display:flex; }
+  .cartao{ background:#fff; color:var(--tinta); width:100%; max-width:640px; max-height:92vh; max-height:92dvh;
+    border-radius:22px 22px 0 0; padding:16px 16px calc(16px + env(safe-area-inset-bottom)); overflow:auto; }
+  .cartao .topo{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .cartao .topo h2{ flex:1; font-size:18px; }
+  .cartao .topo .n{ font-size:13px; color:#6b63a0; font-weight:700; }
+  .fechar{ background:#ece9f7; color:#5a4fae; border-radius:999px; width:38px; height:38px; font-size:20px; font-weight:800; }
+  .pergunta{ font-size:19px; font-weight:800; line-height:1.25; margin:6px 0 12px; color:#2a2350; }
+  .opcoes{ display:grid; gap:8px; }
+  .op{ text-align:left; background:#f1eefb; color:var(--tinta); border:3px solid transparent; border-radius:14px;
+    padding:13px 14px; font-size:16px; font-weight:600; line-height:1.25; }
+  .op.certa{ border-color:var(--ok); background:#e7f6ec; }
+  .op.errada{ border-color:var(--erro); background:#fbe9e8; }
+  .op:disabled{ cursor:default; }
+  .explica{ margin-top:12px; padding:11px 13px; border-radius:14px; font-size:14.5px; line-height:1.35;
+    background:linear-gradient(180deg,#fffae6,#fff3cf); border:2px solid #ffd84d; color:#5b4a00; display:none; }
+  .explica.mostra{ display:block; }
+  .explica b{ color:#a06b00; }
+  .rodape{ display:flex; gap:8px; margin-top:12px; }
+  .rodape .btn{ font-size:15.5px; padding:12px 10px; }
+  .placar{ text-align:center; font-size:22px; font-weight:800; margin:14px 0 6px; color:#4a2f86; }
+  .placar small{ display:block; font-size:14.5px; font-weight:600; color:#6b63a0; margin-top:4px; }
+
+  /* ---- paisagem larga (iPad deitado, desktop) ---- */
+  @media (min-width:760px) and (orientation:landscape){
+    #app{ display:grid; grid-template-columns:1fr 360px; grid-template-rows:auto 1fr;
+      grid-template-areas:"cab cab" "palco lado"; gap:10px 14px; padding:12px 16px; }
+    header{ grid-area:cab; }
+    #palco{ grid-area:palco; min-height:0; }
+    .lado{ grid-area:lado; display:flex; flex-direction:column; gap:10px; min-height:0; }
+    .quadro{ flex-direction:column; align-items:stretch; text-align:center; padding:14px; }
+    .disco canvas{ width:150px; height:150px; margin:0 auto; }
+    .texto .fase{ font-size:28px; }
+    .texto .expl{ font-size:15px; }
+    header h1{ font-size:24px; }
+    #folha{ align-items:center; }
+    .cartao{ border-radius:22px; }
+  }
+  @media (max-height:700px) and (orientation:portrait){
+    .disco canvas{ width:80px; height:80px; }
+    .texto .expl{ font-size:12.5px; }
+    .texto .fase{ font-size:21px; }
+    .btn{ padding:11px 8px; }
+  }
+  @media (prefers-reduced-motion:reduce){ button{ transition:none; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Fases da Lua em 3D <small>Arraste o céu com o dedo · deslize os dias</small></h1>
+    <span class="tag" aria-label="matéria: Ciências">🌕 Ciências</span>
+  </header>
+
+  <section id="palco" aria-label="Cena em três dimensões: o Sol à esquerda ilumina a Terra, no centro, e a Lua, que dá a volta em torno da Terra. A parte da Lua iluminada pelo Sol é sempre a metade virada para ele.">
+    <div id="aviso" role="status">
+      <p>Este aparelho não conseguiu abrir o céu em 3D.<br>Mesmo assim, o quadro abaixo mostra a Lua como a Mariana vê do Brasil: deslize os dias.</p>
+    </div>
+    <div class="rotulo" id="rot-sol">☀️ Sol</div>
+    <div class="rotulo" id="rot-terra">🌍 Terra</div>
+    <div class="rotulo lua" id="rot-lua">🌙 Lua</div>
+    <div class="dica" id="dica">arraste para girar o céu</div>
+  </section>
+
+  <div class="lado">
+    <section class="quadro" aria-live="polite">
+      <div class="disco">
+        <canvas id="disco" width="192" height="192" role="img" aria-label="Lua nova: não aparece"></canvas>
+        <small>vista do Brasil</small>
+      </div>
+      <div class="texto">
+        <div class="como">Como a Mariana vê da Terra</div>
+        <div class="fase" id="fase">Lua nova</div>
+        <div class="expl" id="expl"></div>
+      </div>
+    </section>
+
+    <section class="controles">
+      <div class="dias">
+        <label for="dias">Dias</label>
+        <input type="range" id="dias" min="0" max="29.5" step="0.1" value="0" aria-valuetext="dia 0 de 29 e meio">
+        <output for="dias" id="dia-out">dia 0</output>
+      </div>
+      <div class="botoes">
+        <button class="btn" id="tocar" aria-pressed="false">▶ Tocar o mês</button>
+        <button class="btn sec" id="abrir">❓ 4 perguntas</button>
+      </div>
+      <p class="nota">Um ciclo inteiro das fases, o mês lunar, dura cerca de 29 dias e meio. Cada fase dura uns 7 a 8 dias.</p>
+    </section>
+  </div>
+</div>
+
+<div id="folha" role="dialog" aria-modal="true" aria-labelledby="folha-titulo">
+  <div class="cartao">
+    <div class="topo">
+      <h2 id="folha-titulo">Perguntas rápidas</h2>
+      <span class="n" id="contador">1 de 4</span>
+      <button class="fechar" id="fechar" aria-label="fechar as perguntas">×</button>
+    </div>
+    <div id="corpo"></div>
+  </div>
+</div>
+
+<script>
+/* ============ Fases: o que a apostila ensina ============ */
+const MES = 29.5;
+const FASES = [
+  { d:0,         nome:'Lua nova',       curto:'Nova',
+    expl:'A Lua está <b>entre o Sol e a Terra</b>. O lado iluminado fica virado para o Sol, e daqui não a vemos. Ela fica no céu de dia: nasce lá pelas 6h e se põe lá pelas 18h.' },
+  { d:MES/4,     nome:'Lua crescente',  curto:'Crescente',
+    expl:'Quarto crescente: vemos <b>metade</b> da face iluminada, um <b>semicírculo</b>. Nasce por volta do meio-dia e se põe por volta da meia-noite.' },
+  { d:MES/2,     nome:'Lua cheia',      curto:'Cheia',
+    expl:'Agora a <b>Terra está entre o Sol e a Lua</b>: vemos a Lua inteira iluminada, um círculo completo. Nasce por volta das 18h e se põe às 6h do dia seguinte.' },
+  { d:3*MES/4,   nome:'Lua minguante',  curto:'Minguante',
+    expl:'Quarto minguante, o último estágio: outro <b>semicírculo</b>, virado para o <b>lado oposto</b> ao da crescente. Nasce por volta da meia-noite e se põe por volta do meio-dia.' },
+];
+const ENTRE = [
+  'A parte iluminada que vemos está <b>crescendo</b>: por enquanto é só um pedaço fino.',
+  'A parte iluminada que vemos continua <b>crescendo</b>: já passou da metade.',
+  'A parte iluminada que vemos está <b>diminuindo</b>: ainda é mais da metade.',
+  'A parte iluminada que vemos continua <b>diminuindo</b>: logo volta a Lua nova e o ciclo recomeça.',
+];
+const TOL = 1.4; // dias de folga em volta de cada fase principal
+
+function faseDe(dia){
+  const p = ((dia % MES) + MES) % MES;
+  for (let i = 0; i < 4; i++) {
+    const f = FASES[i];
+    if (Math.abs(p - f.d) <= TOL || (i === 0 && MES - p <= TOL)) return { nome:f.nome, expl:f.expl, exata:true, i };
+  }
+  for (let i = 0; i < 4; i++) {
+    const a = FASES[i], b = FASES[(i + 1) % 4];
+    if (p > a.d && p < (i === 3 ? MES : b.d)) return { nome:`entre ${a.curto} e ${b.curto}`, expl:ENTRE[i], exata:false, i };
+  }
+  return { nome:FASES[0].nome, expl:FASES[0].expl, exata:true, i:0 };
+}
+
+/* ============ Disco: a Lua como se vê do Brasil ============ */
+const disco = document.getElementById('disco');
+const dctx = disco.getContext('2d');
+function desenharDisco(dia){
+  const W = disco.width, r = W / 2 - 6, cx = W / 2, cy = W / 2;
+  const ang = (dia / MES) * Math.PI * 2;     // 0 = nova, π = cheia
+  const c = Math.cos(ang);                   // +1 nova … -1 cheia
+  const crescendo = (dia % MES) < MES / 2;
+  const lado = crescendo ? -1 : 1;           // no Brasil a crescente é iluminada à esquerda
+  const claro = '#fff4c2', escuro = '#1a1540';
+  dctx.clearRect(0, 0, W, W);
+  dctx.fillStyle = escuro;
+  dctx.beginPath(); dctx.arc(cx, cy, r, 0, Math.PI * 2); dctx.fill();
+  // metade iluminada
+  dctx.fillStyle = claro;
+  dctx.beginPath();
+  if (lado < 0) dctx.arc(cx, cy, r, Math.PI / 2, 3 * Math.PI / 2); else dctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2);
+  dctx.closePath(); dctx.fill();
+  // terminador: elipse que cobre (c>0) ou acrescenta (c<0)
+  dctx.fillStyle = c > 0 ? escuro : claro;
+  dctx.beginPath(); dctx.ellipse(cx, cy, Math.max(0.01, r * Math.abs(c)), r, 0, 0, Math.PI * 2); dctx.fill();
+  // brilho suave na borda
+  dctx.strokeStyle = 'rgba(255,255,255,.18)'; dctx.lineWidth = 2;
+  dctx.beginPath(); dctx.arc(cx, cy, r, 0, Math.PI * 2); dctx.stroke();
+}
+
+/* ============ Estado + UI ============ */
+const slider = document.getElementById('dias');
+const diaOut = document.getElementById('dia-out');
+const faseEl = document.getElementById('fase');
+const explEl = document.getElementById('expl');
+const tocarBtn = document.getElementById('tocar');
+let dia = 0, tocando = false;
+
+function fmtDia(d){
+  const inteiro = Math.round(d * 2) / 2;
+  return inteiro === Math.floor(inteiro) ? String(inteiro) : `${Math.floor(inteiro)} e meio`;
+}
+function aplicarDia(d, deSlider){
+  dia = ((d % MES) + MES) % MES;
+  if (!deSlider) slider.value = dia.toFixed(1);
+  const f = faseDe(dia);
+  faseEl.textContent = f.nome;
+  faseEl.classList.toggle('meio', !f.exata);
+  explEl.innerHTML = f.expl;
+  diaOut.textContent = `dia ${fmtDia(dia)}`;
+  slider.setAttribute('aria-valuetext', `dia ${fmtDia(dia)} de 29 e meio, ${f.nome}`);
+  disco.setAttribute('aria-label', f.nome + (f.exata && f.i === 0 ? ': não aparece' : ''));
+  desenharDisco(dia);
+}
+slider.addEventListener('input', () => { pararTocar(); aplicarDia(parseFloat(slider.value), true); });
+
+function pararTocar(){ tocando = false; tocarBtn.textContent = '▶ Tocar o mês'; tocarBtn.setAttribute('aria-pressed', 'false'); }
+tocarBtn.addEventListener('click', () => {
+  tocando = !tocando;
+  tocarBtn.textContent = tocando ? '⏸ Pausar' : '▶ Tocar o mês';
+  tocarBtn.setAttribute('aria-pressed', String(tocando));
+});
+const lento = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let ultimo = performance.now();
+function passoTempo(agora){
+  const dt = Math.min(0.1, (agora - ultimo) / 1000); ultimo = agora;
+  if (tocando) aplicarDia(dia + dt * (lento ? 1.2 : 2.4));   // um mês em ~12 s
+}
+aplicarDia(0);
+
+/* ============ Perguntas (sem placar, sem XP: é só uma mostra) ============ */
+const PERGUNTAS = [
+  { p:'Que fase vem depois da Lua cheia?', op:['Lua minguante','Lua nova','Lua crescente','outra Lua cheia'], certa:0,
+    expl:'Depois da cheia vem a <b>minguante</b>, o último estágio. Depois dela volta a Lua nova e o ciclo recomeça.', dia:3*MES/4 },
+  { p:'Na Lua nova, por que não conseguimos ver a Lua?', op:['porque ela está entre o Sol e a Terra','porque a Terra está entre o Sol e a Lua','porque ela se apaga','porque ela vai para trás do Sol'], certa:0,
+    expl:'Na Lua nova, a Lua está <b>entre o Sol e a Terra</b>: o lado iluminado fica virado para o Sol, e não a vemos.', dia:0 },
+  { p:'Quanto dura o mês lunar, o ciclo inteiro das fases?', op:['cerca de 29 dias e meio','um dia','365 dias','7 dias'], certa:0,
+    expl:'O mês lunar dura <b>cerca de 29 dias e meio</b>, diferente dos meses do nosso calendário. Cada fase fica uns 7 a 8 dias.', dia:MES/2 },
+  { p:'Que forma tem a Lua crescente (quarto crescente)?', op:['um semicírculo: metade da face iluminada','um círculo completo','ela não aparece no céu','só um fio bem fininho'], certa:0,
+    expl:'Na crescente vemos <b>metade</b> da face iluminada, um <b>semicírculo</b>. Ela nasce por volta do meio-dia e se põe por volta da meia-noite.', dia:MES/4 },
+];
+const folha = document.getElementById('folha'), corpo = document.getElementById('corpo'), contador = document.getElementById('contador');
+let qi = 0, acertos = 0;
+function abrirFolha(){ qi = 0; acertos = 0; pararTocar(); folha.classList.add('aberta'); mostrarPergunta(); }
+function fecharFolha(){ folha.classList.remove('aberta'); document.getElementById('abrir').focus(); }
+document.getElementById('abrir').addEventListener('click', abrirFolha);
+document.getElementById('fechar').addEventListener('click', fecharFolha);
+folha.addEventListener('click', e => { if (e.target === folha) fecharFolha(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && folha.classList.contains('aberta')) fecharFolha(); });
+
+function mostrarPergunta(){
+  if (qi >= PERGUNTAS.length) {
+    contador.textContent = 'fim';
+    corpo.innerHTML = `<div class="placar">${acertos} de ${PERGUNTAS.length} certas<small>${acertos === 4 ? 'Faíscas! Você entendeu o ciclo da Lua.' : 'Deslize os dias e veja de novo o que faltou.'}</small></div>
+      <div class="rodape"><button class="btn sec" id="denovo">Responder de novo</button><button class="btn" id="voltar">Voltar ao céu</button></div>`;
+    corpo.querySelector('#denovo').addEventListener('click', abrirFolha);
+    corpo.querySelector('#voltar').addEventListener('click', fecharFolha);
+    return;
+  }
+  const q = PERGUNTAS[qi];
+  contador.textContent = `${qi + 1} de ${PERGUNTAS.length}`;
+  // embaralha as opções
+  const ordem = q.op.map((t, i) => i).sort(() => Math.random() - 0.5);
+  corpo.innerHTML = `<div class="pergunta">${q.p}</div>
+    <div class="opcoes">${ordem.map(i => `<button class="op" data-i="${i}">${q.op[i]}</button>`).join('')}</div>
+    <div class="explica" id="explica"></div>
+    <div class="rodape" id="rodape" style="display:none"><button class="btn sec" id="ver">Ver no céu</button><button class="btn" id="prox">${qi === 3 ? 'Ver resultado' : 'Próxima'}</button></div>`;
+  corpo.querySelectorAll('.op').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.i, certo = i === q.certa;
+    if (certo) acertos++;
+    corpo.querySelectorAll('.op').forEach(o => { o.disabled = true; if (+o.dataset.i === q.certa) o.classList.add('certa'); });
+    if (!certo) b.classList.add('errada');
+    const ex = corpo.querySelector('#explica');
+    ex.innerHTML = (certo ? '✅ <b>Faíscas!</b> ' : '❌ <b>Quase.</b> ') + q.expl;
+    ex.classList.add('mostra');
+    corpo.querySelector('#rodape').style.display = 'flex';
+    ex.scrollIntoView({ block:'nearest' });
+  }));
+  corpo.querySelector('#ver').addEventListener('click', () => { aplicarDia(q.dia); fecharFolha(); });
+  corpo.querySelector('#prox').addEventListener('click', () => { qi++; mostrarPergunta(); });
+}
+
+/* ============ Ponte para o 3D ============ */
+window.__lua = { get dia(){ return dia; }, passoTempo, MES };
+</script>
+
+<script type="module">
+const palco = document.getElementById('palco');
+const aviso = document.getElementById('aviso');
+const temWebGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })();
+(async function iniciar(){
+if (!temWebGL) {
+  aviso.classList.add('mostra');
+  document.querySelectorAll('.rotulo, .dica').forEach(e => e.style.display = 'none');
+  (function soTempo(t){ window.__lua.passoTempo(t); requestAnimationFrame(soTempo); })(performance.now());
+} else {
+  let THREE;
+  try {
+    THREE = await import('https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js');
+  } catch (e) {
+    aviso.querySelector('p').innerHTML = 'Não deu para baixar o céu em 3D (sem internet?).<br>O quadro abaixo continua funcionando: deslize os dias.';
+    aviso.classList.add('mostra');
+    document.querySelectorAll('.rotulo, .dica').forEach(el => el.style.display = 'none');
+    (function soTempo(t){ window.__lua.passoTempo(t); requestAnimationFrame(soTempo); })(performance.now());
+  }
+  if (THREE) montar(THREE);
+}
+})();
+
+function textura(THREE, w, h, pintar){
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  pintar(c.getContext('2d'), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+// gerador pseudoaleatório fixo: a Terra e a Lua ficam iguais a cada abertura
+function rnd(seed){ let s = seed; return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+
+function montar(THREE){
+  const R_ORBITA = 2.3, R_TERRA = 0.62, R_LUA = 0.2, X_SOL = -4.0, R_SOL = 0.9;
+  const renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:'low-power' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  palco.insertBefore(renderer.domElement, palco.firstChild);
+  renderer.domElement.setAttribute('aria-hidden', 'true');
+
+  const cena = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+
+  // estrelas (pontos, baratas)
+  {
+    const n = 420, pos = new Float32Array(n * 3), r = rnd(7);
+    for (let i = 0; i < n; i++) {
+      const th = r() * Math.PI * 2, ph = Math.acos(2 * r() - 1), d = 40;
+      pos[i*3] = d * Math.sin(ph) * Math.cos(th); pos[i*3+1] = d * Math.cos(ph); pos[i*3+2] = d * Math.sin(ph) * Math.sin(th);
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    cena.add(new THREE.Points(g, new THREE.PointsMaterial({ color:0xffffff, size:0.32, sizeAttenuation:true, transparent:true, opacity:.9 })));
+  }
+
+  // Sol: esfera que brilha sozinha + halo + luz direcional
+  const sol = new THREE.Mesh(new THREE.SphereGeometry(R_SOL, 24, 16), new THREE.MeshBasicMaterial({ color:0xffd84d }));
+  sol.position.set(X_SOL, 0, 0); cena.add(sol);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: textura(THREE, 128, 128, (g, w, h) => {
+    const gr = g.createRadialGradient(w/2, h/2, 0, w/2, h/2, w/2);
+    gr.addColorStop(0, 'rgba(255,230,120,.95)'); gr.addColorStop(.35, 'rgba(255,200,60,.45)'); gr.addColorStop(1, 'rgba(255,170,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  }), transparent:true, depthWrite:false }));
+  halo.scale.set(R_SOL * 4.2, R_SOL * 4.2, 1); halo.position.copy(sol.position); cena.add(halo);
+  const luz = new THREE.DirectionalLight(0xfff4d6, 2.6);
+  luz.position.set(X_SOL, 0, 0); luz.target.position.set(0, 0, 0); cena.add(luz, luz.target);
+  cena.add(new THREE.AmbientLight(0x6670ff, 0.18));
+
+  // Terra: textura pequena pintada no canvas (mares, continentes, calotas)
+  const texTerra = textura(THREE, 256, 128, (g, w, h) => {
+    g.fillStyle = '#1e5fb8'; g.fillRect(0, 0, w, h);
+    const r = rnd(42);
+    for (let i = 0; i < 26; i++) {
+      g.fillStyle = r() < .5 ? '#3f9a3a' : '#2f7f2d';
+      g.beginPath(); g.ellipse(r() * w, 20 + r() * (h - 40), 10 + r() * 34, 6 + r() * 18, r() * Math.PI, 0, Math.PI * 2); g.fill();
+    }
+    g.fillStyle = '#eef6ff'; g.fillRect(0, 0, w, 9); g.fillRect(0, h - 9, w, 9);
+    g.fillStyle = 'rgba(255,255,255,.35)';
+    for (let i = 0; i < 18; i++) { g.beginPath(); g.ellipse(r() * w, r() * h, 14 + r() * 30, 3 + r() * 5, 0, 0, Math.PI * 2); g.fill(); }
+  });
+  const terra = new THREE.Mesh(new THREE.SphereGeometry(R_TERRA, 32, 24), new THREE.MeshLambertMaterial({ map:texTerra }));
+  cena.add(terra);
+
+  // Lua: cinza com crateras; sempre a mesma face virada para a Terra
+  const texLua = textura(THREE, 128, 64, (g, w, h) => {
+    g.fillStyle = '#bdbdc4'; g.fillRect(0, 0, w, h);
+    const r = rnd(9);
+    for (let i = 0; i < 40; i++) {
+      const x = r() * w, y = r() * h, rr = 2 + r() * 7;
+      g.fillStyle = r() < .4 ? '#8d8d98' : '#a3a3ad';
+      g.beginPath(); g.arc(x, y, rr, 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.35)'; g.beginPath(); g.arc(x - rr * .3, y - rr * .3, rr * .35, 0, Math.PI * 2); g.fill();
+    }
+  });
+  const lua = new THREE.Mesh(new THREE.SphereGeometry(R_LUA, 24, 16), new THREE.MeshLambertMaterial({ map:texLua }));
+  cena.add(lua);
+
+  // órbita tracejada à vista
+  {
+    const pts = []; for (let i = 0; i <= 96; i++) { const a = i / 96 * Math.PI * 2; pts.push(new THREE.Vector3(-R_ORBITA * Math.cos(a), 0, R_ORBITA * Math.sin(a))); }
+    cena.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color:0x8f7fe0, transparent:true, opacity:.45 })));
+  }
+
+  // câmera orbital (arrastar com o dedo / mouse)
+  let az = 0.0, pol = 1.02, dist = 10;
+  if (palco.clientWidth < palco.clientHeight) pol = 0.82;   // em pé: olhar mais de cima, a órbita ocupa a altura                // ângulos em radianos
+  function enquadrar(){
+    const w = palco.clientWidth, h = palco.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    const t = Math.tan(camera.fov * Math.PI / 360);
+    const meioLarg = Math.abs(X_SOL) + R_SOL * 0.25;          // o Sol pode ficar meio cortado na borda
+    const meioAlt = R_ORBITA * Math.max(Math.cos(pol), 0.55) + 1.3;
+    dist = Math.max(meioLarg / (t * camera.aspect), meioAlt / t) * 0.98;
+  }
+  function posicionarCamera(){
+    camera.position.set(dist * Math.sin(pol) * Math.sin(az), dist * Math.cos(pol), dist * Math.sin(pol) * Math.cos(az));
+    camera.lookAt(0, 0, 0);
+  }
+  enquadrar(); posicionarCamera();
+  new ResizeObserver(() => { enquadrar(); }).observe(palco);
+
+  const el = renderer.domElement, dica = document.getElementById('dica');
+  let arrastando = false, px = 0, py = 0, pinca = null;
+  el.addEventListener('pointerdown', e => { arrastando = true; px = e.clientX; py = e.clientY; el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => {
+    if (!arrastando) return;
+    az -= (e.clientX - px) * 0.008; pol -= (e.clientY - py) * 0.008;
+    pol = Math.min(1.5, Math.max(0.15, pol)); px = e.clientX; py = e.clientY;
+    dica.classList.add('some');
+  });
+  const solta = () => { arrastando = false; };
+  el.addEventListener('pointerup', solta); el.addEventListener('pointercancel', solta);
+  el.addEventListener('wheel', e => { e.preventDefault(); dist *= e.deltaY > 0 ? 1.06 : 0.94; dist = Math.min(30, Math.max(4, dist)); }, { passive:false });
+  el.addEventListener('touchstart', e => { if (e.touches.length === 2) pinca = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, { passive:true });
+  el.addEventListener('touchmove', e => {
+    if (e.touches.length === 2 && pinca) {
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      dist = Math.min(30, Math.max(4, dist * pinca / d)); pinca = d;
+    }
+  }, { passive:true });
+  el.addEventListener('touchend', () => { pinca = null; }, { passive:true });
+
+  // rótulos que seguem os astros
+  const rot = { sol: document.getElementById('rot-sol'), terra: document.getElementById('rot-terra'), lua: document.getElementById('rot-lua') };
+  const v = new THREE.Vector3();
+  function rotular(elm, obj, dy, prende){
+    v.copy(obj.position); v.y += dy; v.project(camera);
+    const w = palco.clientWidth, h = palco.clientHeight;
+    let x = (v.x + 1) / 2 * w, y = (1 - v.y) / 2 * h;
+    if (prende && v.z < 1) x = Math.min(w - 40, Math.max(40, x));   // o Sol pode ficar meio fora; o nome não
+    const fora = v.z > 1 || x < -40 || x > w + 40 || y < -20 || y > h + 20;
+    elm.style.display = fora ? 'none' : '';
+    elm.style.left = x + 'px'; elm.style.top = y + 'px';
+  }
+
+  let quadros = 0, t0 = performance.now();
+  function animar(agora){
+    window.__lua.passoTempo(agora);
+    const a = (window.__lua.dia / window.__lua.MES) * Math.PI * 2;
+    lua.position.set(-R_ORBITA * Math.cos(a), 0, R_ORBITA * Math.sin(a));
+    lua.lookAt(0, 0, 0);                      // rotação: a mesma face sempre virada para a Terra
+    terra.rotation.y += 0.004;                // a Terra gira em torno do próprio eixo
+    posicionarCamera();
+    renderer.render(cena, camera);
+    rotular(rot.sol, sol, R_SOL + 0.5, true); rotular(rot.terra, terra, R_TERRA + 0.42); rotular(rot.lua, lua, R_LUA + 0.36);
+    quadros++;
+    requestAnimationFrame(animar);
+  }
+  requestAnimationFrame(animar);
+  window.__lua.fps = () => quadros / ((performance.now() - t0) / 1000);
+}
+</script>
+</body>
+</html>
