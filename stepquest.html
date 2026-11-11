@@ -836,7 +836,13 @@ const CONTEUDO = {
               "figura plana com quatro lados iguais"
             ],
             "correta": 0,
-            "explica": "A pirâmide tem uma base (um polígono) e as faces laterais são triângulos que se encontram num ponto, o vértice."
+            "explica": "A pirâmide tem uma base (um polígono) e as faces laterais são triângulos que se encontram num ponto, o vértice.",
+            "ver": {
+              "solido": "piramide",
+              "base": 4,
+              "aberto": 0,
+              "modo": null
+            }
           },
           {
             "p": "Uma pirâmide cuja base é um QUADRADO se chama:",
@@ -847,7 +853,13 @@ const CONTEUDO = {
               "prisma quadrangular"
             ],
             "correta": 0,
-            "explica": "A pirâmide é classificada pelo formato da base: base quadrada, pirâmide quadrangular."
+            "explica": "A pirâmide é classificada pelo formato da base: base quadrada, pirâmide quadrangular.",
+            "ver": {
+              "solido": "piramide",
+              "base": 4,
+              "aberto": 0,
+              "modo": null
+            }
           },
           {
             "p": "Nas pirâmides, as faces laterais têm a forma de:",
@@ -858,7 +870,13 @@ const CONTEUDO = {
               "pentágonos"
             ],
             "correta": 0,
-            "explica": "Os lados da pirâmide são triângulos que se encontram num ponto, o vértice."
+            "explica": "Os lados da pirâmide são triângulos que se encontram num ponto, o vértice.",
+            "ver": {
+              "solido": "piramide",
+              "base": 5,
+              "aberto": 0,
+              "modo": null
+            }
           },
           {
             "p": "Segundo a apostila, qual é a maior e mais famosa das pirâmides do Egito?",
@@ -870,6 +888,67 @@ const CONTEUDO = {
             ],
             "correta": 0,
             "explica": "Das cem pirâmides conhecidas no Egito, a maior e mais famosa é a de Quéops, a única das sete maravilhas antigas que resiste ao tempo."
+          }
+        ],
+        "cena": {
+          "motor": "solidos",
+          "params": {
+            "solido": "piramide",
+            "base": 4
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "solido": "piramide",
+              "base": 4,
+              "aberto": 0,
+              "modo": null
+            }
+          },
+          {
+            "linha": 1,
+            "pede": {
+              "texto": "Toque em <b>todas as faces</b> da pirâmide, uma por uma. Quantas são triângulos?",
+              "alvo": {
+                "modo": "faces",
+                "completo": true
+              },
+              "dica": "Toque em cada lado colorido. A base fica embaixo: gire a pirâmide com o dedo para ver."
+            },
+            "retorno": "Cinco faces: 1 base quadrada e <b>4 triângulos</b> que sobem e se encontram no vértice, lá no alto."
+          },
+          {
+            "linha": 2,
+            "pede": {
+              "texto": "O nome vem da base. Troque a base para <b>triângulo</b>.",
+              "alvo": {
+                "solido": "piramide",
+                "base": 3
+              },
+              "dica": "Use o botão \"base triângulo\" embaixo do desenho."
+            },
+            "retorno": "Base triângulo: pirâmide <b>triangular</b>. Base quadrado, quadrangular. Base pentágono, pentagonal.",
+            "cena": {
+              "modo": null
+            }
+          },
+          {
+            "linha": 3,
+            "cena": {
+              "solido": "piramide",
+              "base": 4,
+              "modo": null
+            }
+          },
+          {
+            "linha": 4,
+            "cena": {
+              "solido": "prisma",
+              "base": 4,
+              "modo": null
+            }
           }
         ]
       },
@@ -890,7 +969,13 @@ const CONTEUDO = {
               "três"
             ],
             "correta": 0,
-            "explica": "O prisma tem duas bases iguais que permanecem sempre paralelas."
+            "explica": "O prisma tem duas bases iguais que permanecem sempre paralelas.",
+            "ver": {
+              "solido": "prisma",
+              "base": 4,
+              "aberto": 0,
+              "modo": null
+            }
           },
           {
             "p": "Qual é uma diferença entre prisma e pirâmide?",
@@ -901,7 +986,13 @@ const CONTEUDO = {
               "não há diferença"
             ],
             "correta": 0,
-            "explica": "O prisma tem duas bases e lados quadriláteros; a pirâmide tem uma base e lados triangulares que se encontram num ponto."
+            "explica": "O prisma tem duas bases e lados quadriláteros; a pirâmide tem uma base e lados triangulares que se encontram num ponto.",
+            "ver": {
+              "solido": "prisma",
+              "base": 5,
+              "aberto": 0,
+              "modo": null
+            }
           },
           {
             "p": "Um prisma cuja base é um HEXÁGONO se chama:",
@@ -912,7 +1003,13 @@ const CONTEUDO = {
               "prisma triangular"
             ],
             "correta": 0,
-            "explica": "O prisma é classificado pela base: base hexágono, prisma hexagonal."
+            "explica": "O prisma é classificado pela base: base hexágono, prisma hexagonal.",
+            "ver": {
+              "solido": "prisma",
+              "base": 6,
+              "aberto": 0,
+              "modo": null
+            }
           },
           {
             "p": "Sobre o formato de um ônibus, o que é correto afirmar?",
@@ -923,7 +1020,80 @@ const CONTEUDO = {
               "é um corpo redondo"
             ],
             "correta": 0,
-            "explica": "O ônibus lembra um paralelepípedo: um prisma com duas bases semelhantes a retângulos."
+            "explica": "O ônibus lembra um paralelepípedo: um prisma com duas bases semelhantes a retângulos.",
+            "ver": {
+              "solido": "prisma",
+              "base": 4,
+              "aberto": 0,
+              "modo": null
+            }
+          }
+        ],
+        "cena": {
+          "motor": "solidos",
+          "params": {
+            "solido": "prisma",
+            "base": 3
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "solido": "prisma",
+              "base": 3,
+              "aberto": 0,
+              "modo": null
+            }
+          },
+          {
+            "linha": 1,
+            "pede": {
+              "texto": "Toque em <b>todas as faces</b> do prisma. Quais são as duas bases?",
+              "alvo": {
+                "modo": "faces",
+                "completo": true
+              },
+              "dica": "Gire o prisma com o dedo: uma base fica embaixo e a outra em cima."
+            },
+            "retorno": "Cinco faces: as <b>2 bases</b> (triângulos azuis, iguais e paralelas) e <b>3 retângulos</b> ligando uma base à outra."
+          },
+          {
+            "linha": 2,
+            "pede": {
+              "texto": "O nome vem da base. Troque a base para <b>hexágono</b>.",
+              "alvo": {
+                "solido": "prisma",
+                "base": 6
+              },
+              "dica": "Use o botão \"base hexágono\"."
+            },
+            "retorno": "Base hexágono, com seis lados: prisma <b>hexagonal</b>.",
+            "cena": {
+              "modo": null
+            }
+          },
+          {
+            "linha": 3,
+            "pede": {
+              "texto": "Agora compare: troque para <b>Pirâmide</b>.",
+              "alvo": {
+                "solido": "piramide"
+              },
+              "dica": "Toque em \"🔺 Pirâmide\"."
+            },
+            "retorno": "Pirâmide: <b>uma base só</b>, e as faces laterais são <b>triângulos</b> que se encontram num ponto no alto. O prisma tem duas bases.",
+            "cena": {
+              "modo": null
+            }
+          },
+          {
+            "linha": 4,
+            "cena": {
+              "solido": "prisma",
+              "base": 4,
+              "modo": null
+            }
           }
         ]
       },
@@ -944,7 +1114,12 @@ const CONTEUDO = {
               "a parte de dentro do sólido"
             ],
             "correta": 0,
-            "explica": "Vértices são os pontos de união das arestas. Faces são os lados; arestas são os segmentos que unem os lados."
+            "explica": "Vértices são os pontos de união das arestas. Faces são os lados; arestas são os segmentos que unem os lados.",
+            "ver": {
+              "solido": "cubo",
+              "aberto": 0,
+              "modo": "vertices"
+            }
           },
           {
             "p": "Quantas faces, arestas e vértices tem o CUBO?",
@@ -955,7 +1130,12 @@ const CONTEUDO = {
               "4 faces, 6 arestas e 4 vértices"
             ],
             "correta": 0,
-            "explica": "O cubo tem 6 faces quadradas, 12 arestas e 8 vértices. Pegue um dado e conte com o dedo."
+            "explica": "O cubo tem 6 faces quadradas, 12 arestas e 8 vértices. Pegue um dado e conte com o dedo.",
+            "ver": {
+              "solido": "cubo",
+              "aberto": 0,
+              "modo": "faces"
+            }
           },
           {
             "p": "Como fica a PIRÂMIDE QUADRANGULAR planificada?",
@@ -966,7 +1146,13 @@ const CONTEUDO = {
               "um círculo e um triângulo"
             ],
             "correta": 0,
-            "explica": "A base é um quadrado, e cada uma das quatro faces laterais é um triângulo."
+            "explica": "A base é um quadrado, e cada uma das quatro faces laterais é um triângulo.",
+            "ver": {
+              "solido": "piramide",
+              "base": 4,
+              "aberto": 1,
+              "modo": null
+            }
           },
           {
             "p": "O sólido do Richard tem duas bases em forma de triângulo ligadas por varetas. Ele é:",
@@ -977,7 +1163,102 @@ const CONTEUDO = {
               "um corpo redondo"
             ],
             "correta": 0,
-            "explica": "Duas bases iguais e paralelas é coisa de prisma. Como as bases são triângulos, é um prisma triangular, com 5 faces, 9 arestas e 6 vértices."
+            "explica": "Duas bases iguais e paralelas é coisa de prisma. Como as bases são triângulos, é um prisma triangular, com 5 faces, 9 arestas e 6 vértices.",
+            "ver": {
+              "solido": "prisma",
+              "base": 3,
+              "aberto": 0,
+              "modo": null
+            }
+          }
+        ],
+        "cena": {
+          "motor": "solidos",
+          "params": {
+            "solido": "cubo"
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "solido": "cubo",
+              "aberto": 0,
+              "modo": null
+            }
+          },
+          {
+            "linha": 1,
+            "pede": {
+              "texto": "Os vértices são as pontinhas. Toque em <b>todos os vértices</b> do cubo.",
+              "alvo": {
+                "modo": "vertices",
+                "completo": true
+              },
+              "dica": "Gire o cubo para achar os que ficam atrás."
+            },
+            "retorno": "Oito vértices: os pontos onde as arestas se juntam."
+          },
+          {
+            "linha": 2,
+            "pede": {
+              "texto": "As arestas são as linhas onde duas faces se encontram. Toque em <b>todas as arestas</b> do cubo.",
+              "alvo": {
+                "modo": "arestas",
+                "completo": true
+              },
+              "dica": "Gire o cubo e conte também as de trás."
+            },
+            "retorno": "Doze arestas. No cubo: 6 faces, 12 arestas e 8 vértices."
+          },
+          {
+            "linha": 3,
+            "pede": {
+              "texto": "Agora desmonte a caixa: toque em <b>✂️ Planificar</b>.",
+              "alvo": {
+                "aberto": 1
+              },
+              "dica": "Também dá para deslizar o controle até o fim."
+            },
+            "retorno": "Planificado: o cubo aberto no papel, 6 quadrados.",
+            "cena": {
+              "modo": null
+            }
+          },
+          {
+            "linha": 4,
+            "pede": {
+              "texto": "Mude para <b>Prisma</b> com base de <b>pentágono</b> e deixe aberto.",
+              "alvo": {
+                "solido": "prisma",
+                "base": 5,
+                "aberto": 1
+              },
+              "dica": "Toque em \"🧊 Prisma\" e em \"base pentágono\"."
+            },
+            "retorno": "Prisma pentagonal aberto: <b>2 pentágonos</b> (as bases) e <b>5 retângulos</b>. A pirâmide quadrangular aberta é 1 quadrado com 4 triângulos em volta.",
+            "cena": {
+              "modo": null
+            }
+          },
+          {
+            "linha": 5,
+            "pede": {
+              "texto": "O sólido do Richard é um prisma triangular. Toque em <b>todas as arestas</b> dele.",
+              "alvo": {
+                "solido": "prisma",
+                "base": 3,
+                "modo": "arestas",
+                "completo": true
+              },
+              "dica": "Escolha \"Prisma\", base triângulo, e toque em cada aresta."
+            },
+            "retorno": "Nove arestas. O prisma triangular tem 5 faces (2 triângulos e 3 retângulos), 9 arestas e 6 vértices.",
+            "cena": {
+              "solido": "prisma",
+              "base": 3,
+              "aberto": 0
+            }
           }
         ]
       },
@@ -3080,7 +3361,11 @@ const CONTEUDO = {
               "um satélite artificial feito pelo ser humano"
             ],
             "correta": 0,
-            "explica": "A Lua é o único satélite natural da Terra, a cerca de <span data-fala='trezentos e oitenta e quatro mil quilômetros'>384 mil km</span> do nosso planeta."
+            "explica": "A Lua é o único satélite natural da Terra, a cerca de <span data-fala='trezentos e oitenta e quatro mil quilômetros'>384 mil km</span> do nosso planeta.",
+            "ver": {
+              "fase": "cheia",
+              "tocar": false
+            }
           },
           {
             "p": "Por que conseguimos ver a Lua, se ela não tem luz própria?",
@@ -3091,7 +3376,11 @@ const CONTEUDO = {
               "porque as estrelas acendem a Lua à noite"
             ],
             "correta": 0,
-            "explica": "A Lua é um corpo iluminado, não luminoso: ela reflete a luz do Sol. É isso que a torna visível para quem está na Terra."
+            "explica": "A Lua é um corpo iluminado, não luminoso: ela reflete a luz do Sol. É isso que a torna visível para quem está na Terra.",
+            "ver": {
+              "fase": "cheia",
+              "tocar": false
+            }
           },
           {
             "p": "Cite uma importância da Lua para o nosso planeta, segundo a apostila.",
@@ -3102,7 +3391,11 @@ const CONTEUDO = {
               "ela faz a chuva cair"
             ],
             "correta": 0,
-            "explica": "A apostila diz que a Lua é essencial para as marés e até para a dinâmica climática da Terra."
+            "explica": "A apostila diz que a Lua é essencial para as marés e até para a dinâmica climática da Terra.",
+            "ver": {
+              "fase": "cheia",
+              "tocar": false
+            }
           },
           {
             "p": "O que Galileu descobriu ao observar a Lua com o telescópio, em 1609?",
@@ -3113,7 +3406,59 @@ const CONTEUDO = {
               "que a Lua era feita de queijo"
             ],
             "correta": 0,
-            "explica": "Galileu mostrou que a superfície da Lua não era polida e perfeita, mas áspera e irregular, com montanhas e crateras, como a da Terra."
+            "explica": "Galileu mostrou que a superfície da Lua não era polida e perfeita, mas áspera e irregular, com montanhas e crateras, como a da Terra.",
+            "ver": {
+              "fase": "crescente",
+              "tocar": false
+            }
+          }
+        ],
+        "cena": {
+          "motor": "orbita",
+          "params": {
+            "inicial": 0,
+            "fases": {
+              "nova": "A Lua está <b>entre o Sol e a Terra</b>: o lado iluminado fica virado para o Sol, e daqui não a vemos. Ela fica no céu de dia: nasce lá pelas 6h e se põe lá pelas 18h.",
+              "crescente": "Quarto crescente: a apostila diz que vemos <b>¼ da Lua</b> (um quarto da bola inteira); no céu, isso aparece como um <b>meio círculo</b>. Nasce por volta do meio-dia e se põe por volta da meia-noite.",
+              "cheia": "Agora a <b>Terra está entre o Sol e a Lua</b>: vemos a Lua inteira iluminada, um círculo completo. Nasce por volta das 18h e se põe às 6h do dia seguinte.",
+              "minguante": "Quarto minguante, o último estágio: de novo <b>¼ da Lua</b>, outro <b>meio círculo</b>, virado para o <b>lado contrário</b> ao da crescente (vista de cima, a parte clara fica do lado do Sol; no disco, aparece à direita). Nasce por volta da meia-noite e se põe por volta do meio-dia.",
+              "entre": [
+                "A parte iluminada que vemos está <b>crescendo</b>: por enquanto é só um pedaço fino.",
+                "A parte iluminada que vemos continua <b>crescendo</b>: já passou da metade.",
+                "A parte iluminada que vemos está <b>diminuindo</b>: ainda é mais da metade.",
+                "A parte iluminada que vemos continua <b>diminuindo</b>: logo volta a Lua nova e o ciclo recomeça."
+              ]
+            }
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "tocar": true
+            }
+          },
+          {
+            "linha": 1,
+            "pede": {
+              "texto": "Deslize até o <b>dia 15</b>, com a Lua do lado oposto ao Sol: no disco ela aparece inteira. Repara de onde vem essa luz.",
+              "alvo": {
+                "fase": "cheia"
+              },
+              "dica": "Ou toque no botão <b>cheia</b>, embaixo."
+            },
+            "retorno": "A Lua não tem luz própria: o que vemos é a luz do Sol batendo nela. Na cheia, a Terra fica no meio e a face iluminada está toda virada para nós.",
+            "cena": {
+              "fase": "cheia",
+              "tocar": false
+            }
+          },
+          {
+            "linha": 2,
+            "cena": {
+              "fase": "crescente",
+              "tocar": false
+            }
           }
         ]
       },
@@ -3134,7 +3479,11 @@ const CONTEUDO = {
               "porque os mares e oceanos da Terra mudam a Lua"
             ],
             "correta": 0,
-            "explica": "A forma da Lua não muda. Enquanto ela gira ao redor da Terra, o Sol ilumina partes diferentes dela, e vemos daqui partes diferentes da face iluminada."
+            "explica": "A forma da Lua não muda. Enquanto ela gira ao redor da Terra, o Sol ilumina partes diferentes dela, e vemos daqui partes diferentes da face iluminada.",
+            "ver": {
+              "dia": 3.7,
+              "tocar": false
+            }
           },
           {
             "p": "Você olha o céu à noite e vê a Lua como um círculo completo, toda iluminada. Que fase é essa, e quando ela costuma aparecer?",
@@ -3145,7 +3494,11 @@ const CONTEUDO = {
               "Lua minguante: aparece somente durante o dia"
             ],
             "correta": 0,
-            "explica": "É a Lua cheia. Ela nasce aproximadamente às <span data-fala='dezoito horas'>18h</span> e se põe aproximadamente às <span data-fala='seis horas'>6h</span> do dia seguinte."
+            "explica": "É a Lua cheia. Ela nasce aproximadamente às <span data-fala='dezoito horas'>18h</span> e se põe aproximadamente às <span data-fala='seis horas'>6h</span> do dia seguinte.",
+            "ver": {
+              "fase": "cheia",
+              "tocar": false
+            }
           },
           {
             "p": "Na LUA NOVA, por que não conseguimos ver a Lua?",
@@ -3156,7 +3509,11 @@ const CONTEUDO = {
               "porque ela vai para trás do Sol e some do céu"
             ],
             "correta": 0,
-            "explica": "Na Lua nova, a Lua está posicionada entre o Sol e a Terra; o lado iluminado fica virado para o Sol, e não a vemos."
+            "explica": "Na Lua nova, a Lua está posicionada entre o Sol e a Terra; o lado iluminado fica virado para o Sol, e não a vemos.",
+            "ver": {
+              "fase": "nova",
+              "tocar": false
+            }
           },
           {
             "p": "Quanto tempo dura, mais ou menos, cada fase da Lua?",
@@ -3167,7 +3524,104 @@ const CONTEUDO = {
               "24 horas"
             ],
             "correta": 0,
-            "explica": "A Lua apresenta quatro fases, e cada uma delas dura cerca de 7 a 8 dias."
+            "explica": "A Lua apresenta quatro fases, e cada uma delas dura cerca de 7 a 8 dias.",
+            "ver": {
+              "fase": "crescente",
+              "tocar": false
+            }
+          }
+        ],
+        "cena": {
+          "motor": "orbita",
+          "params": {
+            "inicial": 0,
+            "fases": {
+              "nova": "A Lua está <b>entre o Sol e a Terra</b>: o lado iluminado fica virado para o Sol, e daqui não a vemos. Ela fica no céu de dia: nasce lá pelas 6h e se põe lá pelas 18h.",
+              "crescente": "Quarto crescente: a apostila diz que vemos <b>¼ da Lua</b> (um quarto da bola inteira); no céu, isso aparece como um <b>meio círculo</b>. Nasce por volta do meio-dia e se põe por volta da meia-noite.",
+              "cheia": "Agora a <b>Terra está entre o Sol e a Lua</b>: vemos a Lua inteira iluminada, um círculo completo. Nasce por volta das 18h e se põe às 6h do dia seguinte.",
+              "minguante": "Quarto minguante, o último estágio: de novo <b>¼ da Lua</b>, outro <b>meio círculo</b>, virado para o <b>lado contrário</b> ao da crescente (vista de cima, a parte clara fica do lado do Sol; no disco, aparece à direita). Nasce por volta da meia-noite e se põe por volta do meio-dia.",
+              "entre": [
+                "A parte iluminada que vemos está <b>crescendo</b>: por enquanto é só um pedaço fino.",
+                "A parte iluminada que vemos continua <b>crescendo</b>: já passou da metade.",
+                "A parte iluminada que vemos está <b>diminuindo</b>: ainda é mais da metade.",
+                "A parte iluminada que vemos continua <b>diminuindo</b>: logo volta a Lua nova e o ciclo recomeça."
+              ]
+            }
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "tocar": true
+            }
+          },
+          {
+            "linha": 1,
+            "cena": {
+              "tocar": false,
+              "dia": 7.4
+            }
+          },
+          {
+            "linha": 2,
+            "pede": {
+              "texto": "Deslize os dias até a <b>Lua nova</b>: a Lua entre o Sol e a Terra.",
+              "alvo": {
+                "fase": "nova"
+              },
+              "dica": "É o dia 0 (ou o 29 e meio): a Lua fica do lado do Sol."
+            },
+            "retorno": "Lua nova: a Lua fica entre o Sol e a Terra, com o lado iluminado virado para o Sol. Daqui, não a vemos.",
+            "cena": {
+              "fase": "nova",
+              "tocar": false
+            }
+          },
+          {
+            "linha": 3,
+            "pede": {
+              "texto": "Agora leve até a <b>Lua crescente</b>: um quarto do caminho.",
+              "alvo": {
+                "fase": "crescente"
+              },
+              "dica": "Fica perto do dia 7."
+            },
+            "retorno": "Crescente: um quarto da Lua iluminado para nós — no céu, um meio círculo.",
+            "cena": {
+              "fase": "crescente",
+              "tocar": false
+            }
+          },
+          {
+            "linha": 4,
+            "pede": {
+              "texto": "Agora a <b>Lua cheia</b>: a Terra no meio, entre o Sol e a Lua.",
+              "alvo": {
+                "fase": "cheia"
+              },
+              "dica": "É o meio do mês: perto do dia 15."
+            },
+            "retorno": "Cheia: a Terra fica entre o Sol e a Lua, e vemos a Lua inteira iluminada.",
+            "cena": {
+              "fase": "cheia",
+              "tocar": false
+            }
+          },
+          {
+            "linha": 5,
+            "pede": {
+              "texto": "Por último, a <b>Lua minguante</b>.",
+              "alvo": {
+                "fase": "minguante"
+              },
+              "dica": "Fica perto do dia 22."
+            },
+            "retorno": "Minguante: outro meio círculo, virado para o lado contrário da crescente.",
+            "cena": {
+              "fase": "minguante",
+              "tocar": false
+            }
           }
         ]
       },
@@ -3188,7 +3642,10 @@ const CONTEUDO = {
               "revolução: gira ao redor do Sol; translação: gira em torno de si mesma; rotação: fica parada"
             ],
             "correta": 0,
-            "explica": "Rotação é em torno do próprio eixo; revolução é ao redor da Terra; translação é em torno do Sol, acompanhando a Terra."
+            "explica": "Rotação é em torno do próprio eixo; revolução é ao redor da Terra; translação é em torno do Sol, acompanhando a Terra.",
+            "ver": {
+              "movimento": "revolucao"
+            }
           },
           {
             "p": "Qual movimento a Lua faz AO REDOR DA TERRA?",
@@ -3199,7 +3656,10 @@ const CONTEUDO = {
               "nenhum, ela fica parada"
             ],
             "correta": 0,
-            "explica": "O movimento de revolução é o que a Lua faz ao redor da Terra."
+            "explica": "O movimento de revolução é o que a Lua faz ao redor da Terra.",
+            "ver": {
+              "movimento": "revolucao"
+            }
           },
           {
             "p": "Quanto tempo dura a TRANSLAÇÃO da Lua, que ela faz acompanhando a Terra em volta do Sol?",
@@ -3210,7 +3670,10 @@ const CONTEUDO = {
               "um dia e meio"
             ],
             "correta": 0,
-            "explica": "A translação da Lua acompanha a da Terra em volta do Sol. Sua duração é de um ano, como o da Terra: 365 dias."
+            "explica": "A translação da Lua acompanha a da Terra em volta do Sol. Sua duração é de um ano, como o da Terra: 365 dias.",
+            "ver": {
+              "movimento": "translacao"
+            }
           },
           {
             "p": "Verdadeiro ou falso: «A Lua não realiza nenhum movimento no espaço.»",
@@ -3221,7 +3684,98 @@ const CONTEUDO = {
               "falso — ela só faz rotação"
             ],
             "correta": 0,
-            "explica": "A Lua não está parada no céu: ela realiza movimentos de rotação, revolução e translação."
+            "explica": "A Lua não está parada no céu: ela realiza movimentos de rotação, revolução e translação.",
+            "ver": {
+              "movimento": "rotacao"
+            }
+          }
+        ],
+        "cena": {
+          "motor": "orbita",
+          "params": {
+            "inicial": 0,
+            "fases": {
+              "nova": "A Lua está <b>entre o Sol e a Terra</b>: o lado iluminado fica virado para o Sol, e daqui não a vemos. Ela fica no céu de dia: nasce lá pelas 6h e se põe lá pelas 18h.",
+              "crescente": "Quarto crescente: a apostila diz que vemos <b>¼ da Lua</b> (um quarto da bola inteira); no céu, isso aparece como um <b>meio círculo</b>. Nasce por volta do meio-dia e se põe por volta da meia-noite.",
+              "cheia": "Agora a <b>Terra está entre o Sol e a Lua</b>: vemos a Lua inteira iluminada, um círculo completo. Nasce por volta das 18h e se põe às 6h do dia seguinte.",
+              "minguante": "Quarto minguante, o último estágio: de novo <b>¼ da Lua</b>, outro <b>meio círculo</b>, virado para o <b>lado contrário</b> ao da crescente (vista de cima, a parte clara fica do lado do Sol; no disco, aparece à direita). Nasce por volta da meia-noite e se põe por volta do meio-dia.",
+              "entre": [
+                "A parte iluminada que vemos está <b>crescendo</b>: por enquanto é só um pedaço fino.",
+                "A parte iluminada que vemos continua <b>crescendo</b>: já passou da metade.",
+                "A parte iluminada que vemos está <b>diminuindo</b>: ainda é mais da metade.",
+                "A parte iluminada que vemos continua <b>diminuindo</b>: logo volta a Lua nova e o ciclo recomeça."
+              ]
+            },
+            "movimentos": {
+              "rotacao": "a Lua gira em torno de si mesma, do próprio eixo, como um pião. O pontinho vermelho mostra a mesma face sempre virada para a Terra.",
+              "revolucao": "a Lua dá voltas ao redor da Terra. É por causa dessa volta que o Sol ilumina partes diferentes dela e vemos as fases. Uma volta inteira leva cerca de um mês: a apostila arredonda para <b>28 dias</b>; o ciclo das fases, medido direitinho, dá <b>29 dias e meio</b>. Na prova, os dois valem — é \"aproximadamente\".",
+              "translacao": "a Lua vai junto com a Terra dando a volta inteira em torno do Sol. Essa viagem leva um ano, 365 dias."
+            }
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 0,
+            "cena": {
+              "tocar": true,
+              "movimento": null
+            }
+          },
+          {
+            "linha": 1,
+            "pede": {
+              "texto": "Toque em <b>Rotação</b> e veja o pontinho vermelho na Lua.",
+              "alvo": {
+                "movimento": "rotacao"
+              },
+              "dica": "É o primeiro botão azul, embaixo."
+            },
+            "retorno": "Rotação: a Lua gira em torno de si mesma. A mesma face fica sempre virada para a Terra.",
+            "cena": {
+              "movimento": "rotacao"
+            }
+          },
+          {
+            "linha": 2,
+            "pede": {
+              "texto": "Agora toque em <b>Revolução</b>: a volta em torno da Terra.",
+              "alvo": {
+                "movimento": "revolucao"
+              },
+              "dica": "É o botão do meio."
+            },
+            "retorno": "Revolução: a Lua dá voltas ao redor da Terra. Por isso vemos as fases.",
+            "cena": {
+              "movimento": "revolucao"
+            }
+          },
+          {
+            "linha": 3,
+            "pede": {
+              "texto": "E <b>Translação</b>: a Lua vai junto com a Terra em volta do Sol.",
+              "alvo": {
+                "movimento": "translacao"
+              },
+              "dica": "É o terceiro botão azul."
+            },
+            "retorno": "Translação: Terra e Lua juntas dando a volta em torno do Sol, em um ano.",
+            "cena": {
+              "movimento": "translacao"
+            }
+          },
+          {
+            "linha": 4,
+            "cena": {
+              "movimento": null,
+              "tocar": true
+            }
+          },
+          {
+            "linha": 5,
+            "cena": {
+              "movimento": "revolucao",
+              "tocar": true
+            }
           }
         ]
       },
@@ -3242,7 +3796,10 @@ const CONTEUDO = {
               "um mapa das estrelas"
             ],
             "correta": 0,
-            "explica": "Calendário é um sistema de medidas que, baseado no movimento dos astros, divide o tempo em anos, meses e dias."
+            "explica": "Calendário é um sistema de medidas que, baseado no movimento dos astros, divide o tempo em anos, meses e dias.",
+            "ver": {
+              "tocar": true
+            }
           },
           {
             "p": "Quanto dura o MÊS LUNAR, o ciclo inteiro das fases da Lua, segundo a apostila de calendários?",
@@ -3253,7 +3810,11 @@ const CONTEUDO = {
               "7 dias"
             ],
             "correta": 0,
-            "explica": "O mês lunar é o tempo de um ciclo inteiro das fases da Lua, que dura 29 dias e meio."
+            "explica": "O mês lunar é o tempo de um ciclo inteiro das fases da Lua, que dura 29 dias e meio.",
+            "ver": {
+              "dia": 29.5,
+              "tocar": false
+            }
           },
           {
             "p": "Onde surgiu o calendário mais antigo que se conhece?",
@@ -3264,7 +3825,11 @@ const CONTEUDO = {
               "em Roma, com o ano bissexto"
             ],
             "correta": 0,
-            "explica": "O calendário mais antigo conhecido surgiu na Mesopotâmia, por volta de <span data-fala='dois mil e setecentos antes de Cristo'>2700 a.C.</span>, e acredita-se que foi criado pelos sumérios."
+            "explica": "O calendário mais antigo conhecido surgiu na Mesopotâmia, por volta de <span data-fala='dois mil e setecentos antes de Cristo'>2700 a.C.</span>, e acredita-se que foi criado pelos sumérios.",
+            "ver": {
+              "dia": 0,
+              "tocar": false
+            }
           },
           {
             "p": "O primeiro calendário tinha 12 meses lunares e um ano de 354 dias. Qual era o problema?",
@@ -3275,7 +3840,54 @@ const CONTEUDO = {
               "ele só funcionava no Egito"
             ],
             "correta": 0,
-            "explica": "Com 12 meses lunares, o ano tinha 354 dias e ficava defasado em relação ao ano solar. Os caldeus corrigiram acrescentando um mês a cada três anos."
+            "explica": "Com 12 meses lunares, o ano tinha 354 dias e ficava defasado em relação ao ano solar. Os caldeus corrigiram acrescentando um mês a cada três anos.",
+            "ver": {
+              "dia": 29.5,
+              "tocar": false
+            }
+          }
+        ],
+        "cena": {
+          "motor": "orbita",
+          "params": {
+            "inicial": 0,
+            "fases": {
+              "nova": "A Lua está <b>entre o Sol e a Terra</b>: o lado iluminado fica virado para o Sol, e daqui não a vemos. Ela fica no céu de dia: nasce lá pelas 6h e se põe lá pelas 18h.",
+              "crescente": "Quarto crescente: a apostila diz que vemos <b>¼ da Lua</b> (um quarto da bola inteira); no céu, isso aparece como um <b>meio círculo</b>. Nasce por volta do meio-dia e se põe por volta da meia-noite.",
+              "cheia": "Agora a <b>Terra está entre o Sol e a Lua</b>: vemos a Lua inteira iluminada, um círculo completo. Nasce por volta das 18h e se põe às 6h do dia seguinte.",
+              "minguante": "Quarto minguante, o último estágio: de novo <b>¼ da Lua</b>, outro <b>meio círculo</b>, virado para o <b>lado contrário</b> ao da crescente (vista de cima, a parte clara fica do lado do Sol; no disco, aparece à direita). Nasce por volta da meia-noite e se põe por volta do meio-dia.",
+              "entre": [
+                "A parte iluminada que vemos está <b>crescendo</b>: por enquanto é só um pedaço fino.",
+                "A parte iluminada que vemos continua <b>crescendo</b>: já passou da metade.",
+                "A parte iluminada que vemos está <b>diminuindo</b>: ainda é mais da metade.",
+                "A parte iluminada que vemos continua <b>diminuindo</b>: logo volta a Lua nova e o ciclo recomeça."
+              ]
+            }
+          }
+        },
+        "roteiro": [
+          {
+            "linha": 1,
+            "cena": {
+              "tocar": true
+            }
+          },
+          {
+            "linha": 2,
+            "pede": {
+              "texto": "Deslize os dias do mês lunar inteiro, da Lua nova até voltar à Lua nova.",
+              "alvo": {
+                "dia": 29.5,
+                "tol": 1.5
+              },
+              "dica": "Vá até o fim da barra, no dia 29 e meio."
+            },
+            "retorno": "Uma volta inteira das fases: o mês lunar, cerca de 29 dias e meio.",
+            "cena": {
+              "dia": 29.5,
+              "tocar": false
+            },
+            "pausa": 2200
           }
         ]
       },
@@ -5564,7 +6176,7 @@ function blocoTutor(a) {
 }
 /* === fim ATIVIDADES === */
 /* === MOTORES — injetado por scripts/injetar_motores.py, não editar aqui === */
-const NOVIDADES = {"versao": "2026-11-10-12", "texto": "História (4 missões) · Geografia (8 missões)", "missoes": ["hi-imigracao", "hi-portugueses-espanhois", "hi-italianos-alemaes", "hi-japoneses", "ge-regioes", "ge-norte", "ge-nordeste", "ge-centro-oeste", "ge-sudeste", "ge-sul", "ge-trivia-regioes", "ge-capitais"]};
+const NOVIDADES = {"versao": "2026-11-10-16", "texto": "História (4 missões) · Geografia (8 missões) · Ciências (4 missões)", "missoes": ["hi-imigracao", "hi-portugueses-espanhois", "hi-italianos-alemaes", "hi-japoneses", "ge-regioes", "ge-norte", "ge-nordeste", "ge-centro-oeste", "ge-sudeste", "ge-sul", "ge-trivia-regioes", "ge-capitais", "ci-lua", "ci-fases-lua", "ci-movimentos-lua", "ci-calendarios"], "excluidas": ["matematica"]};
 /* Mapa do Brasil: 27 estados simplificados a partir da malha IBGE (gerado por scripts/gerar_brasil_svg.py).
    viewBox 0 0 320 319. r = região (N, NE, CO, SE, S); c = centro para rótulo. */
 var BRASIL_H = 319;
@@ -5700,12 +6312,12 @@ function cenaCss(){
     '.mp-chips{ display:flex; gap:6px; padding:4px 10px 10px; flex-wrap:wrap; }',
     '.mp-chip{ flex:1 1 auto; padding:7px 6px; border-radius:999px; background:#fff; border:2px solid #E8DCC0; font-weight:800; font-size:12.5px; color:#4A3F2E; box-shadow:0 2px 0 #E8DCC0; }',
     '.mp-chip.on{ background:var(--c); border-color:var(--c); color:#fff; box-shadow:none; }',
-    '.ob-disco{ position:absolute; z-index:2; right:10px; top:10px; width:64px; height:64px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,.25), 0 4px 14px rgba(0,0,0,.4); }',
+    '.cena-palco canvas.ob-disco{ position:absolute; z-index:2; right:10px; top:10px; width:64px; height:64px; border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,.25), 0 4px 14px rgba(0,0,0,.4); }',
     '.ob-disco-leg{ position:absolute; z-index:2; right:6px; top:78px; width:72px; text-align:center; font-size:9.5px; font-weight:700; color:#cfc8f2; }',
     '.ob-ctrl{ display:flex; gap:8px; align-items:center; padding:0 12px 6px; }',
     '.ob-slider{ flex:1; accent-color:#9A6BD6; height:30px; }',
     '.ob-tocar{ flex:0 0 auto; }',
-    '@media (min-width:600px){ .ob-disco{ width:96px; height:96px; } .ob-disco-leg{ top:110px; width:104px; } }',
+    '@media (min-width:600px){ .cena-palco canvas.ob-disco{ width:96px; height:96px; } .ob-disco-leg{ top:110px; width:104px; } }',
     '@media (prefers-reduced-motion:reduce){ .lt-trilho .ev{ transition:none; } }'
   ].join('\n');
   document.head.appendChild(st);
@@ -5779,6 +6391,7 @@ function cenaPedir(idx, e){
     var d=document.getElementById('cpDica'); if(!d || !cena.passo) return;
     d.innerHTML = (e.pede.dica ? '💡 '+e.pede.dica : '') + '<br><button onclick="cenaMeMostra()">✨ Me mostra</button>';
   }, e.pede.espera!=null ? e.pede.espera : 9000);
+  try{ if('tocar' in cena.api.estado()) cena.api.ir({tocar:false}, false); }catch(x){}   // a cena não pode completar o passo sozinha
   try{ if(cena.api.pedir) cena.api.pedir(e.pede.alvo); }catch(x){}
   try{ p.scrollIntoView({block:'nearest'}); }catch(x){}
   /* a criança já está no alvo (mexeu antes da narração chegar): não fica num beco — o retorno
@@ -6225,6 +6838,184 @@ MOTORES['mapa'] = (function(){
     if(temWebGL()){ carregarThree().then(function(mod){ T=mod; try{ montar3D(mod); }catch(e){ modo='2d'; } }, function(){ modo='2d'; }); }
     try{ laco(); }catch(x){}
     return { ir:ir, estado:estado, aoMudar:function(f){ ouvintes.push(f); }, destruir:destruir, pedir:pedir, modo:function(){ return modo; } };
+  }
+  return { montar: montar };
+})();
+/* ============================================================================================
+   MOTOR orbita — Sol, Terra e Lua (10/11/2026; nasceu da demo-lua-3d.html, agora dentro do app)
+   --------------------------------------------------------------------------------------------
+   A criança desliza os dias do mês lunar (29,5) ou arrasta o céu; a Lua anda na órbita, o Sol
+   ilumina sempre a metade virada para ele, e o DISCO mostra a Lua como se vê do Brasil. Os três
+   movimentos (rotação, revolução, translação) podem ser destacados.
+
+   params = { inicial:0, mes:29.5, fases:{ nova:'…', crescente:'…', cheia:'…', minguante:'…',
+              entre:['…','…','…','…'] }, movimentos:{ rotacao:'…', revolucao:'…', translacao:'…' } }
+   estado() = { dia, fase:'nova'|'crescente'|'cheia'|'minguante'|'entre', movimento:null|'rotacao'|… }
+   ir({dia:14.75}) · ir({fase:'cheia'}) · ir({movimento:'revolucao'}) · ir({tocar:true})
+
+   3D em three.js (vendorizado, sob demanda) com modo 2D completo (vista de cima + disco).
+   Posição da Lua: ângulo = dia/mes × 360°, 0 = nova (entre Sol e Terra), 180° = cheia.
+   ============================================================================================ */
+MOTORES['orbita'] = (function(){
+  var FASES = [ {k:'nova',d:0,nome:'Lua nova'}, {k:'crescente',d:0.25,nome:'Lua crescente'}, {k:'cheia',d:0.5,nome:'Lua cheia'}, {k:'minguante',d:0.75,nome:'Lua minguante'} ];
+  var MOVS = { rotacao:'Rotação', revolucao:'Revolução', translacao:'Translação' };
+  function el(tag, cls, html){ var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function rnd(seed){ var s=seed; return function(){ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
+
+  function montar(root, params, opts){
+    var P=params||{}, MES=P.mes||29.5, TOL=1.4, TX=P.fases||{}, MV=P.movimentos||{};
+    var dia = P.inicial||0, alvo = dia, tocando=false, mov=null, vivo=true, ouvintes=[], ultimoEst='', raf=0, modo='2d', t0=Date.now();
+
+    root.innerHTML='';
+    var palco = el('div','ob-3d'); palco.style.cssText='position:relative;aspect-ratio:320/210;overflow:hidden;background:radial-gradient(900px 400px at 50% 110%,#2a2470 0%,#0f0c2e 70%);border-radius:14px 14px 0 0;';
+    var badge = el('div','cena-3d','2D'); palco.appendChild(badge);
+    var dica = el('div','cena-dica','deslize os dias ⟷ · gire o céu com o dedo'); palco.appendChild(dica);
+    var disco = document.createElement('canvas'); disco.width=disco.height=160; disco.className='ob-disco'; disco.setAttribute('role','img'); palco.appendChild(disco);
+    var discoLeg = el('div','ob-disco-leg','vista do Brasil'); palco.appendChild(discoLeg);
+    var leitura = el('div','lt-leitura','<div class="ano" id="obDia" style="min-width:86px;font-size:22px"></div><div class="txt" id="obTxt"></div>');
+    var ctrl = el('div','ob-ctrl');
+    var slider = document.createElement('input'); slider.type='range'; slider.min='0'; slider.max=String(MES); slider.step='0.5'; slider.value=String(dia); slider.className='ob-slider'; slider.setAttribute('aria-label','dias do mês lunar');
+    var tocar = el('button','mp-chip ob-tocar','▶ Tocar o mês'); tocar.style.setProperty('--c','#9A6BD6');
+    ctrl.appendChild(slider); ctrl.appendChild(tocar);
+    var chips = el('div','mp-chips');
+    FASES.forEach(function(f){ var b=el('button','mp-chip',f.nome.replace('Lua ','')); b.style.setProperty('--c','#9A6BD6'); b.setAttribute('data-f',f.k); b.addEventListener('click',function(){ pararTocar(); ir({fase:f.k}, true); }); chips.appendChild(b); });
+    if(P.movimentos){ Object.keys(MOVS).forEach(function(k){ var b=el('button','mp-chip ob-mov',MOVS[k]); b.style.setProperty('--c','#3FA0E8'); b.setAttribute('data-m',k); b.addEventListener('click',function(){ ir({movimento: mov===k?null:k}, true); }); chips.appendChild(b); }); }
+    root.appendChild(palco); root.appendChild(leitura); root.appendChild(ctrl); root.appendChild(chips);
+    slider.addEventListener('input', function(){ pararTocar(); dia=alvo=parseFloat(slider.value); atualizar(); });
+    tocar.addEventListener('click', function(){ tocando=!tocando; tocar.textContent = tocando?'⏸ Pausar':'▶ Tocar o mês'; tocar.classList.toggle('on', tocando); notificar(); });
+    function pararTocar(){ tocando=false; tocar.textContent='▶ Tocar o mês'; tocar.classList.remove('on'); notificar(); }
+
+    /* ---- estado ---- */
+    function faseDe(d){ var p=((d%MES)+MES)%MES;
+      for(var i=0;i<4;i++){ var f=FASES[i]; if(Math.abs(p-f.d*MES)<=TOL || (i===0 && MES-p<=TOL)) return {k:f.k, nome:f.nome, i:i, exata:true}; }
+      for(var j=0;j<4;j++){ var a=FASES[j], b=FASES[(j+1)%4]; if(p>a.d*MES && p<(j===3?MES:b.d*MES)) return {k:'entre', nome:'entre '+a.nome.replace('Lua ','')+' e '+b.nome.replace('Lua ',''), i:j, exata:false}; }
+      return {k:'nova', nome:'Lua nova', i:0, exata:true}; }
+    function estado(){ var f=faseDe(dia); return { dia:Math.round(dia*2)/2, fase:f.k, movimento:mov, tocar:tocando }; }
+    function notificar(){ var s=JSON.stringify(estado()); if(s===ultimoEst) return; ultimoEst=s; var e=estado(); ouvintes.forEach(function(f){ try{ f(e); }catch(x){} }); }
+    function ir(novo, anima){
+      if(!novo) return;
+      if(typeof novo.fase==='string'){ var f=FASES.filter(function(x){return x.k===novo.fase;})[0]; if(f) alvo=f.d*MES; }
+      if(typeof novo.dia==='number') alvo=clamp(novo.dia, 0, MES);   // 29,5 fica 29,5 (fim da barra), não vira 0
+      if('movimento' in novo) mov = (novo.movimento && MOVS[novo.movimento]) ? novo.movimento : null;
+      if(typeof novo.tocar==='boolean'){ tocando=novo.tocar; tocar.textContent = tocando?'⏸ Pausar':'▶ Tocar o mês'; tocar.classList.toggle('on', tocando); }
+      var lento=false; try{ lento=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(x){}
+      if(!anima||lento) dia=alvo;
+      atualizar();
+    }
+    function fmtDia(d){ var i=Math.round(d*2)/2; return i===Math.floor(i) ? String(i) : Math.floor(i)+' e meio'; }
+    function atualizar(){
+      var f=faseDe(dia), de=leitura.querySelector('#obDia'), tx=leitura.querySelector('#obTxt');
+      if(de) de.innerHTML = 'dia '+fmtDia(dia)+'<small>de 29 e meio</small>';
+      if(tx){ var t = mov ? ('<b style="color:#3FA0E8">'+MOVS[mov]+'</b>: '+(MV[mov]||'')) : ('<b style="color:#9A6BD6">'+f.nome+'</b>. '+(f.exata ? (TX[f.k]||'') : ((TX.entre||[])[f.i]||''))); tx.innerHTML=t; }
+      slider.value = dia.toFixed(1); slider.setAttribute('aria-valuetext','dia '+fmtDia(dia)+', '+f.nome);
+      chips.querySelectorAll('.mp-chip[data-f]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-f')===f.k); });
+      chips.querySelectorAll('.mp-chip[data-m]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m')===mov); });
+      disco.setAttribute('aria-label', f.nome + (f.exata && f.i===0 ? ': não aparece' : ''));
+      desenharDisco(); notificar();
+    }
+    /* ---- disco: a Lua como se vê do Brasil (crescente iluminada à esquerda no hemisfério sul) ---- */
+    function desenharDisco(){
+      var c; try{ c=disco.getContext('2d'); }catch(x){ return; } if(!c||!c.beginPath) return;
+      var W=disco.width, r=W/2-6, cx=W/2, cy=W/2, ang=(dia/MES)*Math.PI*2, co=Math.cos(ang), crescendo=(dia%MES)<MES/2, lado=crescendo?-1:1;
+      var claro='#fff4c2', escuro='#1a1540';
+      c.clearRect(0,0,W,W); c.fillStyle=escuro; c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.fill();
+      c.fillStyle=claro; c.beginPath(); if(lado<0) c.arc(cx,cy,r,Math.PI/2,3*Math.PI/2); else c.arc(cx,cy,r,-Math.PI/2,Math.PI/2); c.closePath(); c.fill();
+      c.fillStyle = co>0 ? escuro : claro; c.beginPath(); c.ellipse(cx,cy,Math.max(0.01,r*Math.abs(co)),r,0,0,Math.PI*2); c.fill();
+      c.strokeStyle='rgba(255,255,255,.2)'; c.lineWidth=2; c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.stroke();
+    }
+
+    /* ---- 2D: vista de cima ---- */
+    var geo2=null;
+    var cv2=document.createElement('canvas'); cv2.width=640; cv2.height=420; cv2.className='ob-2d'; cv2.style.cssText='display:block;width:100%;height:100%;'; palco.appendChild(cv2);
+    function desenhar2D(){
+      var c; try{ c=cv2.getContext('2d'); }catch(x){ return; } if(!c||!c.save) return;
+      var W=cv2.width,H=cv2.height, sx=mov==='translacao'?150:140, sy=H/2, R=mov==='translacao'?110:150, tx=mov==='translacao'?sx+180:W*0.58, ty=sy, ro=mov==='translacao'?48:88;
+      c.clearRect(0,0,W,H);
+      var r=rnd(3); c.fillStyle='rgba(255,255,255,.7)'; for(var i=0;i<60;i++){ c.beginPath(); c.arc(r()*W,r()*H,r()*1.4+.3,0,Math.PI*2); c.fill(); }
+      if(mov==='translacao'){ c.strokeStyle='rgba(63,160,232,.7)'; c.setLineDash([6,6]); c.lineWidth=2; c.beginPath(); c.arc(sx,sy,180,0,Math.PI*2); c.stroke(); c.setLineDash([]); }
+      var g=c.createRadialGradient(sx,sy,0,sx,sy,R*0.6); g.addColorStop(0,'rgba(255,230,120,.95)'); g.addColorStop(1,'rgba(255,170,0,0)'); c.fillStyle=g; c.beginPath(); c.arc(sx,sy,R*0.6,0,Math.PI*2); c.fill();
+      c.fillStyle='#ffd84d'; c.beginPath(); c.arc(sx,sy,R*0.3,0,Math.PI*2); c.fill();
+      c.strokeStyle = mov==='revolucao' ? '#ffd84d' : 'rgba(143,127,224,.6)'; c.lineWidth = mov==='revolucao'?3:2; c.setLineDash(mov==='revolucao'?[]:[5,5]); c.beginPath(); c.arc(tx,ty,ro,0,Math.PI*2); c.stroke(); c.setLineDash([]);
+      // Terra: metade iluminada virada para o Sol
+      var ang=(dia/MES)*Math.PI*2, aSol=Math.atan2(sy-ty, sx-tx);
+      c.save(); c.translate(tx,ty); c.rotate(aSol); c.fillStyle='#1e5fb8'; c.beginPath(); c.arc(0,0,22,0,Math.PI*2); c.fill(); c.fillStyle='#0a1a40'; c.beginPath(); c.arc(0,0,22,Math.PI/2,3*Math.PI/2); c.fill(); c.fillStyle='#3f9a3a'; c.beginPath(); c.arc(-6,-4,7,0,Math.PI*2); c.fill(); c.restore();
+      // Lua na órbita (0 = nova, entre o Sol e a Terra)
+      var lx = tx + ro*Math.cos(aSol-ang), ly = ty + ro*Math.sin(aSol-ang);   // dia 0 = nova, do lado do Sol (revisão 10/11: estava invertido)
+      var aLuaSol=Math.atan2(sy-ly, sx-lx);
+      c.save(); c.translate(lx,ly); c.rotate(aLuaSol); c.fillStyle='#bdbdc4'; c.beginPath(); c.arc(0,0,9,0,Math.PI*2); c.fill(); c.fillStyle='#2b2b38'; c.beginPath(); c.arc(0,0,9,Math.PI/2,3*Math.PI/2); c.fill();
+      if(mov==='rotacao'){ var aT=Math.atan2(ty-ly, tx-lx)-aLuaSol; c.fillStyle='#E2705F'; c.beginPath(); c.arc(6*Math.cos(aT), 6*Math.sin(aT), 2.6, 0, Math.PI*2); c.fill(); } c.restore();
+      geo2={ sol:[sx,sy], terra:[tx,ty], lua:[lx,ly] };
+      c.font='700 13px system-ui,sans-serif'; c.fillStyle='#fff'; c.textAlign='center';
+      c.fillText('Sol', sx, sy+R*0.3+18); c.fillText('Terra', tx, ty+40); c.fillText('Lua', lx, ly-16);
+    }
+
+    /* ---- 3D ---- */
+    var T=null,R3=null,cena3=null,cam=null,cv3=null,terra=null,lua=null,sol=null,luz=null,grupo=null,orb=null,orbGrande=null,marca=null;
+    var az=0.0, pol=1.0, dist=10, gir=null;
+    var R_ORB=2.3, R_T=0.62, R_L=0.2, X_SOL=-4.0, R_S=0.9;
+    function textura(THREE,w,h,pintar){ var c=document.createElement('canvas'); c.width=w; c.height=h; pintar(c.getContext('2d'),w,h); var t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; }
+    function montar3D(THREE){
+      if(!vivo) return;
+      cv3=document.createElement('canvas'); cv3.style.cssText='display:block;width:100%;height:100%;position:absolute;inset:0;';
+      R3=new THREE.WebGLRenderer({ canvas:cv3, antialias:true, alpha:true, powerPreference:'low-power' }); R3.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5)); R3.outputColorSpace=THREE.SRGBColorSpace;
+      cena3=new THREE.Scene(); cam=new THREE.PerspectiveCamera(45,1,0.1,100);
+      var n=360,pos=new Float32Array(n*3),r=rnd(7); for(var i=0;i<n;i++){ var th=r()*Math.PI*2,ph=Math.acos(2*r()-1),d=40; pos[i*3]=d*Math.sin(ph)*Math.cos(th); pos[i*3+1]=d*Math.cos(ph); pos[i*3+2]=d*Math.sin(ph)*Math.sin(th); }
+      var gg=new THREE.BufferGeometry(); gg.setAttribute('position',new THREE.BufferAttribute(pos,3)); cena3.add(new THREE.Points(gg,new THREE.PointsMaterial({color:0xffffff,size:0.3,transparent:true,opacity:.9})));
+      sol=new THREE.Mesh(new THREE.SphereGeometry(R_S,24,16),new THREE.MeshBasicMaterial({color:0xffd84d})); sol.position.set(X_SOL,0,0); cena3.add(sol);
+      var halo=new THREE.Sprite(new THREE.SpriteMaterial({ map:textura(THREE,128,128,function(g,w,h){ var gr=g.createRadialGradient(w/2,h/2,0,w/2,h/2,w/2); gr.addColorStop(0,'rgba(255,230,120,.95)'); gr.addColorStop(.35,'rgba(255,200,60,.45)'); gr.addColorStop(1,'rgba(255,170,0,0)'); g.fillStyle=gr; g.fillRect(0,0,w,h); }), transparent:true, depthWrite:false }));
+      halo.scale.set(R_S*4.2,R_S*4.2,1); halo.position.copy(sol.position); cena3.add(halo);
+      luz=new THREE.DirectionalLight(0xfff4d6,2.6); luz.position.set(X_SOL,0,0); cena3.add(luz, luz.target); cena3.add(new THREE.AmbientLight(0x6670ff,0.18));
+      grupo=new THREE.Group(); cena3.add(grupo); luz.target=grupo;
+      terra=new THREE.Mesh(new THREE.SphereGeometry(R_T,32,24),new THREE.MeshLambertMaterial({ map:textura(THREE,256,128,function(g,w,h){ g.fillStyle='#1e5fb8'; g.fillRect(0,0,w,h); var r=rnd(42); for(var i=0;i<26;i++){ g.fillStyle=r()<.5?'#3f9a3a':'#2f7f2d'; g.beginPath(); g.ellipse(r()*w,20+r()*(h-40),10+r()*34,6+r()*18,r()*Math.PI,0,Math.PI*2); g.fill(); } g.fillStyle='#eef6ff'; g.fillRect(0,0,w,9); g.fillRect(0,h-9,w,9); }) })); grupo.add(terra);
+      lua=new THREE.Mesh(new THREE.SphereGeometry(R_L,24,16),new THREE.MeshLambertMaterial({ map:textura(THREE,128,64,function(g,w,h){ g.fillStyle='#bdbdc4'; g.fillRect(0,0,w,h); var r=rnd(9); for(var i=0;i<40;i++){ var x=r()*w,y=r()*h,rr=2+r()*7; g.fillStyle=r()<.4?'#8d8d98':'#a3a3ad'; g.beginPath(); g.arc(x,y,rr,0,Math.PI*2); g.fill(); } }) })); grupo.add(lua);
+      marca=new THREE.Mesh(new THREE.SphereGeometry(0.05,8,8),new THREE.MeshBasicMaterial({color:0xE2705F})); marca.position.set(0,0,R_L); lua.add(marca); marca.visible=false;
+      var pts=[]; for(var k=0;k<=96;k++){ var a=k/96*Math.PI*2; pts.push(new THREE.Vector3(-R_ORB*Math.cos(a),0,R_ORB*Math.sin(a))); }
+      orb=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x8f7fe0,transparent:true,opacity:.45})); grupo.add(orb);
+      var pts2=[]; for(var k2=0;k2<=128;k2++){ var a2=k2/128*Math.PI*2; pts2.push(new THREE.Vector3(X_SOL+Math.abs(X_SOL)*Math.cos(a2),0,Math.abs(X_SOL)*Math.sin(a2))); }
+      orbGrande=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts2),new THREE.LineBasicMaterial({color:0x3FA0E8,transparent:true,opacity:.6})); orbGrande.visible=false; cena3.add(orbGrande);
+      palco.appendChild(cv3); cv2.style.display='none'; badge.textContent='3D · gire o céu com o dedo'; modo='3d';
+      cv3.addEventListener('pointerdown',function(e){ gir={x:e.clientX,y:e.clientY}; try{ cv3.setPointerCapture(e.pointerId); }catch(x){} });
+      cv3.addEventListener('pointermove',function(e){ if(!gir) return; az-=(e.clientX-gir.x)*0.008; pol=clamp(pol-(e.clientY-gir.y)*0.008,0.15,1.5); gir={x:e.clientX,y:e.clientY}; dica.classList.add('some'); });
+      cv3.addEventListener('pointerup',function(){ gir=null; }); cv3.addEventListener('pointercancel',function(){ gir=null; });
+      if(palco.clientWidth<palco.clientHeight) pol=0.82;
+      redimensionar();
+    }
+    function redimensionar(){ if(!R3) return; var w=palco.clientWidth||320,h=palco.clientHeight||210; R3.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();
+      var t=Math.tan(cam.fov*Math.PI/360), meioLarg=Math.abs(X_SOL)+R_S*0.25, meioAlt=R_ORB*Math.max(Math.cos(pol),0.55)+1.3; dist=Math.max(meioLarg/(t*cam.aspect), meioAlt/t)*0.98; }
+    function desenhar3D(THREE, dt){
+      var a=(dia/MES)*Math.PI*2, t=(Date.now()-t0)/1000;
+      var tr = mov==='translacao';
+      var cx = tr ? X_SOL+Math.abs(X_SOL)*Math.cos(t*0.25) : 0, cz = tr ? Math.abs(X_SOL)*Math.sin(t*0.25) : 0;
+      grupo.position.set(cx,0,cz);
+      var dirSol=new THREE.Vector3(X_SOL-cx,0,-cz).normalize();
+      // 0 = nova: a Lua entre o Sol e a Terra (no lado do Sol); 180° = cheia
+      var ang = Math.atan2(dirSol.z, dirSol.x);
+      lua.position.set(R_ORB*Math.cos(ang-a), 0, R_ORB*Math.sin(ang-a)); lua.lookAt(grupo.position);
+      terra.rotation.y += dt*(tocando?2.0:0.25);
+      marca.visible = mov==='rotacao'; orb.material.color.set(mov==='revolucao'?0xffd84d:0x8f7fe0); orb.material.opacity = mov==='revolucao'?1:.45; orbGrande.visible=tr;
+      var d = tr ? dist*1.9 : dist, alvoCam = tr ? sol.position : grupo.position;
+      cam.position.set(alvoCam.x + d*Math.sin(pol)*Math.sin(az), d*Math.cos(pol), alvoCam.z + d*Math.sin(pol)*Math.cos(az)); cam.lookAt(alvoCam);
+      R3.render(cena3,cam);
+    }
+
+    var tAnt=0;
+    function laco(){
+      if(!vivo) return; if(root.isConnected===false){ destruir(); return; }
+      var agora=Date.now(), dt=tAnt?Math.min(0.1,(agora-tAnt)/1000):0.016; tAnt=agora;
+      if(tocando){ dia=alvo=((dia+dt*2.4)%MES); atualizar(); }
+      else if(Math.abs(alvo-dia)>0.02){ dia += (alvo-dia)*Math.min(1,dt*5); if(Math.abs(alvo-dia)<=0.02) dia=alvo; atualizar(); }
+      if(modo==='3d'&&T) desenhar3D(T,dt); else desenhar2D();
+      raf=requestAnimationFrame(laco);
+    }
+    function destruir(){ vivo=false; if(raf && typeof cancelAnimationFrame==='function') cancelAnimationFrame(raf); try{ if(R3) R3.dispose(); }catch(x){} window.removeEventListener('resize', redimensionar); }
+    function pedir(){ pararTocar(); slider.style.animation='pulsa 1s ease-in-out infinite'; setTimeout(function(){ slider.style.animation=''; }, 6000); dica.textContent='deslize os dias ⟷'; dica.classList.remove('some'); }
+    window.addEventListener('resize', redimensionar);
+    ir({dia:dia}, false);
+    if(temWebGL()){ carregarThree().then(function(mod){ T=mod; try{ montar3D(mod); }catch(e){ modo='2d'; } }, function(){ modo='2d'; }); }
+    try{ laco(); }catch(x){}
+    function geo(){ if(modo==='3d' && lua){ return { modo:'3d', sol:[sol.position.x, sol.position.z], terra:[grupo.position.x, grupo.position.z], lua:[grupo.position.x+lua.position.x, grupo.position.z+lua.position.z] }; } return geo2 ? Object.assign({modo:'2d'}, geo2) : null; }
+    return { ir:ir, estado:estado, aoMudar:function(f){ ouvintes.push(f); }, destruir:destruir, pedir:pedir, modo:function(){ return modo; }, geo:geo };
   }
   return { montar: montar };
 })();
